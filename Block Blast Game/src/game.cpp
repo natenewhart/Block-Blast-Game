@@ -8,6 +8,10 @@ Game::Game() :
 	window.setFramerateLimit(frameRateLimit);
 }
 
+void Game::Init()
+{
+}
+
 void Game::MainLoop()
 {
 	while (window.isOpen())
@@ -38,12 +42,14 @@ void Game::HandleEvents()
 
 void Game::Update()
 {
-
+	
 }
 
 void Game::Render()
 {
 	window.clear();
+
+	tileMap.Draw(window);
 
 	window.display();
 }

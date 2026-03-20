@@ -2,7 +2,7 @@
 <Project>
   <ProjectOutputs>
     <ProjectOutput>
-      <FullPath>C:\dev\Block Blast Game\bin\Debug-x64\Block Blast Game\Block Blast Game.exe</FullPath>
+      <FullPath>C:\dev\Block Blast\bin\Debug-x64\Block Blast Game\Block Blast Game.exe</FullPath>
     </ProjectOutput>
   </ProjectOutputs>
   <ContentFiles />

@@ -3,6 +3,7 @@
 
 #include "SFML/Graphics.hpp"
 #include "deltatime.h"
+#include "tilemap.h"
 
 #pragma once
 
@@ -48,6 +49,7 @@ private:
 	// Game Variables
 
 	float deltaTime; // Last frame delta time value
+	TileMap tileMap;
 };
 
 // TILE STORING INSTRUCTIONS
