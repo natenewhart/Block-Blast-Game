@@ -3,10 +3,11 @@
 TileMap::TileMap() :
 	mWidth (10),
 	mHeight(10),
-	mTiles(mHeight, std::vector<Tile>(mWidth)),
+	mTiles(mHeight, std::vector<Tile>(mWidth, Tile(sf::Color::Blue))),
 	mTileSize(100, 50),
 	mPosition(100, 100),
-	mGridVertices{sf::Vertex(), sf::Vertex(), sf::Vertex(), sf::Vertex()}
+	mGridVertices{sf::Vertex(), sf::Vertex(), sf::Vertex(), sf::Vertex()},
+	mTileRect(mTileSize)
 {
 	for (auto& vertex : mGridVertices)
 	{
@@ -31,6 +32,7 @@ void TileMap::Clear()
 
 void TileMap::Draw(sf::RenderWindow& window)
 {
+	DrawTiles(window);
 	DrawGridLines(window);
 }
 
@@ -52,14 +54,17 @@ void TileMap::DrawGridLines(sf::RenderWindow& window)
 
 void TileMap::DrawTiles(sf::RenderWindow& window)
 {
-	//for (int i = 0; i < height; i++)
-	//{
-	//	for (int j = 0; j < width; j++)
-	//	{
-	//		sf::RectangleShape tileShape(sf::Vector2f(mTileSize, mTileSize));
-	//		tileShape.setPosition(mPosition.x + j * mTileSize, mPosition.y + i * mTileSize);
-	//		tileShape.setFillColor(mTiles[i][j].color);
-	//		window.draw(tileShape); // TODO: pass window reference to this function
-	//	}
-	//}
+	for (int row = 0; row < mHeight; row++)
+	{
+		for (int col = 0; col < mWidth; col++)
+		{
+			const Tile& tile = mTiles[row][col];
+			if (!tile.isEmpty)
+			{
+				mTileRect.setPosition(mPosition.x + col * mTileSize.x, mPosition.y + row * mTileSize.y);
+				mTileRect.setFillColor(tile.color);
+				window.draw(mTileRect);
+			}
+		}
+	}
 }
