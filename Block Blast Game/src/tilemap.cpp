@@ -1,26 +1,32 @@
 #include "tilemap.h"
 
 TileMap::TileMap() :
-	width (10),
-	height(10),
-	tiles(height, std::vector<Tile>(width)),
-	tileSize(50),
-	position(100, 139),
-	gridVertices{sf::Vertex(), sf::Vertex(), sf::Vertex(), sf::Vertex()}
+	mWidth (10),
+	mHeight(10),
+	mTiles(mHeight, std::vector<Tile>(mWidth)),
+	mTileSize(100, 50),
+	mPosition(100, 100),
+	mGridVertices{sf::Vertex(), sf::Vertex(), sf::Vertex(), sf::Vertex()}
 {
-	for (auto& vertex : gridVertices)
+	for (auto& vertex : mGridVertices)
 	{
 		vertex.color    = sf::Color::Red;
-		vertex.position = position;
+		vertex.position = mPosition;
 	}
-
-	gridVertices[1].position.y += tileSize * width;
-	gridVertices[3].position.x += tileSize * width;
+	mGridVertices[1].position.y += mTileSize.y * mHeight;
+	mGridVertices[3].position.x += mTileSize.x * mWidth;
 }
 
 void TileMap::Clear()
 {
-	tiles.clear();
+	for (auto& row : mTiles)
+	{
+		for (auto& tile : row)
+		{
+			tile.isEmpty = true;
+			tile.color   = sf::Color::Transparent; // Placeholder color for empty tile
+		}
+	}
 }
 
 void TileMap::Draw(sf::RenderWindow& window)
@@ -30,35 +36,30 @@ void TileMap::Draw(sf::RenderWindow& window)
 
 void TileMap::DrawGridLines(sf::RenderWindow& window)
 {
-	float lineLength = tileSize * width;
-
-	for (int i = 0; i < width; i++)
+	for (int i = 0; i <= mWidth; i++)
 	{
-		gridVertices[0].position.x += tileSize;
-		gridVertices[1].position.x += tileSize;
-		gridVertices[2].position.y += tileSize;
-		gridVertices[3].position.y += tileSize;
-
-		window.draw(gridVertices, 4, sf::Lines);
+		window.draw(mGridVertices, 4, sf::Lines);
+		mGridVertices[0].position.x += mTileSize.x;
+		mGridVertices[1].position.x += mTileSize.x;
+		mGridVertices[2].position.y += mTileSize.y;
+		mGridVertices[3].position.y += mTileSize.y;
 	}
-	// Reset grid vertices to original position
-	gridVertices[0].position.x = 0;
-	gridVertices[1].position.x = 0;
-	gridVertices[2].position.y = 0;
-	gridVertices[3].position.y = 0;
-
+	mGridVertices[0].position.x = mPosition.x;
+	mGridVertices[1].position.x = mPosition.x;
+	mGridVertices[2].position.y = mPosition.y;
+	mGridVertices[3].position.y = mPosition.y;
 }
 
 void TileMap::DrawTiles(sf::RenderWindow& window)
 {
-	for (int i = 0; i < height; i++)
-	{
-		for (int j = 0; j < width; j++)
-		{
-			sf::RectangleShape tileShape(sf::Vector2f(tileSize, tileSize));
-			tileShape.setPosition(position.x + j * tileSize, position.y + i * tileSize);
-			tileShape.setFillColor(tiles[i][j].color);
-			window.draw(tileShape); // TODO: pass window reference to this function
-		}
-	}
+	//for (int i = 0; i < height; i++)
+	//{
+	//	for (int j = 0; j < width; j++)
+	//	{
+	//		sf::RectangleShape tileShape(sf::Vector2f(mTileSize, mTileSize));
+	//		tileShape.setPosition(mPosition.x + j * mTileSize, mPosition.y + i * mTileSize);
+	//		tileShape.setFillColor(mTiles[i][j].color);
+	//		window.draw(tileShape); // TODO: pass window reference to this function
+	//	}
+	//}
 }

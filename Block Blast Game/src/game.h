@@ -35,7 +35,7 @@ private:
 
 	// SFML Members
 	sf::RenderWindow window; // SFML render window
-	sf::Event event;         // Event variable used to store event for event handling. Will generallly store last event popped from event queue.
+	sf::Event event;         // Event variable used to store event for evnt handling. Will generallly store last event popped from event queue.
 
 	DeltaTimeCalculator deltaTimeCalculator;
 
