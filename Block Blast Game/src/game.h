@@ -50,6 +50,9 @@ private:
 
 	float deltaTime; // Last frame delta time value
 	TileMap tileMap;
+
+	sf::Text text; // Temporary text variable for testing
+	sf::Font font; // Temporary font variable for testing
 };
 
 // TILE STORING INSTRUCTIONS

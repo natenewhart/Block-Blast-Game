@@ -51,4 +51,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <Font Include="res\cour.ttf">
+      <Filter>Resource Files</Filter>
+    </Font>
+    <Font Include="res\courbd.ttf">
+      <Filter>Resource Files</Filter>
+    </Font>
+    <Font Include="res\courbi.ttf">
+      <Filter>Resource Files</Filter>
+    </Font>
+    <Font Include="res\couri.ttf">
+      <Filter>Resource Files</Filter>
+    </Font>
+  </ItemGroup>
 </Project>

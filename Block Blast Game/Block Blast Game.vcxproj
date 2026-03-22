@@ -155,6 +155,12 @@
     <ClInclude Include="src\tile.h" />
     <ClInclude Include="src\tilemap.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Font Include="res\cour.ttf" />
+    <Font Include="res\courbd.ttf" />
+    <Font Include="res\courbi.ttf" />
+    <Font Include="res\couri.ttf" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
