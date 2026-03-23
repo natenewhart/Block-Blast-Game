@@ -3,7 +3,7 @@
 
 #include<vector>
 #include "SFML/Graphics.hpp"
-#include "tile.h"
+//#include "tile.h"
 
 #pragma once
 
@@ -11,7 +11,6 @@
 
 class Block
 {
-	std::vector<std::vector<Tile>> tiles; // 3x3 grid of tiles
+	std::vector<std::vector<bool>> tiles; // 5x5 grid of tiles
 	sf::Color color;
 };
-

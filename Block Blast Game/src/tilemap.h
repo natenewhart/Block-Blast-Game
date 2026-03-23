@@ -12,12 +12,15 @@ class TileMap
 {
 public:
 	TileMap();
+	TileMap(sf::Vector2f position, sf::Vector2f tileSize);
 
 	void Clear(); // All tiles set to empty and transparent color
 
 	void Draw(sf::RenderWindow& window); // Draws grid lines and tiles
 
 private:
+	void Init();  // Initializes tilemap data and grid vertices
+
 	void DrawGridLines(sf::RenderWindow& window); // Draws grid lines with top left corner at mPosition
 	void DrawTiles(sf::RenderWindow& window);     // Draws tiles
 

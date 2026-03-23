@@ -3,7 +3,10 @@
 Game::Game() :
 	screenWidth(1280), screenHeight(720),
 	frameRateLimit(100),
-	deltaTime(1.f / frameRateLimit)
+	deltaTime(1.f / frameRateLimit),
+	tileSize(50, 50),
+	tileMap(sf::Vector2f(100, 100), tileSize),
+	state(State::Play)
 {
 	window.create(sf::VideoMode(screenWidth, screenHeight), "Block Blast");
 	window.setFramerateLimit(frameRateLimit);

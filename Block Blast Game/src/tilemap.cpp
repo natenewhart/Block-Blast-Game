@@ -1,17 +1,34 @@
 #include "tilemap.h"
 
 TileMap::TileMap() :
-	mWidth (10),
-	mHeight(10),
-	mTiles(mHeight, std::vector<Tile>(mWidth, Tile(sf::Color::Blue))),
-	mTileSize(100, 50),
+	mWidth (8),
+	mHeight(8),
+	mTiles(mHeight, std::vector<Tile>(mWidth)),
+	mTileSize(50, 50),
 	mPosition(100, 100),
 	mGridVertices{sf::Vertex(), sf::Vertex(), sf::Vertex(), sf::Vertex()},
 	mTileRect(mTileSize)
 {
+	Init();
+}
+
+TileMap::TileMap(sf::Vector2f position, sf::Vector2f tileSize) :
+	mWidth(8),
+	mHeight(8),
+	mTiles(mHeight, std::vector<Tile>(mWidth)),
+	mTileSize(tileSize),
+	mPosition(position),
+	mGridVertices{sf::Vertex(), sf::Vertex(), sf::Vertex(), sf::Vertex()},
+	mTileRect(mTileSize)
+{
+	Init();
+}
+
+void TileMap::Init()
+{
 	for (auto& vertex : mGridVertices)
 	{
-		vertex.color    = sf::Color::Red;
+		vertex.color = sf::Color::Red;
 		vertex.position = mPosition;
 	}
 	mGridVertices[1].position.y += mTileSize.y * mHeight;

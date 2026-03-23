@@ -49,8 +49,13 @@ private:
 	// Game Variables
 
 	float deltaTime; // Last frame delta time value
+	sf::Vector2f tileSize; // Tile dimensions in pixels
 	TileMap tileMap;
 
+	State state; // Game state variable
+
+
+	// Display Variables
 	sf::Text text; // Temporary text variable for testing
 	sf::Font font; // Temporary font variable for testing
 };
