@@ -4,6 +4,7 @@
 #include "SFML/Graphics.hpp"
 #include "deltatime.h"
 #include "tilemap.h"
+#include "block.h"
 
 #pragma once
 
@@ -17,6 +18,7 @@ public:
 private:
 
 	void Init(); // Initializes Game State and variables - used in constructor
+	//void LoadConfig(); // Loads game settings from file
 	/* TODO:
 	*	Retrieve game settings from json fiel or config file which settings can edit
 	*	Add a deconstructor which saves data to file after closing of game
@@ -51,6 +53,8 @@ private:
 	float deltaTime; // Last frame delta time value
 	sf::Vector2f tileSize; // Tile dimensions in pixels
 	TileMap tileMap;
+
+	Block blockHand[3]; // Block queue which stores 3 blocks to be placed at each turn
 
 	State state; // Game state variable
 

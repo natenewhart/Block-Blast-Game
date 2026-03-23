@@ -24,35 +24,49 @@ extern const tBlockSignature BLOCK_SIGNATURES[NUMBER_OF_BLOCK_TYPES];
 class Block
 {
 public:
-	Block(tBlockSignature* signature, int orientation);
+	enum Shape; // Each represents index of block signature in BLOCK_SIGNATURES array
+
+	Block();
+	Block(Shape signature, sf::Vector2f position, int orientation, sf::Color color, sf::Vector2f tileSize);
+
+	void Hide(); // Hides block by setting signature to null pointer
+	void Reassign(Shape signature, sf::Vector2f position, int orientation, sf::Color color);
+
 	void Draw(sf::RenderWindow& window);
 
 private:
-	tBlockSignature* mBlockSignature;
-	sf::Vector2f mPosition;
-	int mOrientation; // 0, 1, 2, or 3 for 0, 90, 180, or 270 degree rotation
+	void Init();
+
+	const tBlockSignature* mBlockSignature;
+
+	sf::Vector2f mPosition; // Top left corner of tile in block at (0, 0) given by BLOCK_SIGNATURES 
+	int mOrientation;       // 0, 1, 2, or 3 for 0, 90, 180, or 270 degree rotation
+
 	sf::Color mColor;
-};
+	sf::RectangleShape mTileRect; // Rectangle shape used for drawing tiles
+	sf::Transform mTransform;
 
-enum BlockTypes // Each represents index of block signature in BLOCK_SIGNATURES array
-{
-	OneByOne,
-	TwoByOne,
-	ThreeByOne,
-	FourByOne,
-	FiveByOne,
+public:
+	enum Shape
+	{
+		OneByOne,
+		TwoByOne,
+		ThreeByOne,
+		FourByOne,
+		FiveByOne,
 
-	TwoByTwo,
-	TwoByThree,
-	ThreeByThree,
+		TwoByTwo,
+		TwoByThree,
+		ThreeByThree,
 
-	LShapeLarge,  // 2 horizontal and 2 vertical tiles about a center tile (3x3 shape)
-	LShapeMedium, // 2 horizontal and 1 vertical tile (2x3 shape)
-	LShapeSmall,  // 2x2 with one tile missing in corner
-	TShape,
-	SShape,       // Same as Z shape but with different orientation
-	TwoDiagonal,
-	ThreeDiagonal
+		LShapeLarge,  // 2 horizontal and 2 vertical tiles about a center tile (3x3 shape)
+		LShapeMedium, // 2 horizontal and 1 vertical tile (2x3 shape)
+		LShapeSmall,  // 2x2 with one tile missing in corner
+		TShape,
+		SShape,       // Same as Z shape but with different orientation
+		TwoDiagonal,
+		ThreeDiagonal
+	};
 };
 
 /*

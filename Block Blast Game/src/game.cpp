@@ -21,9 +21,7 @@ Game::Game() :
 	text.setString(std::to_string(frameRateLimit));
 }
 
-void Game::Init()
-{
-}
+void Game::Init() {}
 
 void Game::MainLoop()
 {
@@ -64,6 +62,13 @@ void Game::Render()
 	window.clear();
 
 	// Render order
+	
+	for (auto& block : blockHand)
+	{
+		block.Draw(window);
+	}
+
+
 	tileMap.Draw(window);
 	window.draw(text); // Draw FPS onto screen
 
