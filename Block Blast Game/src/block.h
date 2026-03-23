@@ -5,6 +5,7 @@
 
 #include<vector>
 #include "SFML/Graphics.hpp"
+#include "tile.h"
 
 /*
 * Blocks are stored using block signatures which contain vectors of tile positions in relation to an origin tile at 0,0.
@@ -26,25 +27,34 @@ class Block
 public:
 	enum Shape; // Each represents index of block signature in BLOCK_SIGNATURES array
 
+	// TODO: copy constructor overhead? check how creating new blocks work and avoid 350+ byte overhead
+
 	Block();
+	Block(const Block& other); // Copy constructor
 	Block(Shape signature, sf::Vector2f position, int orientation, sf::Color color, sf::Vector2f tileSize);
 
 	void Hide(); // Hides block by setting signature to null pointer
-	void Reassign(Shape signature, sf::Vector2f position, int orientation, sf::Color color);
 
+	void HandleEvents(const sf::Event& event, sf::Vector2f mousePosition);
+	void Update(sf::Vector2f mousePosition);
 	void Draw(sf::RenderWindow& window);
 
 private:
 	void Init();
 
+	inline bool IsMouseTouching(sf::Vector2f mousePosition); // Checks if mouse is touching anywhere on block
+
 	const tBlockSignature* mBlockSignature;
 
+	sf::Vector2f mInitPosition; // Initial position of block when created, used for resetting block position after placing on tilemap
 	sf::Vector2f mPosition; // Top left corner of tile in block at (0, 0) given by BLOCK_SIGNATURES 
 	int mOrientation;       // 0, 1, 2, or 3 for 0, 90, 180, or 270 degree rotation
 
 	sf::Color mColor;
 	sf::RectangleShape mTileRect; // Rectangle shape used for drawing tiles
 	sf::Transform mTransform;
+
+	bool mIsStatic; // True if block isn't being moved by mouse, false otherwise
 
 public:
 	enum Shape
@@ -68,6 +78,23 @@ public:
 		ThreeDiagonal
 	};
 };
+
+// ------------------------- Definitions -------------------------
+
+inline bool Block::IsMouseTouching(sf::Vector2f mousePosition) // Checks if mouse is touching anywhere on block
+{
+	for (sf::Vector2f tilePos : *mBlockSignature)
+	{
+		tilePos = mPosition + mTransform * tilePos;
+
+		if (isWithinTile(tilePos, mTileRect.getSize(), mousePosition))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 
 /*
 * TODO:

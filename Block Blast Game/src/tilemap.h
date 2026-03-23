@@ -22,7 +22,7 @@ private:
 	void Init();  // Initializes tilemap data and grid vertices
 
 	void DrawGridLines(sf::RenderWindow& window); // Draws grid lines with top left corner at mPosition
-	void DrawTiles(sf::RenderWindow& window);     // Draws tiles
+	void DrawTiles    (sf::RenderWindow& window);     // Draws tiles
 
 private:
 	int mWidth;  // Number of tiles in horizontal direction

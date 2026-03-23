@@ -47,7 +47,7 @@ void TileMap::Clear()
 	}
 }
 
-void TileMap::Draw(sf::RenderWindow& window)
+void TileMap::Draw(sf::RenderWindow& window) 
 {
 	DrawTiles(window);
 	DrawGridLines(window);

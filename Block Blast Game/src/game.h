@@ -51,6 +51,8 @@ private:
 	// Game Variables
 
 	float deltaTime; // Last frame delta time value
+	sf::Vector2f mousePosition; // Top left corner of tilemap grid
+
 	sf::Vector2f tileSize; // Tile dimensions in pixels
 	TileMap tileMap;
 

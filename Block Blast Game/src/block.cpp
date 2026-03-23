@@ -3,20 +3,35 @@
 
 Block::Block()
     : mBlockSignature(nullptr)
-    , mPosition(0.f, 0.f)
+	, mInitPosition(0.f, 0.f)
+    , mPosition(mInitPosition)
     , mOrientation(0)
     , mColor(sf::Color::White)
 	, mTileRect(sf::Vector2f(50, 50))
+	, mIsStatic(true)
 {
 	Init();
 }
 
+Block::Block(const Block& other)
+	: mBlockSignature(other.mBlockSignature)
+	, mInitPosition(other.mInitPosition)
+	, mPosition(other.mPosition)
+	, mOrientation(other.mOrientation)
+	, mColor(other.mColor)
+	, mTileRect(other.mTileRect)
+	, mIsStatic(other.mIsStatic)
+	, mTransform(other.mTransform)
+{}
+
 Block::Block(Shape signature, sf::Vector2f position, int orientation, sf::Color color, sf::Vector2f tileSize)
-    : mBlockSignature(&BLOCK_SIGNATURES[signature])
+	: mBlockSignature(&BLOCK_SIGNATURES[signature])
+	, mInitPosition(position)
     , mPosition(position)
     , mOrientation(orientation)
     , mColor(color)
 	, mTileRect(tileSize)
+	, mIsStatic(true)
 {
 	Init();
 }
@@ -25,23 +40,41 @@ void Block::Init()
 {
 	mTileRect.setFillColor(mColor);
 
-	mTransform.translate(mPosition);
-	mTransform.rotate(mOrientation * 90);
+	mTransform.rotate(mOrientation * 90.f);
 	mTransform.scale(mTileRect.getSize());
 }
 
 void Block::Hide()
 {
 	mBlockSignature = nullptr;
+	mIsStatic = true;
 }
 
-void Block::Reassign(Shape signature, sf::Vector2f position, int orientation, sf::Color color)
+void Block::HandleEvents(const sf::Event& event, sf::Vector2f mousePosition)
 {
-	mBlockSignature = &BLOCK_SIGNATURES[signature];
-	mPosition = position;
-	mOrientation = orientation;
-	mColor = color;
-	Init();
+	if (mIsStatic)
+	{
+		if (event.type == sf::Event::MouseButtonPressed && IsMouseTouching(mousePosition))
+		{
+			mIsStatic = false;
+		}
+	}
+	else
+	{
+		if (event.type == sf::Event::MouseButtonReleased)
+		{
+			mIsStatic = true;
+			mPosition = mInitPosition;
+		}
+	}
+}
+
+void Block::Update(sf::Vector2f mousePosition)
+{
+	if (!mIsStatic)
+	{
+		mPosition = mousePosition;
+	}
 }
 
 void Block::Draw(sf::RenderWindow& window)
@@ -52,8 +85,7 @@ void Block::Draw(sf::RenderWindow& window)
 
 	for (sf::Vector2f tileIndex : *mBlockSignature)
 	{
-		sf::Vector2f tilePos = mTransform * tileIndex;
-		std::cout << tilePos.x << ", " << tilePos.y << std::endl;
+		sf::Vector2f tilePos = mPosition + mTransform * tileIndex;
 		mTileRect.setPosition(tilePos);
 
 		window.draw(mTileRect);
@@ -83,14 +115,14 @@ const tBlockSignature BLOCK_SIGNATURES[NUMBER_OF_BLOCK_TYPES] =
 		{0, 0}, {1, 0}
 	},
 	{ //TwoByThree
-		{0, 0}, {1, 0},
+		{0, 2}, {1, 2},
 		{0, 1}, {1, 1},
-		{0, 2}, {1, 2}
+		{0, 0}, {1, 0}
 	},
 	{ //ThreeByThree
-		{0, 0}, {1, 0}, {2, 0},
+		{0, 2}, {1, 2}, {2, 2},
 		{0, 1}, {1, 1}, {2, 1},
-		{0, 2}, {1, 2}, {2, 2}
+		{0, 0}, {1, 0}, {2, 0}
 	},
 
 	{ //LShapeLarge
@@ -108,8 +140,8 @@ const tBlockSignature BLOCK_SIGNATURES[NUMBER_OF_BLOCK_TYPES] =
 		{0, 0}, {1, 0}
 	},
 	{ //TShape
-		{-1, 1}, {0, 1}, {1, 1},
-				 {0, 0}
+		        {1, 1},
+		{0, 0}, {1, 0}, {2, 0},
 	},
 	{ //SShape
 				{1, 1}, {2, 1},
