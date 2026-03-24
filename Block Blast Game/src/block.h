@@ -19,6 +19,12 @@
 
 // TODO: delete update and event functions, delete isStatic, delete init position and just reset position to 0,0 when block is placed on tilemap, delete copy constructor and just create new blocks with constructor when needed, delete hide function and just set block signature to null pointer when block is placed on tilemap
 
+// --------------------------- HUGE TODO -------------------------
+// Reorganize the block handling system.
+// blocks should store transforms and when the widnow is drawn the pass in the transform to sfml and then the matrix multiplication happens on the gpu
+// There should be a set position function that edits the transform
+// A draw function that uses the transfrom which passes to the gpu
+
 using tBlockSignature = std::vector<sf::Vector2f>;
 
 constexpr int NUMBER_OF_BLOCK_TYPES = 15;

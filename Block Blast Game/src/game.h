@@ -74,19 +74,10 @@ private:
 	sf::Vector2f activeBlockInitPosition; // Initial position of active block when picked up, used for resetting block position after placing on tilemap
 	//const sf::Vector2f defaultBlockHandPositions[3]; // Default positions for blocks in block hand, used for resetting block position after placing on tilemap
 
-
 	// Display Variables
 	sf::Text text; // Temporary text variable for testing
 	sf::Font font; // Temporary font variable for testing
 };
-
-// TILE STORING INSTRUCTIONS
-/* Tiles are stored by their position id to acsess them x,y
-*  an unordered map hashes their x,y position to the tile data
-* 
-* 
-*/
-
 // TODO: Block Manager of some sort to handle block creation and storage of block signatures, maybe also block queue management?
 /*
 * Handle the drawing of blocks
