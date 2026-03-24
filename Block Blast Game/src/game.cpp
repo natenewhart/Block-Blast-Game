@@ -1,13 +1,15 @@
 #include "game.h"
+#include <iostream>
 
-Game::Game() :
-	screenWidth(1280), screenHeight(720),
-	frameRateLimit(100),
-	deltaTime(1.f / frameRateLimit),
-	tileSize(50, 50),
-	tileMap(sf::Vector2f(100, 100), tileSize),
-	state(State::Play),
-	mousePosition(0, 0)
+Game::Game()
+	: screenWidth(1280), screenHeight(720)
+	, frameRateLimit(100)
+	, deltaTime(1.f / frameRateLimit)
+	, tileSize(50, 50)
+	, tileMap(sf::Vector2f(100, 100), tileSize)
+	, state(State::Play)
+	, mousePosition(0, 0)
+	, activeBlock(nullptr)
 {
 	window.create(sf::VideoMode(screenWidth, screenHeight), "Block Blast");
 	window.setFramerateLimit(frameRateLimit);
@@ -21,9 +23,9 @@ Game::Game() :
 	text.setFillColor(sf::Color::White);
 	text.setString(std::to_string(frameRateLimit));
 
-	blockHand[0] = Block(Block::Shape::TwoByTwo,    sf::Vector2f(800, 100), 0, sf::Color::Red,   tileSize);
-	blockHand[1] = Block(Block::Shape::FiveByOne,   sf::Vector2f(800, 300), 0, sf::Color::Green, tileSize);
-	blockHand[2] = Block(Block::Shape::LShapeLarge, sf::Vector2f(800, 500), 0, sf::Color::Blue,  tileSize);
+	//blockHand[0] = Block(Block::Shape::TwoByTwo,    sf::Vector2f(800, 100), 0, sf::Color::Red,   tileSize);
+	//blockHand[1] = Block(Block::Shape::FiveByOne,   sf::Vector2f(800, 300), 0, sf::Color::Green, tileSize);
+	blockHand[2] = Block(Block::Shape::TwoDiagonal, sf::Vector2f(800, 500), 0, sf::Color::Blue,  tileSize);
 }
 
 void Game::Init() {}
@@ -53,10 +55,7 @@ void Game::HandleEvents()
 			window.close();
 		}
 
-		for (auto& block : blockHand)
-		{
-			block.HandleEvents(event, mousePosition);
-		}
+		HandleBlockEvents();
 	}
 }
 
@@ -67,10 +66,7 @@ void Game::Update()
 	text.setString(std::to_string(static_cast<int>(1.f / deltaTime + 0.5f)));
 	text.setPosition(screenWidth - text.getLocalBounds().width - 9, 0);
 
-	for (auto& block : blockHand)
-	{
-		block.Update(mousePosition);
-	}
+	UpdateBlocks();
 }
 
 void Game::Render()
@@ -78,15 +74,70 @@ void Game::Render()
 	window.clear();
 
 	// Render order
-	
-	for (auto& block : blockHand)
-	{
-		block.Draw(window);
-	}
-
+	DrawBlocks();
 
 	tileMap.Draw(window);
 	window.draw(text); // Draw FPS onto screen
 
 	window.display();
+}
+
+void Game::HandleBlockEvents()
+{
+	if (activeBlock && event.type == sf::Event::MouseButtonReleased)
+	{
+		// TODO: implement block placement on tilemap and checking for valid placement before resetting block position
+		if (IsActiveBlockTouchingTileMap())
+		{
+			std::cout << "Block placed" << std::endl;
+			//tileMap.PlaceBlock(*activeBlock);
+			//activeBlock->Hide(); // Hide block after placing on tilemap
+		}
+		else activeBlock->SetPosition(activeBlockInitPosition); // Reset block position to original position
+
+		activeBlock = nullptr;
+	}
+	else if (event.type == sf::Event::MouseButtonPressed)
+	{
+		for (auto& block : blockHand)
+		{
+			if (block.IsTouching(mousePosition))
+			{
+				activeBlock = &block;
+				activeBlockInitPosition = block.GetPosition();
+				break;
+			}
+		}
+	}
+}
+
+void Game::UpdateBlocks()
+{
+	if (activeBlock)
+	{
+		activeBlock->SetPosition(mousePosition);
+	}
+}
+
+void Game::DrawBlocks()
+{
+	for (auto& block : blockHand)
+	{
+		block.Draw(window);
+	}
+}
+
+bool Game::IsActiveBlockTouchingTileMap()
+{
+	for (sf::Vector2f tilePos : activeBlock->GetTilePositions())
+	{
+		if (tileMap.IsTouching(tilePos))
+			return true;
+	}
+	return false;
+}
+
+void Game::CreateNewBlockHand()
+{
+
 }

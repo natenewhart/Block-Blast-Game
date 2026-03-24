@@ -41,7 +41,32 @@ void Block::Init()
 	mTileRect.setFillColor(mColor);
 
 	mTransform.rotate(mOrientation * 90.f);
-	mTransform.scale(mTileRect.getSize());
+	mTransform.scale (mTileRect.getSize());
+}
+
+const tBlockSignature* Block::GetBlockSignature() const { return mBlockSignature; }
+
+const std::vector<sf::Vector2f> Block::GetTilePositions() const
+{
+	std::vector<sf::Vector2f> tilePositions;
+	if (!mBlockSignature) return tilePositions; // Return empty vector if block signature is null pointer
+
+	tilePositions.reserve(mBlockSignature->size()); // Reserve space for tile positions to avoid unnecessary reallocations
+
+	for (sf::Vector2f tilePos : *mBlockSignature)
+	{
+		tilePos = mPosition + mTransform * tilePos;
+		tilePositions.emplace_back(tilePos);
+	}
+
+	return tilePositions;
+}
+
+sf::Vector2f Block::GetPosition() const { return mPosition; }
+
+void Block::SetPosition(sf::Vector2f position)
+{
+	mPosition = position;
 }
 
 void Block::Hide()
@@ -54,7 +79,7 @@ void Block::HandleEvents(const sf::Event& event, sf::Vector2f mousePosition)
 {
 	if (mIsStatic)
 	{
-		if (event.type == sf::Event::MouseButtonPressed && IsMouseTouching(mousePosition))
+		if (event.type == sf::Event::MouseButtonPressed && IsTouching(mousePosition))
 		{
 			mIsStatic = false;
 		}
@@ -79,13 +104,13 @@ void Block::Update(sf::Vector2f mousePosition)
 
 void Block::Draw(sf::RenderWindow& window)
 {
-	if (!mBlockSignature) return; // Don't draw if block signature is null
+	if (mBlockSignature == nullptr) return; // Don't draw if block signature is null
 
 	sf::Vector2f tileSize = mTileRect.getSize();
 
 	for (sf::Vector2f tileIndex : *mBlockSignature)
 	{
-		sf::Vector2f tilePos = mPosition + mTransform * tileIndex;
+		sf::Vector2f tilePos = mPosition + mTransform.transformPoint(tileIndex);
 		mTileRect.setPosition(tilePos);
 
 		window.draw(mTileRect);

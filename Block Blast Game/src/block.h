@@ -17,6 +17,8 @@
 * an orientation which is used to determine how the block is rotated.
 */
 
+// TODO: delete update and event functions, delete isStatic, delete init position and just reset position to 0,0 when block is placed on tilemap, delete copy constructor and just create new blocks with constructor when needed, delete hide function and just set block signature to null pointer when block is placed on tilemap
+
 using tBlockSignature = std::vector<sf::Vector2f>;
 
 constexpr int NUMBER_OF_BLOCK_TYPES = 15;
@@ -33,6 +35,14 @@ public:
 	Block(const Block& other); // Copy constructor
 	Block(Shape signature, sf::Vector2f position, int orientation, sf::Color color, sf::Vector2f tileSize);
 
+
+	// TODO: possibly delete getblocksignature function if not needed
+	const tBlockSignature* GetBlockSignature() const; // Get block shape by calculating index of block signature in BLOCK_SIGNATURES array
+	const std::vector<sf::Vector2f> GetTilePositions() const; // Get block tile positions in pixel reference frame
+	sf::Vector2f GetPosition() const; // Return top left corner of tile in block at (0, 0) given by BLOCK_SIGNATURES
+	void SetPosition(sf::Vector2f position);
+
+	inline bool IsTouching(sf::Vector2f pos); // Checks if any position vector is within bounds of block tiles
 	void Hide(); // Hides block by setting signature to null pointer
 
 	void HandleEvents(const sf::Event& event, sf::Vector2f mousePosition);
@@ -42,7 +52,7 @@ public:
 private:
 	void Init();
 
-	inline bool IsMouseTouching(sf::Vector2f mousePosition); // Checks if mouse is touching anywhere on block
+	//inline bool IsTouching(sf::Vector2f pos); // Checks if any position vector is within bounds of block tiles
 
 	const tBlockSignature* mBlockSignature;
 
@@ -81,13 +91,15 @@ public:
 
 // ------------------------- Definitions -------------------------
 
-inline bool Block::IsMouseTouching(sf::Vector2f mousePosition) // Checks if mouse is touching anywhere on block
+inline bool Block::IsTouching(sf::Vector2f pos) // Checks if any position vector is within bounds of block tiles
 {
+	if (!mBlockSignature) return false; // TODO: delte if not needed
+
 	for (sf::Vector2f tilePos : *mBlockSignature)
 	{
 		tilePos = mPosition + mTransform * tilePos;
 
-		if (isWithinTile(tilePos, mTileRect.getSize(), mousePosition))
+		if (isWithinRect(tilePos, mTileRect.getSize(), pos))
 		{
 			return true;
 		}

@@ -53,6 +53,15 @@ void TileMap::Draw(sf::RenderWindow& window)
 	DrawGridLines(window);
 }
 
+
+bool TileMap::IsTouching(sf::Vector2f position)
+{
+	if (isWithinRect(mPosition, sf::Vector2f(mWidth * mTileSize.x, mHeight * mTileSize.y), position))
+		return true;
+}
+
+// ------------------- Private Member Functions -------------------
+
 void TileMap::DrawGridLines(sf::RenderWindow& window)
 {
 	for (int i = 0; i <= mWidth; i++)

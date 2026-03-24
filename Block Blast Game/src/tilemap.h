@@ -5,8 +5,11 @@
 #include <SFML/Graphics.hpp>
 
 #include "tile.h"
+#include "block.h"
 
 #pragma once
+
+// TODO: handle tile size being copied from game class see what we can do about that 
 
 class TileMap
 {
@@ -15,8 +18,10 @@ public:
 	TileMap(sf::Vector2f position, sf::Vector2f tileSize);
 
 	void Clear(); // All tiles set to empty and transparent color
-
 	void Draw(sf::RenderWindow& window); // Draws grid lines and tiles
+
+	bool IsTouching(sf::Vector2f position); // Checks if any tile positions of block are occupied on tilemap, used for checking valid block placement
+	void PlaceBlock(const Block& block); // Places block on tilemap by setting tiles at block tile positions to occupied and block color.
 
 private:
 	void Init();  // Initializes tilemap data and grid vertices
