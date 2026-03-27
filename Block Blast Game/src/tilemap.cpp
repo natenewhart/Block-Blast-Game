@@ -1,4 +1,5 @@
 #include "tilemap.h"
+#include <print>
 
 TileMap::TileMap() :
 	mWidth (8),
@@ -53,8 +54,42 @@ void TileMap::Draw(sf::RenderWindow& window)
 	DrawGridLines(window);
 }
 
+bool TileMap::PlaceBlock(const Block& block)
+{
+	// turn block position into tile position in row, col
+	// ITERATE OVER TILES IN A 9x9 AREA CENTERED AROUND INITIAL BLOCK POSITION
 
-bool TileMap::IsTouching(sf::Vector2f position)
+		// Check that current row, col is empty
+		// Then check that all row, col per each tile in the block is also empty
+		// IF it is empty then place block
+
+		//If it isn't empty then check the next of the 9x9 closest blocks surround the center of the block position'
+
+	if (IsBlockPlaceable(block))
+	{
+		PlaceBlockAtGridPosition(block);
+		return true;
+	}
+	return false;
+}
+
+bool TileMap::DeleteBlock(const Block& block)
+{
+	if (IsBlockInGrid(block))
+	{
+		sf::Vector2i gridPos = GetGridPosition(block.GetPosition());
+
+		for (sf::Vector2f tilePos : block.GetSignature())
+		{
+			sf::Vector2i currPos = gridPos + sf::Vector2i(static_cast<int>(tilePos.x), static_cast<int>(tilePos.y));
+			DeleteTile(currPos);
+		}
+		return true;
+	}
+	return false;
+}
+
+bool TileMap::IsTouching(sf::Vector2f position) const
 {
 	if (isWithinRect(mPosition, sf::Vector2f(mWidth * mTileSize.x, mHeight * mTileSize.y), position))
 		return true;
@@ -93,4 +128,79 @@ void TileMap::DrawTiles(sf::RenderWindow& window)
 			}
 		}
 	}
+}
+
+void TileMap::DeleteTile(int row, int col)
+{
+	mTiles[row][col] = Tile(); // Reset tile to default state (empty and transparent)
+	//mTiles[row][col].color = sf::Color::Transparent; // Reset color to transparent for empty tile
+}
+
+void TileMap::DeleteTile(sf::Vector2i gridPosition)
+{
+	DeleteTile(gridPosition.x, gridPosition.y);
+}
+
+sf::Vector2i TileMap::GetGridPosition(sf::Vector2f screenPosition) const
+{
+	sf::Vector2f relativePos = screenPosition - mPosition;
+	relativePos.x += mTileSize.x / 2; // Shift tile positions to the right by the width of the tilemap in pixels
+	relativePos.y += mTileSize.y / 2; // Shift tile positions down by the height of the tilemap in pixels
+	int col = static_cast<int>(relativePos.x / mTileSize.x);
+	int row = static_cast<int>(relativePos.y / mTileSize.y);
+
+	return (col >= 0 && col < mWidth && row >= 0 && row < mHeight) ? sf::Vector2i(col, row) : sf::Vector2i(-1, -1);
+}
+
+bool TileMap::IsBlockPlaceable(const Block& block) const
+{
+	//sf::Vector2i gridPos = GetGridPosition(block.GetPosition());
+
+
+	// TODO: hyper opitimization: have function isGridPosition to check if that row,col is in the bounds of the graph. Then instead of calling block.GetTilePositions because it has big overhead
+	//		 instead get GridPos one time and then in the grid pos function don't check if it is in bounds do that outside of the grid pos function
+	//       additionally you should iterate over the block signature instead so that you can just add the tile index to the grid position and then check if that position is empty instead of calling get tile positions
+	for (sf::Vector2f tilePos : block.GetGlobalTilePositions())
+	{
+		//std::println("Checking global tilePositions: ({}, {})", tilePos.x, tilePos.y);
+		//tilePos.x += mTileSize.x / 2; // Shift tile positions to the right by the width of the tilemap in pixels
+		//tilePos.y += mTileSize.y / 2; // Shift tile positions down by the height of the tilemap in pixels
+		sf::Vector2i currPos = GetGridPosition(tilePos);
+		//std::println("Checking tile at position: ({}, {})", currPos.x, currPos.y);
+
+		if (currPos.x == -1 || currPos.y == -1 || mTiles[currPos.y][currPos.x].isEmpty == false)
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
+void TileMap::PlaceBlockAtGridPosition(const Block& block)
+{
+	sf::Vector2i gridPos = GetGridPosition(block.GetPosition());
+
+	for (sf::Vector2f tilePos : block.GetSignature())
+	{
+		sf::Vector2i currPos = gridPos + sf::Vector2i(static_cast<int>(tilePos.x), static_cast<int>(tilePos.y));
+
+		std::println("Placing tile at position: ({}, {})", currPos.x, currPos.y);
+
+		mTiles[currPos.y][currPos.x] = Tile(block.GetColor());
+	}
+}
+
+bool TileMap::IsBlockInGrid(const Block& block)
+{
+	sf::Vector2i gridPos = GetGridPosition(block.GetPosition());
+
+	for (sf::Vector2f tilePos : block.GetSignature())
+	{
+		sf::Vector2i currGridPos = gridPos + sf::Vector2i(static_cast<int>(tilePos.x), static_cast<int>(tilePos.y));
+		if (currGridPos.y < 0 || currGridPos.y >= mHeight || currGridPos.x < 0 || currGridPos.x >= mWidth)
+		{
+			return false;
+		}
+	}
+	return true;
 }

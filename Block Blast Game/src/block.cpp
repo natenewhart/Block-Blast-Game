@@ -39,26 +39,27 @@ Block::Block(Shape signature, sf::Vector2f position, int orientation, sf::Color 
 void Block::Init()
 {
 	mTileRect.setFillColor(mColor);
+	//mTileRect = sf::RectangleShape(sf::Vector2f(1, 1));
 
 	mTransform.rotate(mOrientation * 90.f);
 	mTransform.scale (mTileRect.getSize());
 }
 
-const tBlockSignature* Block::GetBlockSignature() const { return mBlockSignature; }
+sf::Color Block::GetColor() const { return mColor; }
+const tBlockSignature& Block::GetSignature() const { return *mBlockSignature; }
 
-const std::vector<sf::Vector2f> Block::GetTilePositions() const
+const std::vector<sf::Vector2f> Block::GetGlobalTilePositions() const
 {
 	std::vector<sf::Vector2f> tilePositions;
 	if (!mBlockSignature) return tilePositions; // Return empty vector if block signature is null pointer
 
 	tilePositions.reserve(mBlockSignature->size()); // Reserve space for tile positions to avoid unnecessary reallocations
 
-	for (sf::Vector2f tilePos : *mBlockSignature)
+	for (sf::Vector2f tileLocalPos : *mBlockSignature)
 	{
-		tilePos = mPosition + mTransform * tilePos;
-		tilePositions.emplace_back(tilePos);
+		sf::Vector2f tileGlobalPos = mPosition + mTransform * tileLocalPos;
+		tilePositions.emplace_back(tileGlobalPos);
 	}
-
 	return tilePositions;
 }
 
@@ -68,6 +69,8 @@ void Block::SetPosition(sf::Vector2f position)
 {
 	mPosition = position;
 }
+
+void Block::SetColor(sf::Color color) { mColor = color; mTileRect.setFillColor(color); }
 
 void Block::Hide()
 {
@@ -111,6 +114,10 @@ void Block::Draw(sf::RenderWindow& window)
 	for (sf::Vector2f tileIndex : *mBlockSignature)
 	{
 		sf::Vector2f tilePos = mPosition + mTransform.transformPoint(tileIndex);
+		//sf::Transform combinedTransform;
+		//combinedTransform.translate(mPosition);
+		//combinedTransform.combine(mTransform);
+		//combinedTransform.translate(tileIndex.x * tileSize.x, tileIndex.y * tileSize.y);
 		mTileRect.setPosition(tilePos);
 
 		window.draw(mTileRect);

@@ -20,14 +20,29 @@ public:
 	void Clear(); // All tiles set to empty and transparent color
 	void Draw(sf::RenderWindow& window); // Draws grid lines and tiles
 
-	bool IsTouching(sf::Vector2f position); // Checks if any tile positions of block are occupied on tilemap, used for checking valid block placement
-	void PlaceBlock(const Block& block); // Places block on tilemap by setting tiles at block tile positions to occupied and block color.
+	//sf::Vector2f GetGridPosition(sf::Vector2f screenPosition); // Converts position in screen space to the row and column of tilemap grid space, returns (-1, -1) if position is outside of tilemap bounds
+
+	bool IsTouching(sf::Vector2f position) const; // Checks if any tile positions of block are occupied on tilemap, used for checking valid block placement
+	bool PlaceBlock(const Block& block); // Places block on tilemap by setting tiles at block tile positions to occupied and block color.
+	bool DeleteBlock(const Block& block);
+	// TODO: Decide weather place block and delete block should just be place and delete tile therefore you handle the block placing and deleting outside the class
 
 private:
 	void Init();  // Initializes tilemap data and grid vertices
 
 	void DrawGridLines(sf::RenderWindow& window); // Draws grid lines with top left corner at mPosition
 	void DrawTiles    (sf::RenderWindow& window);     // Draws tiles
+
+	// TODO: inline these functions and see if it improves performance since they will be called a lot and have very little code
+	void DeleteTile(int row, int col); // Deletes a tile at the specified row and column
+	void DeleteTile(sf::Vector2i gridPosition); // Deletes a tile at the specified grid position
+
+	// TODO: possible inline for all three of these functions
+	sf::Vector2i GetGridPosition(sf::Vector2f screenPosition) const ; // Converts position in screen space to the row and column of tilemap grid space, returns (-1, -1) if position is outside of tilemap bounds
+	bool IsBlockPlaceable(const Block& block) const; // Checks if any tile positions of block are occupied on tilemap, used for checking valid block placement
+	void PlaceBlockAtGridPosition(const Block& block); // Places block on tilemap at given grid position by setting tiles at block tile positions to occupied and block color. Returns true if block was placed successfully, false if any tile positions of block were occupied on tilemap
+
+	bool IsBlockInGrid(const Block& block);
 
 private:
 	int mWidth;  // Number of tiles in horizontal direction

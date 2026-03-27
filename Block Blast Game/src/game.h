@@ -72,7 +72,11 @@ private:
 	Block* activeBlock; // Pointer to block currently being moved by mouse, nullptr if no block is being moved
 	Block  blockHand[3]; // Block queue which stores 3 blocks to be placed at each turn
 	sf::Vector2f activeBlockInitPosition; // Initial position of active block when picked up, used for resetting block position after placing on tilemap
+	sf::Vector2f blockOffset; // Offset between block position and mouse position to maintain relative position while dragging
+	sf::Vector2f lastActiveBlockPosition; // Last position of active block, used for checking if block is being moved and for resetting block position after placing on tilemap
 	//const sf::Vector2f defaultBlockHandPositions[3]; // Default positions for blocks in block hand, used for resetting block position after placing on tilemap
+
+	//TODO: activeBlock struct?
 
 	// Display Variables
 	sf::Text text; // Temporary text variable for testing

@@ -30,6 +30,13 @@ using tBlockSignature = std::vector<sf::Vector2f>;
 constexpr int NUMBER_OF_BLOCK_TYPES = 15;
 extern const tBlockSignature BLOCK_SIGNATURES[NUMBER_OF_BLOCK_TYPES];
 
+//struct Block
+//{
+//	sf::Vector2f mPosition;
+//	sf::Transform mTransform;
+//	sf::VertexArray mMesh;
+//};
+
 class Block
 {
 public:
@@ -43,10 +50,13 @@ public:
 
 
 	// TODO: possibly delete getblocksignature function if not needed
-	const tBlockSignature* GetBlockSignature() const; // Get block shape by calculating index of block signature in BLOCK_SIGNATURES array
-	const std::vector<sf::Vector2f> GetTilePositions() const; // Get block tile positions in pixel reference frame
+	sf::Color GetColor() const;
+	const tBlockSignature& GetSignature() const; // Get block shape by calculating index of block signature in BLOCK_SIGNATURES array
+	const std::vector<sf::Vector2f> GetGlobalTilePositions() const; // Get block tile positions in pixel reference frame
 	sf::Vector2f GetPosition() const; // Return top left corner of tile in block at (0, 0) given by BLOCK_SIGNATURES
+
 	void SetPosition(sf::Vector2f position);
+	void SetColor(sf::Color color);
 
 	inline bool IsTouching(sf::Vector2f pos); // Checks if any position vector is within bounds of block tiles
 	void Hide(); // Hides block by setting signature to null pointer

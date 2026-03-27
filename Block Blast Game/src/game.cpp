@@ -23,9 +23,9 @@ Game::Game()
 	text.setFillColor(sf::Color::White);
 	text.setString(std::to_string(frameRateLimit));
 
-	//blockHand[0] = Block(Block::Shape::TwoByTwo,    sf::Vector2f(800, 100), 0, sf::Color::Red,   tileSize);
-	//blockHand[1] = Block(Block::Shape::FiveByOne,   sf::Vector2f(800, 300), 0, sf::Color::Green, tileSize);
-	blockHand[2] = Block(Block::Shape::TwoDiagonal, sf::Vector2f(800, 500), 0, sf::Color::Blue,  tileSize);
+	blockHand[0] = Block(Block::Shape::TwoByTwo,    sf::Vector2f(800, 100), 0, sf::Color::Red,   tileSize);
+	blockHand[1] = Block(Block::Shape::FiveByOne,   sf::Vector2f(800, 300), 0, sf::Color::Green, tileSize);
+	blockHand[2] = Block(Block::Shape::OneByOne, sf::Vector2f(800, 500), 0, sf::Color::Blue,  tileSize);
 }
 
 void Game::Init() {}
@@ -87,11 +87,17 @@ void Game::HandleBlockEvents()
 	if (activeBlock && event.type == sf::Event::MouseButtonReleased)
 	{
 		// TODO: implement block placement on tilemap and checking for valid placement before resetting block position
-		if (IsActiveBlockTouchingTileMap())
-		{
-			std::cout << "Block placed" << std::endl;
+		//if (IsActiveBlockTouchingTileMap())
+		//{
+			//std::cout << "Block placed" << std::endl;
 			//tileMap.PlaceBlock(*activeBlock);
 			//activeBlock->Hide(); // Hide block after placing on tilemap
+		//}
+		//else activeBlock->SetPosition(activeBlockInitPosition); // Reset block position to original position
+
+		if (tileMap.PlaceBlock(*activeBlock))
+		{
+			activeBlock->Hide(); // Hide block after placing on tilemap
 		}
 		else activeBlock->SetPosition(activeBlockInitPosition); // Reset block position to original position
 
@@ -105,6 +111,7 @@ void Game::HandleBlockEvents()
 			{
 				activeBlock = &block;
 				activeBlockInitPosition = block.GetPosition();
+				blockOffset = activeBlockInitPosition - mousePosition;
 				break;
 			}
 		}
@@ -115,7 +122,27 @@ void Game::UpdateBlocks()
 {
 	if (activeBlock)
 	{
-		activeBlock->SetPosition(mousePosition);
+		//std::cout << tileMap.DeleteBlock(*activeBlock);
+		//sf::Vector2f blockOffset = activeBlock->GetPosition() - mousePosition; // Calculate offset between block position and mouse position to maintain relative position while dragging
+		activeBlock->SetPosition(mousePosition + blockOffset);
+	
+		if (lastActiveBlockPosition != activeBlock->GetPosition())
+		{
+			// Rmove translucent preview from last position
+			Block lastBlock = *activeBlock;
+			lastBlock.SetPosition(lastActiveBlockPosition);
+			tileMap.DeleteBlock(lastBlock);
+			//tileMap.Clear();
+
+			// Place translucent preview at current position
+			Block preview = *activeBlock;
+			sf::Color c = preview.GetColor();
+			c.a = 100;
+			preview.SetColor(c);
+			tileMap.PlaceBlock(preview);
+
+			lastActiveBlockPosition = activeBlock->GetPosition();
+		}
 	}
 }
 
@@ -129,7 +156,7 @@ void Game::DrawBlocks()
 
 bool Game::IsActiveBlockTouchingTileMap()
 {
-	for (sf::Vector2f tilePos : activeBlock->GetTilePositions())
+	for (sf::Vector2f tilePos : activeBlock->GetGlobalTilePositions())
 	{
 		if (tileMap.IsTouching(tilePos))
 			return true;
