@@ -43,6 +43,7 @@ private:
 	void PlaceBlockAtGridPosition(const Block& block); // Places block on tilemap at given grid position by setting tiles at block tile positions to occupied and block color. Returns true if block was placed successfully, false if any tile positions of block were occupied on tilemap
 
 	bool IsBlockInGrid(const Block& block);
+	bool IsGridPosition(sf::Vector2i gridPosition) const; // Checks if grid position is within bounds of tilemap
 
 private:
 	int mWidth;  // Number of tiles in horizontal direction

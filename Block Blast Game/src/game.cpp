@@ -99,7 +99,12 @@ void Game::HandleBlockEvents()
 		{
 			activeBlock->Hide(); // Hide block after placing on tilemap
 		}
-		else activeBlock->SetPosition(activeBlockInitPosition); // Reset block position to original position
+		else
+		{
+			tileMap.DeleteBlock(*activeBlock); // Delete translucent preview from tilemap
+			activeBlock->SetPosition(activeBlockInitPosition); // Reset block position to original position
+		}
+			
 
 		activeBlock = nullptr;
 	}

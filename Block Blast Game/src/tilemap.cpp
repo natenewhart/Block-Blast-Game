@@ -54,6 +54,7 @@ void TileMap::Draw(sf::RenderWindow& window)
 	DrawGridLines(window);
 }
 
+// TODO: take out block checking from this function and check placeability before calling place block
 bool TileMap::PlaceBlock(const Block& block)
 {
 	// turn block position into tile position in row, col
@@ -78,6 +79,9 @@ bool TileMap::DeleteBlock(const Block& block)
 	if (IsBlockInGrid(block))
 	{
 		sf::Vector2i gridPos = GetGridPosition(block.GetPosition());
+
+		//if (gridPos.x == -1 || gridPos.y == -1)
+		//	return false;
 
 		for (sf::Vector2f tilePos : block.GetSignature())
 		{
@@ -138,7 +142,7 @@ void TileMap::DeleteTile(int row, int col)
 
 void TileMap::DeleteTile(sf::Vector2i gridPosition)
 {
-	DeleteTile(gridPosition.x, gridPosition.y);
+	DeleteTile(gridPosition.y, gridPosition.x);
 }
 
 sf::Vector2i TileMap::GetGridPosition(sf::Vector2f screenPosition) const
@@ -149,7 +153,7 @@ sf::Vector2i TileMap::GetGridPosition(sf::Vector2f screenPosition) const
 	int col = static_cast<int>(relativePos.x / mTileSize.x);
 	int row = static_cast<int>(relativePos.y / mTileSize.y);
 
-	return (col >= 0 && col < mWidth && row >= 0 && row < mHeight) ? sf::Vector2i(col, row) : sf::Vector2i(-1, -1);
+	return sf::Vector2i(col, row);
 }
 
 bool TileMap::IsBlockPlaceable(const Block& block) const
@@ -168,7 +172,7 @@ bool TileMap::IsBlockPlaceable(const Block& block) const
 		sf::Vector2i currPos = GetGridPosition(tilePos);
 		//std::println("Checking tile at position: ({}, {})", currPos.x, currPos.y);
 
-		if (currPos.x == -1 || currPos.y == -1 || mTiles[currPos.y][currPos.x].isEmpty == false)
+		if (!IsGridPosition(currPos) || mTiles[currPos.y][currPos.x].isEmpty == false)
 		{
 			return false;
 		}
@@ -197,10 +201,13 @@ bool TileMap::IsBlockInGrid(const Block& block)
 	for (sf::Vector2f tilePos : block.GetSignature())
 	{
 		sf::Vector2i currGridPos = gridPos + sf::Vector2i(static_cast<int>(tilePos.x), static_cast<int>(tilePos.y));
-		if (currGridPos.y < 0 || currGridPos.y >= mHeight || currGridPos.x < 0 || currGridPos.x >= mWidth)
-		{
-			return false;
-		}
+
+		if (!IsGridPosition(currGridPos)) return false;
 	}
 	return true;
+}
+
+bool TileMap::IsGridPosition(sf::Vector2i gridPosition) const
+{
+	return gridPosition.y >= 0 && gridPosition.y < mHeight && gridPosition.x >= 0 && gridPosition.x < mWidth;
 }
