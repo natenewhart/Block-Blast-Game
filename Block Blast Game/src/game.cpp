@@ -86,15 +86,6 @@ void Game::HandleBlockEvents()
 {
 	if (activeBlock && event.type == sf::Event::MouseButtonReleased)
 	{
-		// TODO: implement block placement on tilemap and checking for valid placement before resetting block position
-		//if (IsActiveBlockTouchingTileMap())
-		//{
-			//std::cout << "Block placed" << std::endl;
-			//tileMap.PlaceBlock(*activeBlock);
-			//activeBlock->Hide(); // Hide block after placing on tilemap
-		//}
-		//else activeBlock->SetPosition(activeBlockInitPosition); // Reset block position to original position
-
 		if (tileMap.PlaceBlock(*activeBlock))
 		{
 			activeBlock->Hide(); // Hide block after placing on tilemap
@@ -104,8 +95,6 @@ void Game::HandleBlockEvents()
 			tileMap.DeleteBlock(*activeBlock); // Delete translucent preview from tilemap
 			activeBlock->SetPosition(activeBlockInitPosition); // Reset block position to original position
 		}
-			
-
 		activeBlock = nullptr;
 	}
 	else if (event.type == sf::Event::MouseButtonPressed)
