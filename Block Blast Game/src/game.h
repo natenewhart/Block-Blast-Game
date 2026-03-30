@@ -36,8 +36,7 @@ private:
 	
 	// Block Helper Functions
 	// TODO: should IsActiveBlockTouchingTileMap be inline?
-	bool IsActiveBlockTouchingTileMap(); // Checks if active block is touching tilemap, used for checking valid block placement
-	void CreateNewBlockHand();     // Updates blockHand with three new blocks based on current tile map state. Implements block spawning algorithm
+	void CreateNewBlockHand(); // Updates blockHand with three new blocks based on current tile map state. Implements block spawning algorithm
 
 	enum State
 	{

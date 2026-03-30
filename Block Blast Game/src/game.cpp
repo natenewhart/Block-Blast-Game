@@ -74,9 +74,9 @@ void Game::Render()
 	window.clear();
 
 	// Render order
+	tileMap.Draw(window);
 	DrawBlocks();
 
-	tileMap.Draw(window);
 	window.draw(text); // Draw FPS onto screen
 
 	window.display();
@@ -121,8 +121,6 @@ void Game::UpdateBlocks()
 {
 	if (activeBlock)
 	{
-		//std::cout << tileMap.DeleteBlock(*activeBlock);
-		//sf::Vector2f blockOffset = activeBlock->GetPosition() - mousePosition; // Calculate offset between block position and mouse position to maintain relative position while dragging
 		activeBlock->SetPosition(mousePosition + blockOffset);
 	
 		if (lastActiveBlockPosition != activeBlock->GetPosition()) // If block has moved
@@ -146,20 +144,14 @@ void Game::DrawBlocks()
 {
 	for (auto& block : blockHand)
 	{
-		block.Draw(window);
+		if (&block != activeBlock) // Preserve draw order: active block is drawn on top of other blocks
+			block.Draw(window);
 	}
 	if (activeBlock)
-		blockPlacementOutline.Draw(window); // Draw placement highlight on grid
-}
-
-bool Game::IsActiveBlockTouchingTileMap()
-{
-	for (sf::Vector2f tilePos : activeBlock->GetGlobalTilePositions())
 	{
-		if (tileMap.IsTouching(tilePos))
-			return true;
+		blockPlacementOutline.Draw(window); // Draw placement highlight on grid
+		activeBlock->Draw(window); // Draw active block on top of other blocks
 	}
-	return false;
 }
 
 void Game::CreateNewBlockHand()
