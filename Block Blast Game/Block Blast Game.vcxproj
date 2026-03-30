@@ -153,6 +153,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="library.cpp" />
     <ClCompile Include="src\block.cpp" />
     <ClCompile Include="src\deltatime.cpp" />
     <ClCompile Include="src\game.cpp" />
@@ -161,6 +162,7 @@
     <ClCompile Include="src\tilemap.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="library.h" />
     <ClInclude Include="src\block.h" />
     <ClInclude Include="src\deltatime.h" />
     <ClInclude Include="src\game.h" />

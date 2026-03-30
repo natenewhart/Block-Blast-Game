@@ -86,27 +86,28 @@ void Game::HandleBlockEvents()
 {
 	if (activeBlock && event.type == sf::Event::MouseButtonReleased)
 	{
-		if (tileMap.PlaceBlock(*activeBlock))
+		if (tileMap.PlaceBlock(*activeBlock)) // Try to place block on tilemap, if block is placeable then place block and hide block in block hand, otherwise reset block position to original position
 		{
 			activeBlock->Hide(); // Hide block after placing on tilemap
 		}
 		else
 		{
-			//tileMap.DeleteBlock(*activeBlock); // Delete translucent preview from tilemap
 			activeBlock->SetPosition(activeBlockInitPosition); // Reset block position to original position
 		}
 		activeBlock = nullptr;
 	}
-	else if (event.type == sf::Event::MouseButtonPressed)
+	else if (event.type == sf::Event::MouseButtonPressed) // Mouse button pressed: player grabbing acive block
 	{
 		for (auto& block : blockHand)
 		{
-			if (block.IsTouching(mousePosition))
+			if (block.IsTouching(mousePosition)) // Check if mouse is touching block
 			{
+				// Set active block
 				activeBlock = &block;
-				activeBlockInitPosition = block.GetPosition();
+				activeBlockInitPosition = block.GetPosition(); // Active block initial position is used for resetting block position after placing on tilemap
 				blockOffset = activeBlockInitPosition - mousePosition;
-
+				
+				// Set up block placement outline for block placement preview
 				blockPlacementOutline = *activeBlock;
 				sf::Color translucentCol = activeBlock->GetColor();
 				translucentCol.a = 100;

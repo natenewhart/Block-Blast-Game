@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <SFML/Graphics.hpp>
+#include <priority_queue>
 
 #include "tile.h"
 #include "block.h"
@@ -44,7 +45,7 @@ private:
 
 	// TODO: possible inline for all three of these functions
 	sf::Vector2i GetGridPosition(sf::Vector2f screenPosition) const ; // Converts position in screen space to the row and column of tilemap grid space, returns (-1, -1) if position is outside of tilemap bounds
-	bool IsBlockPlaceable(const Block& block) const; // Checks if any tile positions of block are occupied on tilemap, used for checking valid block placement
+	bool IsBlockPlaceable(const Block& block) const;   // Checks if block is inside the tile map and checks if any tile positions are filled on tilemap at the block tile positions
 	void PlaceBlockAtGridPosition(const Block& block); // Places block on tilemap at given grid position by setting tiles at block tile positions to occupied and block color. Returns true if block was placed successfully, false if any tile positions of block were occupied on tilemap
 
 	bool IsGridPosition(sf::Vector2i gridPosition) const; // Checks if grid position is within bounds of tilemap
@@ -58,6 +59,8 @@ private:
 	sf::Vector2f mPosition;      // Top left corner of tilemap
 	sf::Vector2f mTileSize;      // Tile dimensions (width, height) in pixels
 	sf::Vertex mGridVertices[4]; // Vertices for drawing grid lines (2 vertical and 2 horizontal)
+
+
 
 	sf::RectangleShape mTileRect; // Rectangle shape used for drawing tiles. We can reuse the same shape and just change its position and color for each tile.
 };
