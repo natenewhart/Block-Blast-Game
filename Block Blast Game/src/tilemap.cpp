@@ -80,9 +80,6 @@ bool TileMap::DeleteBlock(const Block& block)
 	{
 		sf::Vector2i gridPos = GetGridPosition(block.GetPosition());
 
-		//if (gridPos.x == -1 || gridPos.y == -1)
-		//	return false;
-
 		for (sf::Vector2f tilePos : block.GetSignature())
 		{
 			sf::Vector2i currPos = gridPos + sf::Vector2i(static_cast<int>(tilePos.x), static_cast<int>(tilePos.y));
@@ -203,7 +200,7 @@ void TileMap::PlaceBlockAtGridPosition(const Block& block)
 	}
 }
 
-bool TileMap::IsBlockInGrid(const Block& block)
+bool TileMap::IsBlockInGrid(const Block& block) const
 {
 	sf::Vector2i gridPos = GetGridPosition(block.GetPosition());
 

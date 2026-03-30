@@ -107,10 +107,10 @@ void Game::HandleBlockEvents()
 				activeBlockInitPosition = block.GetPosition();
 				blockOffset = activeBlockInitPosition - mousePosition;
 
-				blockPlaceHighlight = *activeBlock;
+				blockPlacementOutline = *activeBlock;
 				sf::Color translucentCol = activeBlock->GetColor();
 				translucentCol.a = 100;
-				blockPlaceHighlight.SetColor(translucentCol);
+				blockPlacementOutline.SetColor(translucentCol);
 				break;
 			}
 		}
@@ -127,22 +127,17 @@ void Game::UpdateBlocks()
 	
 		if (lastActiveBlockPosition != activeBlock->GetPosition()) // If block has moved
 		{
-			// Rmove translucent preview from last position
-			//Block lastBlock = *activeBlock;
-			//lastBlock.SetPosition(lastActiveBlockPosition);
-			//tileMap.DeleteBlock(lastBlock);
-			////tileMap.Clear();
-
-			//// Place translucent preview at current position
-			//Block preview = *activeBlock;
-			//sf::Color c = preview.GetColor();
-			//c.a = 100;
-			//preview.SetColor(c);
-			//tileMap.PlaceBlock(preview);
-			sf::Vector2f highlightPos = tileMap.SnapToGrid(activeBlock->GetPosition());
-			blockPlaceHighlight.SetPosition(highlightPos);
-
 			lastActiveBlockPosition = activeBlock->GetPosition();
+
+			if (tileMap.IsBlockInGrid(*activeBlock))
+			{
+				sf::Vector2f highlightPos = tileMap.SnapToGrid(activeBlock->GetPosition());
+				blockPlacementOutline.SetPosition(highlightPos);
+			}
+			else
+			{
+				blockPlacementOutline.SetPosition(activeBlock->GetPosition()); // TODO: bad solution, maybe just skip drawing step if block isnt in map
+			}
 		}
 	}
 }
@@ -154,7 +149,7 @@ void Game::DrawBlocks()
 		block.Draw(window);
 	}
 	if (activeBlock)
-		blockPlaceHighlight.Draw(window); // Draw placement highlight on grid
+		blockPlacementOutline.Draw(window); // Draw placement highlight on grid
 }
 
 bool Game::IsActiveBlockTouchingTileMap()

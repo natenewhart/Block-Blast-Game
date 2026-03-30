@@ -10,6 +10,7 @@
 #pragma once
 
 // TODO: handle tile size being copied from game class see what we can do about that 
+// TODO: 3/29/2026 - decide what member functions are unused and not needed
 
 class TileMap
 {
@@ -23,6 +24,8 @@ public:
 	//sf::Vector2f GetGridPosition(sf::Vector2f screenPosition); // Converts position in screen space to the row and column of tilemap grid space, returns (-1, -1) if position is outside of tilemap bounds
 
 	bool IsTouching(sf::Vector2f position) const; // Checks if any tile positions of block are occupied on tilemap, used for checking valid block placement
+	//bool IsInBounds(sf::Vector2f position) const; // Checks if position is within bounds of tilemap, used for checking valid block placement
+	bool IsBlockInGrid(const Block& block) const;
 	bool PlaceBlock(const Block& block); // Places block on tilemap by setting tiles at block tile positions to occupied and block color.
 	bool DeleteBlock(const Block& block);
 	
@@ -44,7 +47,6 @@ private:
 	bool IsBlockPlaceable(const Block& block) const; // Checks if any tile positions of block are occupied on tilemap, used for checking valid block placement
 	void PlaceBlockAtGridPosition(const Block& block); // Places block on tilemap at given grid position by setting tiles at block tile positions to occupied and block color. Returns true if block was placed successfully, false if any tile positions of block were occupied on tilemap
 
-	bool IsBlockInGrid(const Block& block);
 	bool IsGridPosition(sf::Vector2i gridPosition) const; // Checks if grid position is within bounds of tilemap
 
 private:
