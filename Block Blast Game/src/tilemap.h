@@ -25,6 +25,8 @@ public:
 	bool IsTouching(sf::Vector2f position) const; // Checks if any tile positions of block are occupied on tilemap, used for checking valid block placement
 	bool PlaceBlock(const Block& block); // Places block on tilemap by setting tiles at block tile positions to occupied and block color.
 	bool DeleteBlock(const Block& block);
+	
+	sf::Vector2f SnapToGrid(sf::Vector2f pos); // Take pixel pos and return position of closest tile pos (top left of tile)
 	// TODO: Decide weather place block and delete block should just be place and delete tile therefore you handle the block placing and deleting outside the class
 
 private:

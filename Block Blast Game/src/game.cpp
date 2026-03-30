@@ -92,7 +92,7 @@ void Game::HandleBlockEvents()
 		}
 		else
 		{
-			tileMap.DeleteBlock(*activeBlock); // Delete translucent preview from tilemap
+			//tileMap.DeleteBlock(*activeBlock); // Delete translucent preview from tilemap
 			activeBlock->SetPosition(activeBlockInitPosition); // Reset block position to original position
 		}
 		activeBlock = nullptr;
@@ -106,6 +106,11 @@ void Game::HandleBlockEvents()
 				activeBlock = &block;
 				activeBlockInitPosition = block.GetPosition();
 				blockOffset = activeBlockInitPosition - mousePosition;
+
+				blockPlaceHighlight = *activeBlock;
+				sf::Color translucentCol = activeBlock->GetColor();
+				translucentCol.a = 100;
+				blockPlaceHighlight.SetColor(translucentCol);
 				break;
 			}
 		}
@@ -120,20 +125,22 @@ void Game::UpdateBlocks()
 		//sf::Vector2f blockOffset = activeBlock->GetPosition() - mousePosition; // Calculate offset between block position and mouse position to maintain relative position while dragging
 		activeBlock->SetPosition(mousePosition + blockOffset);
 	
-		if (lastActiveBlockPosition != activeBlock->GetPosition())
+		if (lastActiveBlockPosition != activeBlock->GetPosition()) // If block has moved
 		{
 			// Rmove translucent preview from last position
-			Block lastBlock = *activeBlock;
-			lastBlock.SetPosition(lastActiveBlockPosition);
-			tileMap.DeleteBlock(lastBlock);
-			//tileMap.Clear();
+			//Block lastBlock = *activeBlock;
+			//lastBlock.SetPosition(lastActiveBlockPosition);
+			//tileMap.DeleteBlock(lastBlock);
+			////tileMap.Clear();
 
-			// Place translucent preview at current position
-			Block preview = *activeBlock;
-			sf::Color c = preview.GetColor();
-			c.a = 100;
-			preview.SetColor(c);
-			tileMap.PlaceBlock(preview);
+			//// Place translucent preview at current position
+			//Block preview = *activeBlock;
+			//sf::Color c = preview.GetColor();
+			//c.a = 100;
+			//preview.SetColor(c);
+			//tileMap.PlaceBlock(preview);
+			sf::Vector2f highlightPos = tileMap.SnapToGrid(activeBlock->GetPosition());
+			blockPlaceHighlight.SetPosition(highlightPos);
 
 			lastActiveBlockPosition = activeBlock->GetPosition();
 		}
@@ -146,6 +153,8 @@ void Game::DrawBlocks()
 	{
 		block.Draw(window);
 	}
+	if (activeBlock)
+		blockPlaceHighlight.Draw(window); // Draw placement highlight on grid
 }
 
 bool Game::IsActiveBlockTouchingTileMap()

@@ -93,6 +93,15 @@ bool TileMap::DeleteBlock(const Block& block)
 	return false;
 }
 
+sf::Vector2f TileMap::SnapToGrid(sf::Vector2f pos)
+{
+	pos += 0.5f * mTileSize; // Shift to center pos of block initial tile
+	pos.x -= (int)pos.x % (int)mTileSize.x;
+	pos.y -= (int)pos.y % (int)mTileSize.y;
+
+	return pos;
+}
+
 bool TileMap::IsTouching(sf::Vector2f position) const
 {
 	if (isWithinRect(mPosition, sf::Vector2f(mWidth * mTileSize.x, mHeight * mTileSize.y), position))
