@@ -1,5 +1,5 @@
 #include "game.h"
-#include <iostream>
+#include <print>
 
 Game::Game()
 	: screenWidth(1280), screenHeight(720)
@@ -133,11 +133,13 @@ void Game::UpdateBlocks()
 			{
 				//tileMap.PlaceBlock(blockPlacementOutline); // DEBUG
 
-				sf::Vector2f highlightPos = tileMap.SnapToGrid(activeBlock->GetPosition());
-				blockPlacementOutline.SetPosition(highlightPos);
+				//sf::Vector2f highlightPos = tileMap.SnapToGrid(activeBlock->GetPosition());
+				blockPlacementOutline.SetPosition(tileMap.SnapToGrid(tileMap.ClosestOpenBlockPosition(*activeBlock)));
+				std::println("closest open pos: {}, {}", blockPlacementOutline.GetPosition().x, blockPlacementOutline.GetPosition().y);
 			}
 			else
 			{
+				//std::println("reset outline pos");
 				blockPlacementOutline.SetPosition(activeBlock->GetPosition()); // TODO: bad solution, maybe just skip drawing step if block isnt in map
 			}
 		}

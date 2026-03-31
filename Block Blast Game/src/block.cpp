@@ -51,6 +51,11 @@ void Block::Init()
 sf::Color Block::GetColor() const { return mColor; }
 const tBlockSignature& Block::GetSignature() const { return *mBlockSignature; }
 
+const Block::Shape Block::GetShape() const
+{
+	return mShape;
+}
+
 const std::vector<sf::Vector2f> Block::GetGlobalTilePositions() const
 {
 	std::vector<sf::Vector2f> tilePositions;

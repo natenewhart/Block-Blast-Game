@@ -28,7 +28,7 @@
 using tBlockSignature = std::vector<sf::Vector2f>;
 
 // TODO: decide if these need to be globals or not. could be stored in game. could be stored as static members who knows
-constexpr int NUMBER_OF_BLOCK_TYPES = 15;
+constexpr int NUMBER_OF_BLOCK_TYPES = 16;
 extern const tBlockSignature BLOCK_SIGNATURES[NUMBER_OF_BLOCK_TYPES];
 
 //struct Block
@@ -53,6 +53,7 @@ public:
 	// TODO: possibly delete getblocksignature function if not needed
 	sf::Color GetColor() const;
 	const tBlockSignature& GetSignature() const; // Get block shape by calculating index of block signature in BLOCK_SIGNATURES array
+	const Shape GetShape() const; // Get block shape by calculating index of block signature in BLOCK_SIGNATURES array
 	const std::vector<sf::Vector2f> GetGlobalTilePositions() const; // Get block tile positions in pixel reference frame
 	sf::Vector2f GetPosition() const; // Return top left corner of tile in block at (0, 0) given by BLOCK_SIGNATURES
 

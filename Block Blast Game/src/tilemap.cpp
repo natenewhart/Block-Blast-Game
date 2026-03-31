@@ -116,8 +116,20 @@ bool TileMap::PlaceBlock(Block& block)
 	//}
 	//return false;
 
+	sf::Vector2f newBlockPos = ClosestOpenBlockPosition(block);
+	if (newBlockPos.x != -1 && newBlockPos.y != -1)
+	{
+		block.SetPosition(newBlockPos);
+		PlaceBlockAtGridPosition(block);
+		return true;
+	}
+	return false;
+}
+
+sf::Vector2f TileMap::ClosestOpenBlockPosition(const Block& block) const
+{
 	std::pair<sf::Vector2i, float> tileDistances[9]; // Array to store tile positions and their distances to block position for 3x3 grid around block position
-	
+
 	for (int row = 0; row < 3; row++)
 	{
 		for (int col = 0; col < 3; col++)
@@ -144,35 +156,34 @@ bool TileMap::PlaceBlock(Block& block)
 		return a.second < b.second; // Sort in ascending order based on distance
 		});
 
-	std::println("Sorted Tile Positions and Distances: -------------- ");
+	//std::println("Sorted Tile Positions and Distances: -------------- ");
 	// Print sorted tile positions and their distances for debugging
 	for (int i = 0; i < 9; i++)
 	{
 		auto [col, row] = tileDistances[i].first;
-		std::println("Tile at position: ({}, {})... distance squared -> {}", col, row, tileDistances[i].second);
+		//std::println("Tile at position: ({}, {})... distance squared -> {}", col, row, tileDistances[i].second);
 	}
-	std::println("---------------- END -------------- \n");
+	//std::println("---------------- END -------------- \n");
 
 	//std::sort(std::begin(tileDistances), std::end(tileDistances), DistanceCompare());
 
 	for (int i = 0; i < 9; i++) // Check eight surrounding tiles around current block position and place block if any of those positions are valid for placement
 	{
 		auto [col, row] = tileDistances[i].first;
-		std::println("Checking tile at position: ({}, {})... distance squared -> {}", col, row, tileDistances[i].second);
-		sf::Vector2f newBlockOffset = {mTileSize.x * (col - 1), mTileSize.y * (row - 1)};
+		//std::println("Checking tile at position: ({}, {})... distance squared -> {}", col, row, tileDistances[i].second);
+		sf::Vector2f newBlockOffset = { mTileSize.x * (col - 1), mTileSize.y * (row - 1) };
 
 		sf::Vector2f newBlockPos = block.GetPosition() + newBlockOffset;
-		block.SetPosition(newBlockPos);
+		//block.SetPosition(newBlockPos);
 
-		if (IsBlockPlaceable(block))
+		if (IsBlockPlaceable(block.GetPosition(), block.GetShape()))
 		{
-			PlaceBlockAtGridPosition(block);
-			std::println("");
-			return true;
+			//std::println("Found placeable position at: ({}, {})", newBlockPos.x, newBlockPos.y);
+			return newBlockPos;
 		}
 	}
-	std::println("");
-	return false;
+	//std::println("");
+	return { -1, -1 }; // Return (-1, -1) if no placeable position is found
 }
 
 bool TileMap::DeleteBlock(const Block& block)
@@ -286,7 +297,7 @@ bool TileMap::IsBlockPlaceable(sf::Vector2f position, Block::Shape shape) const
 	//		 instead get GridPos one time and then in the grid pos function don't check if it is in bounds do that outside of the grid pos function
 	//       additionally you should iterate over the block signature instead so that you can just add the tile index to the grid position and then check if that position is empty instead of calling get tile positions
 
-	sf::Vector2i gridPos = GetGridPosition(block.GetPosition());
+	sf::Vector2i gridPos = GetGridPosition(position);
 
 	for (sf::Vector2f tilePos : BLOCK_SIGNATURES[shape])
 	{
@@ -327,66 +338,6 @@ bool TileMap::IsBlockInGrid(const Block& block) const
 bool TileMap::IsGridPosition(sf::Vector2i gridPosition) const
 {
 	return gridPosition.y >= 0 && gridPosition.y < mHeight && gridPosition.x >= 0 && gridPosition.x < mWidth;
-}
-
-sf::Vector2f TileMap::ClosestOpenBlockPosition(const Block& block) const
-{
-
-	std::pair<sf::Vector2i, float> tileDistances[9]; // Array to store tile positions and their distances to block position for 3x3 grid around block position
-
-	for (int row = 0; row < 3; row++)
-	{
-		for (int col = 0; col < 3; col++)
-		{
-
-			sf::Vector2f tilePos; // Tile position in reference to 3x3 grid with origin in bottom left
-			tilePos.x = (0.5 * mTileSize.x) + (col * mTileSize.x);
-			tilePos.y = (0.5 * mTileSize.y) + (row * mTileSize.y);
-
-			sf::Vector2f blockPos = block.GetPosition(); // Block position considering 3x3 grid frame
-			blockPos.x = (int)blockPos.x % (int)mTileSize.x;
-			blockPos.y = (int)blockPos.y % (int)mTileSize.y;
-			blockPos += mTileSize;
-
-			//mNearestTiles.push({ {col, row}, distanceSquared(tilePos, blockPos) });
-			tileDistances[row * 3 + col] = { {col, row}, distanceSquared(tilePos, blockPos) };
-			//std::println("Checking tile at position: ({}, {})... distance squared -> {}", col, row, distanceSquared(tilePos, blockPos));
-			//std::println("");
-		}
-		//std::println("");
-	}
-
-	std::sort(std::begin(tileDistances), std::end(tileDistances), [](const std::pair<sf::Vector2i, float>& a, const std::pair<sf::Vector2i, float>& b) {
-		return a.second < b.second; // Sort in ascending order based on distance
-		});
-
-	std::println("Sorted Tile Positions and Distances: -------------- ");
-	// Print sorted tile positions and their distances for debugging
-	for (int i = 0; i < 9; i++)
-	{
-		auto [col, row] = tileDistances[i].first;
-		std::println("Tile at position: ({}, {})... distance squared -> {}", col, row, tileDistances[i].second);
-	}
-	std::println("---------------- END -------------- \n");
-
-	//std::sort(std::begin(tileDistances), std::end(tileDistances), DistanceCompare());
-
-	for (int i = 0; i < 9; i++) // Check eight surrounding tiles around current block position and place block if any of those positions are valid for placement
-	{
-		auto [col, row] = tileDistances[i].first;
-		std::println("Checking tile at position: ({}, {})... distance squared -> {}", col, row, tileDistances[i].second);
-		sf::Vector2f newBlockOffset = { mTileSize.x * (col - 1), mTileSize.y * (row - 1) };
-
-		sf::Vector2f newBlockPos = block.GetPosition() + newBlockOffset;
-		//block.SetPosition(newBlockPos);
-
-		if (IsBlockPlaceable(block))
-		{
-			return newBlockPos;
-		}
-	}
-	std::println("");
-	return { -1, -1 };
 }
 
 bool TileMap::DistanceCompare::operator()(const std::pair<sf::Vector2i, float>& a,

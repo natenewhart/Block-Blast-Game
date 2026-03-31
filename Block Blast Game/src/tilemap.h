@@ -28,6 +28,8 @@ public:
 	//bool IsInBounds(sf::Vector2f position) const; // Checks if position is within bounds of tilemap, used for checking valid block placement
 	bool IsBlockInGrid(const Block& block) const;
 	bool PlaceBlock(Block& block); // Places block on tilemap by setting tiles at block tile positions to occupied and block color.
+	sf::Vector2f ClosestOpenBlockPosition(const Block& block) const; // Returns the position of the closest open tile to the block position. Used for finding the closest placeable position for a block when the initial position is not placeable. Returns (-1, -1) if no placeable position is found. TODO: optimize this function by only checking tiles within a certain radius of the block position and then expanding the radius until a placeable position is found or all tiles have been checked.
+	
 	bool DeleteBlock(const Block& block);
 	
 	sf::Vector2f SnapToGrid(sf::Vector2f pos); // Take pixel pos and return position of closest tile pos (top left of tile)
@@ -46,10 +48,11 @@ private:
 	// TODO: possible inline for all three of these functions
 	sf::Vector2i GetGridPosition(sf::Vector2f screenPosition) const ; // Converts position in screen space to the row and column of tilemap grid space, returns (-1, -1) if position is outside of tilemap bounds
 	bool IsBlockPlaceable(const Block& block) const;   // Checks if block is inside the tile map and checks if any tile positions are filled on tilemap at the block tile positions
+	bool IsBlockPlaceable(sf::Vector2f position, Block::Shape shape) const; // Overload doesn't require block object
 	void PlaceBlockAtGridPosition(const Block& block); // Places block on tilemap at given grid position by setting tiles at block tile positions to occupied and block color. Returns true if block was placed successfully, false if any tile positions of block were occupied on tilemap
 
 	bool IsGridPosition(sf::Vector2i gridPosition) const; // Checks if grid position is within bounds of tilemap
-	sf::Vector2f ClosestOpenBlockPosition(const Block& block) const; // Returns the position of the closest open tile to the block position. Used for finding the closest placeable position for a block when the initial position is not placeable. Returns (-1, -1) if no placeable position is found. TODO: optimize this function by only checking tiles within a certain radius of the block position and then expanding the radius until a placeable position is found or all tiles have been checked.
+	
 
 	struct DistanceCompare
 	{
