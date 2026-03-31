@@ -355,9 +355,3 @@ bool TileMap::IsGridPosition(sf::Vector2i gridPosition) const
 {
 	return gridPosition.y >= 0 && gridPosition.y < mHeight && gridPosition.x >= 0 && gridPosition.x < mWidth;
 }
-
-bool TileMap::DistanceCompare::operator()(const std::pair<sf::Vector2i, float>& a,
-	const std::pair<sf::Vector2i, float>& b) const
-{
-	return a.second > b.second; // min-heap based on second value of pair which is the distance squared from the block position to the tile position
-}
