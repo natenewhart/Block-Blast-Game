@@ -27,6 +27,7 @@
 
 using tBlockSignature = std::vector<sf::Vector2f>;
 
+// TODO: decide if these need to be globals or not. could be stored in game. could be stored as static members who knows
 constexpr int NUMBER_OF_BLOCK_TYPES = 15;
 extern const tBlockSignature BLOCK_SIGNATURES[NUMBER_OF_BLOCK_TYPES];
 
@@ -46,7 +47,7 @@ public:
 
 	Block();
 	Block(const Block& other); // Copy constructor
-	Block(Shape signature, sf::Vector2f position, int orientation, sf::Color color, sf::Vector2f tileSize);
+	Block(Shape shape, sf::Vector2f position, int orientation, sf::Color color, sf::Vector2f tileSize);
 
 
 	// TODO: possibly delete getblocksignature function if not needed
@@ -72,6 +73,7 @@ private:
 
 	// TODO: block has a shape only and doesnt store signature this is wierd design style ngl
 	const tBlockSignature* mBlockSignature;
+	Shape mShape;
 
 	sf::Vector2f mInitPosition; // Initial position of block when created, used for resetting block position after placing on tilemap
 	sf::Vector2f mPosition; // Top left corner of tile in block at (0, 0) given by BLOCK_SIGNATURES 
@@ -86,6 +88,8 @@ private:
 public:
 	enum Shape
 	{
+		Empty,        // No tiles, used for empty block hand slots
+
 		OneByOne,
 		TwoByOne,
 		ThreeByOne,

@@ -120,9 +120,9 @@ void Game::HandleBlockEvents()
 
 void Game::UpdateBlocks()
 {
-	if (activeBlock;
+	if (activeBlock)
 	{
-		tileMap.Clear(); // DEBUG
+		//tileMap.Clear(); // DEBUG
 		activeBlock->SetPosition(mousePosition + blockOffset);
 	
 		if (lastActiveBlockPosition != activeBlock->GetPosition()) // If block has moved
@@ -131,6 +131,8 @@ void Game::UpdateBlocks()
 
 			if (tileMap.IsBlockInGrid(*activeBlock))
 			{
+				//tileMap.PlaceBlock(blockPlacementOutline); // DEBUG
+
 				sf::Vector2f highlightPos = tileMap.SnapToGrid(activeBlock->GetPosition());
 				blockPlacementOutline.SetPosition(highlightPos);
 			}

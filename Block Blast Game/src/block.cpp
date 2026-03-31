@@ -3,6 +3,7 @@
 
 Block::Block()
     : mBlockSignature(nullptr)
+	, mShape(Shape::Empty)
 	, mInitPosition(0.f, 0.f)
     , mPosition(mInitPosition)
     , mOrientation(0)
@@ -15,6 +16,7 @@ Block::Block()
 
 Block::Block(const Block& other)
 	: mBlockSignature(other.mBlockSignature)
+	, mShape(other.mShape)
 	, mInitPosition(other.mInitPosition)
 	, mPosition(other.mPosition)
 	, mOrientation(other.mOrientation)
@@ -24,8 +26,9 @@ Block::Block(const Block& other)
 	, mTransform(other.mTransform)
 {}
 
-Block::Block(Shape signature, sf::Vector2f position, int orientation, sf::Color color, sf::Vector2f tileSize)
-	: mBlockSignature(&BLOCK_SIGNATURES[signature])
+Block::Block(Shape shape, sf::Vector2f position, int orientation, sf::Color color, sf::Vector2f tileSize)
+	: mBlockSignature(&BLOCK_SIGNATURES[shape])
+	, mShape(shape)
 	, mInitPosition(position)
     , mPosition(position)
     , mOrientation(orientation)
@@ -126,6 +129,8 @@ void Block::Draw(sf::RenderWindow& window)
 
 const tBlockSignature BLOCK_SIGNATURES[NUMBER_OF_BLOCK_TYPES] =
 {
+	{}, // Empty
+
 	{ //OneByOne
 		{0, 0}
 	}, 
