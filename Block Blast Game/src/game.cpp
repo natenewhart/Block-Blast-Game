@@ -23,8 +23,8 @@ Game::Game()
 	text.setFillColor(sf::Color::White);
 	text.setString(std::to_string(frameRateLimit));
 
-	blockHand[0] = Block(Block::Shape::TwoByTwo,    sf::Vector2f(800, 100), 0, sf::Color::Red,   tileSize);
-	blockHand[1] = Block(Block::Shape::FiveByOne,   sf::Vector2f(800, 300), 0, sf::Color::Green, tileSize);
+	blockHand[0] = Block(Block::Shape::ThreeByThree,    sf::Vector2f(800, 100), 0, sf::Color::Red,   tileSize);
+	blockHand[1] = Block(Block::Shape::ThreeByThree,   sf::Vector2f(800, 300), 0, sf::Color::Green, tileSize);
 	blockHand[2] = Block(Block::Shape::OneByOne,    sf::Vector2f(800, 500), 0, sf::Color::Blue,  tileSize);
 }
 

@@ -3,26 +3,30 @@
 #include <print>
 
 
-TileMap::TileMap() :
-	mWidth (8),
-	mHeight(8),
-	mTiles(mHeight, std::vector<Tile>(mWidth)),
-	mTileSize(50, 50),
-	mPosition(100, 100),
-	mGridVertices{sf::Vertex(), sf::Vertex(), sf::Vertex(), sf::Vertex()},
-	mTileRect(mTileSize)
+TileMap::TileMap()
+	: mWidth (8)
+	, mHeight(8)
+	, mTiles(mHeight, std::vector<Tile>(mWidth))
+	, mTileSize(50, 50)
+	, mPosition(100, 100)
+	, mGridVertices{sf::Vertex(), sf::Vertex(), sf::Vertex(), sf::Vertex()}
+	, mTileRect(mTileSize)
+	, cBlockSearchAreaSize(1)
+	, cSearchAreaWidth(InitSearchAreaWidth(cBlockSearchAreaSize))
 {
 	Init();
 }
 
-TileMap::TileMap(sf::Vector2f position, sf::Vector2f tileSize) :
-	mWidth(8),
-	mHeight(8),
-	mTiles(mHeight, std::vector<Tile>(mWidth)),
-	mTileSize(tileSize),
-	mPosition(position),
-	mGridVertices{sf::Vertex(), sf::Vertex(), sf::Vertex(), sf::Vertex()},
-	mTileRect(mTileSize)
+TileMap::TileMap(sf::Vector2f position, sf::Vector2f tileSize)
+	: mWidth(8)
+	, mHeight(8)
+	, mTiles(mHeight, std::vector<Tile>(mWidth))
+	, mTileSize(tileSize)
+	, mPosition(position)
+	, mGridVertices{sf::Vertex(), sf::Vertex(), sf::Vertex(), sf::Vertex()}
+	, mTileRect(mTileSize)
+	, cBlockSearchAreaSize(3)
+	, cSearchAreaWidth(InitSearchAreaWidth(cBlockSearchAreaSize))
 {
 	Init();
 }
@@ -36,6 +40,11 @@ void TileMap::Init()
 	}
 	mGridVertices[1].position.y += mTileSize.y * mHeight;
 	mGridVertices[3].position.x += mTileSize.x * mWidth;
+}
+
+int TileMap::InitSearchAreaWidth(int blockSearchAreaSize) const
+{
+	return 2 * blockSearchAreaSize + 1;
 }
 
 void TileMap::Clear()
@@ -56,66 +65,8 @@ void TileMap::Draw(sf::RenderWindow& window)
 	DrawGridLines(window);
 }
 
-// TODO: take out block checking from this function and check placeability before calling place block
 bool TileMap::PlaceBlock(Block& block)
 {
-	// turn block position into tile position in row, col
-	// ITERATE OVER TILES IN A 3x3 AREA CENTERED AROUND INITIAL BLOCK POSITION
-
-		// Check that current row, col is empty
-		// Then check that all row, col per each tile in the block is also empty
-		// IF it is empty then place block
-
-		//If it isn't empty then check the next of the 9x9 closest blocks surround the center of the block position'
-	
-	// Populate priority queue with empty tile positions and their distances to the block position
-
-	//sf::Vector2i gridPos = GetGridPosition(block.GetPosition());
-
-	//for (int row = 0; row < 3; row++)
-	//{
-	//	for (int col = 0; col < 3; col++)
-	//	{
-
-	//		sf::Vector2f tilePos; // Tile position in reference to 3x3 grid with origin in bottom left
-	//		tilePos.x = (0.5 * mTileSize.x) + (col * mTileSize.x);
-	//		tilePos.y = (0.5 * mTileSize.y) + (row * mTileSize.y);
-
-	//		sf::Vector2f blockPos = block.GetPosition(); // Block position considering 3x3 grid frame
-	//		blockPos.x = (int)blockPos.x % (int)mTileSize.x;
-	//		blockPos.y = (int)blockPos.y % (int)mTileSize.y;
-	//		blockPos  += mTileSize;
-
-	//		mNearestTiles.push({ {col, row}, distanceSquared(tilePos, blockPos) });
-	//		//std::println("");
-	//	}
-	//}
-	//while (!mNearestTiles.empty()) // Check eight surrounding tiles around current block position and place block if any of those positions are valid for placement
-	//{
-
-	//	auto [col, row] = mNearestTiles.top().first;
-	//	std::println("Checking tile at position: ({}, {})... distance squared -> {}", col, row, mNearestTiles.top().second);
-	//	mNearestTiles.pop();
-	//	
-	//	
-	//	//auto [col, row] = mNearestTiles.top().first;
-	//	//sf::Vector2f newBlockOffset = {mTileSize.x * (col - 1), mTileSize.y * (row - 1)};
-
-	//	//sf::Vector2f newBlockPos = block.GetPosition() + newBlockOffset;
-	//	//block.SetPosition(newBlockPos);
-
-	//	//if (IsBlockPlaceable(block))
-	//	//{
-	//	//	PlaceBlockAtGridPosition(block);
-	//	//	return true;
-	//	//}
-	//	//else
-	//	//{
-	//	//	mNearestTiles.pop();
-	//	//}
-	//}
-	//return false;
-
 	sf::Vector2f newBlockPos = ClosestOpenBlockPosition(block);
 	if (newBlockPos.x != -1 && newBlockPos.y != -1)
 	{
@@ -128,53 +79,15 @@ bool TileMap::PlaceBlock(Block& block)
 
 sf::Vector2f TileMap::ClosestOpenBlockPosition(const Block& block) const
 {
-	// TODO: store this array in tileMap object
-
-	//std::pair<sf::Vector2f, float> tileDistances[9]; // Array to store tile positions and their distances to block position for 3x3 grid around block position
-	//std::pair<sf::Vector2f, float> closestPlaceableTile; // Temporary variable for swapping elements during sorting
-	//for (int row = 0; row < 3; row++)
-	//{
-	//	for (int col = 0; col < 3; col++)
-	//	{
-
-	//		sf::Vector2f localTilePos; // Tile position in reference to 3x3 grid with origin in bottom left
-	//		localTilePos.x = (0.5 * mTileSize.x) + (col * mTileSize.x);
-	//		localTilePos.y = (0.5 * mTileSize.y) + (row * mTileSize.y);
-
-	//		sf::Vector2f localBlockPos = mTileSize; // Block position considering 3x3 grid frame
-	//		localBlockPos.x += (int)block.GetPosition().x % (int)mTileSize.x;
-	//		localBlockPos.y += (int)block.GetPosition().y % (int)mTileSize.y;
-
-	//		tileDistances[row * 3 + col] = { {col, row}, distanceSquared(localTilePos, localBlockPos) };
-	//		//std::println("Checking tile at position: ({}, {})... distance squared -> {}", col, row, distanceSquared(localTilePos, localBlockPos));
-	//		//std::println("");
-	//	}
-	//	//std::println("");
-	//}
-
-	//for (int row = -1; row <= 1; row++) // Iterate over rows -1 to 1 around block position
-	//{
-	//	for (int col = -1; col <= 1; col++) // Iterate over columns -1 to 1 around block position
-	//	{
-	//		sf::Vector2f tileOffset = mTileSize;
-	//		tileOffset.x *= col; // Tile position in reference to 3x3 grid with origin in bottom left
-	//		tileOffset.y *= row;
-
-	//		sf::Vector2f tilePos = SnapToTile(block.GetPosition()) + tileOffset;
-	//		tilePos = SnapToTile(tilePos) + sf::Vector2f(0.5f, 0.5f); // Center of tile
-	//		tileDistances[(row + 1) * 3 + (col + 1)] = { {col + 1, row + 1}, distanceSquared(tilePos, block.GetPosition()) };
-	//	}
-	//}
-
 	float minDistance = -1;
 	sf::Vector2f closestTilePos = {-1, -1};
 
 	sf::Vector2f centerTilePos = SnapToTile(block.GetCenterPosition()) + 0.5f * mTileSize; // Center of tile that block is currently over
 
-	for (int i = 0; i < 9; i++)
+	for (int i = 0; i < cSearchAreaWidth * cSearchAreaWidth; i++)
 	{
-		int col = (i % 3) - 1; // Column offset from block position (-1, 0, or 1)
-		int row = (i / 3) - 1; // Row offset from block position (-1, 0, or 1)
+		int col = (i % cSearchAreaWidth) - cBlockSearchAreaSize; // Column offset from block position (-cBlockSearchAreaSize, ..., 0, ..., cBlockSearchAreaSize)
+		int row = (i / cSearchAreaWidth) - cBlockSearchAreaSize; // Row offset from block position (-cBlockSearchAreaSize, ..., 0, ..., cBlockSearchAreaSize)
 
 		sf::Vector2f tileCenterPos = centerTilePos + sf::Vector2f(col * mTileSize.x, row * mTileSize.y);
 		
@@ -190,20 +103,6 @@ sf::Vector2f TileMap::ClosestOpenBlockPosition(const Block& block) const
 		}
 	}
 	return closestTilePos;
-
-
-	//std::sort(std::begin(tileDistances), std::end(tileDistances), [](const std::pair<sf::Vector2f, float>& a, const std::pair<sf::Vector2f, float>& b) {return a.second < b.second;}); // Sort in ascending order based on distance
-	
-	//for (int i = 0; i < 9; i++) // Check eight surrounding tiles around current block position and place block if any of those positions are valid for placement
-	//{
-	//	sf::Vector2f tilePos = tileDistances[i].first;
-
-	//	if (IsBlockPlaceable(tilePos, block.GetShape()))
-	//	{
-	//		return tilePos;
-	//	}
-	//}
-	//return { -1, -1 }; // Return (-1, -1) if no placeable position is found
 }
 
 bool TileMap::DeleteBlock(const Block& block)
@@ -273,7 +172,6 @@ void TileMap::DrawTiles(sf::RenderWindow& window)
 void TileMap::DeleteTile(int row, int col)
 {
 	mTiles[row][col] = Tile(); // Reset tile to default state (empty and transparent)
-	//mTiles[row][col].color = sf::Color::Transparent; // Reset color to transparent for empty tile
 }
 
 void TileMap::DeleteTile(sf::Vector2i gridPosition)

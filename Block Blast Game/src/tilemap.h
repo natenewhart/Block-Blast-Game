@@ -37,7 +37,8 @@ public:
 	// TODO: Decide weather place block and delete block should just be place and delete tile therefore you handle the block placing and deleting outside the class
 
 private:
-	void Init();  // Initializes tilemap data and grid vertices
+	void Init(); // Initializes tilemap data and grid vertices
+	int InitSearchAreaWidth(int blockSearchAreaSize) const; // Initialize search area width constant variable
 
 	void DrawGridLines(sf::RenderWindow& window); // Draws grid lines with top left corner at mPosition
 	void DrawTiles    (sf::RenderWindow& window);     // Draws tiles
@@ -64,6 +65,9 @@ private:
 	sf::Vector2f mPosition;      // Top left corner of tilemap
 	sf::Vector2f mTileSize;      // Tile dimensions (width, height) in pixels
 	sf::Vertex mGridVertices[4]; // Vertices for drawing grid lines (2 vertical and 2 horizontal)
+
+	const unsigned int cBlockSearchAreaSize; // Area of searching for finding open blocks for block placement if value is 1 then search 1x1 area around block. If value is 2 then search 3x3 area around block, etc.
+	const unsigned int cSearchAreaWidth;     // Width of search area for finding open blocks for block placement, calculated from cBlockSearchAreaSize
 
 	sf::RectangleShape mTileRect; // Rectangle shape used for drawing tiles. We can reuse the same shape and just change its position and color for each tile.
 };
