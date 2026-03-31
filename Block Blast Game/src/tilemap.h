@@ -32,7 +32,7 @@ public:
 	
 	bool DeleteBlock(const Block& block);
 	
-	sf::Vector2f SnapToGrid(sf::Vector2f pos); // Take pixel pos and return position of closest tile pos (top left of tile)
+	sf::Vector2f SnapToGrid(sf::Vector2f position); // Take pixel pos and return position of closest tile pos (top left of tile)
 	// TODO: Decide weather place block and delete block should just be place and delete tile therefore you handle the block placing and deleting outside the class
 
 private:
