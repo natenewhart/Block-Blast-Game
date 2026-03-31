@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <SFML/Graphics.hpp>
-#include <priority_queue>
+#include <queue>
 
 #include "tile.h"
 #include "block.h"
@@ -27,7 +27,7 @@ public:
 	bool IsTouching(sf::Vector2f position) const; // Checks if any tile positions of block are occupied on tilemap, used for checking valid block placement
 	//bool IsInBounds(sf::Vector2f position) const; // Checks if position is within bounds of tilemap, used for checking valid block placement
 	bool IsBlockInGrid(const Block& block) const;
-	bool PlaceBlock(const Block& block); // Places block on tilemap by setting tiles at block tile positions to occupied and block color.
+	bool PlaceBlock(Block& block); // Places block on tilemap by setting tiles at block tile positions to occupied and block color.
 	bool DeleteBlock(const Block& block);
 	
 	sf::Vector2f SnapToGrid(sf::Vector2f pos); // Take pixel pos and return position of closest tile pos (top left of tile)
@@ -50,6 +50,11 @@ private:
 
 	bool IsGridPosition(sf::Vector2i gridPosition) const; // Checks if grid position is within bounds of tilemap
 
+	struct DistanceCompare
+	{
+		bool operator()(const std::pair<sf::Vector2i, float>& a, const std::pair<sf::Vector2i, float>& b) const;
+	};
+
 private:
 	int mWidth;  // Number of tiles in horizontal direction
 	int mHeight; // Number of tiles in vertical direction
@@ -60,9 +65,11 @@ private:
 	sf::Vector2f mTileSize;      // Tile dimensions (width, height) in pixels
 	sf::Vertex mGridVertices[4]; // Vertices for drawing grid lines (2 vertical and 2 horizontal)
 
-
+	std::priority_queue<std::pair<sf::Vector2i, float>, std::vector<std::pair<sf::Vector2i, float>>, DistanceCompare> mNearestTiles; // Min-heap priority queue to store empty tile positions for efficient retrieval of closest empty tile position for block placement
 
 	sf::RectangleShape mTileRect; // Rectangle shape used for drawing tiles. We can reuse the same shape and just change its position and color for each tile.
 };
 
+// ------------------- Header Definitions -------------------
+// 
 //TODO: decide if you want grid object which is only for drawing grid lines and tilemap object which is only for storing tile data and drawing tiles, or if you want to combine them into one class. I think it

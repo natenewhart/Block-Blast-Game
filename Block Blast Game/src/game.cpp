@@ -120,8 +120,9 @@ void Game::HandleBlockEvents()
 
 void Game::UpdateBlocks()
 {
-	if (activeBlock)
+	if (activeBlock;
 	{
+		tileMap.Clear(); // DEBUG
 		activeBlock->SetPosition(mousePosition + blockOffset);
 	
 		if (lastActiveBlockPosition != activeBlock->GetPosition()) // If block has moved
