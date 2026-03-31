@@ -7,6 +7,8 @@
 #include "SFML/Graphics.hpp"
 #include "tile.h"
 
+// NEW TODO: store shape and orientation not signature. when you need signature you should rotate the matrix to the correct orientation first
+
 /*
 * Blocks are stored using block signatures which contain vectors of tile positions in relation to an origin tile at 0,0.
 * 

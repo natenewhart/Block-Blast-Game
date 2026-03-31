@@ -25,7 +25,7 @@ Game::Game()
 
 	blockHand[0] = Block(Block::Shape::TwoByTwo,    sf::Vector2f(800, 100), 0, sf::Color::Red,   tileSize);
 	blockHand[1] = Block(Block::Shape::FiveByOne,   sf::Vector2f(800, 300), 0, sf::Color::Green, tileSize);
-	blockHand[2] = Block(Block::Shape::OneByOne, sf::Vector2f(800, 500), 0, sf::Color::Blue,  tileSize);
+	blockHand[2] = Block(Block::Shape::OneByOne,    sf::Vector2f(800, 500), 0, sf::Color::Blue,  tileSize);
 }
 
 void Game::Init() {}
@@ -120,6 +120,7 @@ void Game::HandleBlockEvents()
 
 void Game::UpdateBlocks()
 {
+	//Block testBlock(Block::Shape::OneByOne, sf::Vector2f(300, 300), 0, sf::Color::Red, tileSize);
 	if (activeBlock)
 	{
 		//tileMap.Clear(); // DEBUG
@@ -127,21 +128,24 @@ void Game::UpdateBlocks()
 	
 		if (lastActiveBlockPosition != activeBlock->GetPosition()) // If block has moved
 		{
-			lastActiveBlockPosition = activeBlock->GetPosition();
-
-			if (tileMap.IsBlockInGrid(*activeBlock))
+			// TODO: check if block has any tile touching the tileMap first so you don't have to check closest open block every frame
+			sf::Vector2f closestOpenPos = tileMap.ClosestOpenBlockPosition(*activeBlock);
+			//sf::Vector2f closestOpenPos(-1, -1);
+			if (closestOpenPos.x != -1 && closestOpenPos.y != -1)
 			{
 				//tileMap.PlaceBlock(blockPlacementOutline); // DEBUG
 
 				//sf::Vector2f highlightPos = tileMap.SnapToGrid(activeBlock->GetPosition());
-				blockPlacementOutline.SetPosition(tileMap.SnapToGrid(tileMap.ClosestOpenBlockPosition(*activeBlock)));
-				std::println("closest open pos: {}, {}", blockPlacementOutline.GetPosition().x, blockPlacementOutline.GetPosition().y);
+				blockPlacementOutline.SetPosition(tileMap.SnapToGrid(closestOpenPos));
+				//std::println("closest open pos: {}, {}", blockPlacementOutline.GetPosition().x, blockPlacementOutline.GetPosition().y);
 			}
 			else
 			{
 				//std::println("reset outline pos");
 				blockPlacementOutline.SetPosition(activeBlock->GetPosition()); // TODO: bad solution, maybe just skip drawing step if block isnt in map
 			}
+
+			lastActiveBlockPosition = activeBlock->GetPosition();
 		}
 	}
 }

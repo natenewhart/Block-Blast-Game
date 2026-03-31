@@ -128,29 +128,45 @@ bool TileMap::PlaceBlock(Block& block)
 
 sf::Vector2f TileMap::ClosestOpenBlockPosition(const Block& block) const
 {
+	// TODO: store this array in tileMap object
+
 	std::pair<sf::Vector2i, float> tileDistances[9]; // Array to store tile positions and their distances to block position for 3x3 grid around block position
 
-	for (int row = 0; row < 3; row++)
+	//for (int row = 0; row < 3; row++)
+	//{
+	//	for (int col = 0; col < 3; col++)
+	//	{
+
+	//		sf::Vector2f localTilePos; // Tile position in reference to 3x3 grid with origin in bottom left
+	//		localTilePos.x = (0.5 * mTileSize.x) + (col * mTileSize.x);
+	//		localTilePos.y = (0.5 * mTileSize.y) + (row * mTileSize.y);
+
+	//		sf::Vector2f localBlockPos = mTileSize; // Block position considering 3x3 grid frame
+	//		localBlockPos.x += (int)block.GetPosition().x % (int)mTileSize.x;
+	//		localBlockPos.y += (int)block.GetPosition().y % (int)mTileSize.y;
+
+	//		tileDistances[row * 3 + col] = { {col, row}, distanceSquared(localTilePos, localBlockPos) };
+	//		//std::println("Checking tile at position: ({}, {})... distance squared -> {}", col, row, distanceSquared(localTilePos, localBlockPos));
+	//		//std::println("");
+	//	}
+	//	//std::println("");
+	//}
+
+	for (int row = -1; row <= 1; row++) // Iterate over rows -1 to 1 around block position
 	{
-		for (int col = 0; col < 3; col++)
+		for (int col = -1; col <= 1; col++) // Iterate over columns -1 to 1 around block position
 		{
+			sf::Vector2f tileOffset = mTileSize;
+			tileOffset.x *= col; // Tile position in reference to 3x3 grid with origin in bottom left
+			tileOffset.y *= row;
 
-			sf::Vector2f tilePos; // Tile position in reference to 3x3 grid with origin in bottom left
-			tilePos.x = (0.5 * mTileSize.x) + (col * mTileSize.x);
-			tilePos.y = (0.5 * mTileSize.y) + (row * mTileSize.y);
-
-			sf::Vector2f blockPos = block.GetPosition(); // Block position considering 3x3 grid frame
-			blockPos.x = (int)blockPos.x % (int)mTileSize.x;
-			blockPos.y = (int)blockPos.y % (int)mTileSize.y;
-			blockPos += mTileSize;
-
-			//mNearestTiles.push({ {col, row}, distanceSquared(tilePos, blockPos) });
-			tileDistances[row * 3 + col] = { {col, row}, distanceSquared(tilePos, blockPos) };
-			//std::println("Checking tile at position: ({}, {})... distance squared -> {}", col, row, distanceSquared(tilePos, blockPos));
-			//std::println("");
+			sf::Vector2f tilePos = SnapToGrid(block.GetPosition()) + tileOffset;
+			tilePos = SnapToGrid(tilePos) + sf::Vector2f(0.5f, 0.5f); // Center of block in that direction
+			//std::println("Tile row and collumn: ({}, {}) | Pixel Pos: ({}, {})", row, col, tilePos.x, tilePos.y);
+			tileDistances[(row + 1) * 3 + (col + 1)] = { {col + 1, row + 1}, distanceSquared(tilePos, block.GetPosition()) };
 		}
-		//std::println("");
 	}
+	//std::println("");
 
 	std::sort(std::begin(tileDistances), std::end(tileDistances), [](const std::pair<sf::Vector2i, float>& a, const std::pair<sf::Vector2i, float>& b) {
 		return a.second < b.second; // Sort in ascending order based on distance
@@ -158,11 +174,11 @@ sf::Vector2f TileMap::ClosestOpenBlockPosition(const Block& block) const
 
 	//std::println("Sorted Tile Positions and Distances: -------------- ");
 	// Print sorted tile positions and their distances for debugging
-	for (int i = 0; i < 9; i++)
-	{
-		auto [col, row] = tileDistances[i].first;
-		//std::println("Tile at position: ({}, {})... distance squared -> {}", col, row, tileDistances[i].second);
-	}
+	//for (int i = 0; i < 9; i++)
+	//{
+	//	auto [col, row] = tileDistances[i].first;
+	//	std::println("Tile at position: ({}, {})... distance squared -> {}", col, row, tileDistances[i].second);
+	//}
 	//std::println("---------------- END -------------- \n");
 
 	//std::sort(std::begin(tileDistances), std::end(tileDistances), DistanceCompare());
@@ -172,11 +188,9 @@ sf::Vector2f TileMap::ClosestOpenBlockPosition(const Block& block) const
 		auto [col, row] = tileDistances[i].first;
 		//std::println("Checking tile at position: ({}, {})... distance squared -> {}", col, row, tileDistances[i].second);
 		sf::Vector2f newBlockOffset = { mTileSize.x * (col - 1), mTileSize.y * (row - 1) };
-
 		sf::Vector2f newBlockPos = block.GetPosition() + newBlockOffset;
-		//block.SetPosition(newBlockPos);
 
-		if (IsBlockPlaceable(block.GetPosition(), block.GetShape()))
+		if (IsBlockPlaceable(newBlockPos, block.GetShape()))
 		{
 			//std::println("Found placeable position at: ({}, {})", newBlockPos.x, newBlockPos.y);
 			return newBlockPos;
@@ -202,7 +216,7 @@ bool TileMap::DeleteBlock(const Block& block)
 	return false;
 }
 
-sf::Vector2f TileMap::SnapToGrid(sf::Vector2f position)
+sf::Vector2f TileMap::SnapToGrid(sf::Vector2f position) const
 {
 	position += 0.5f * mTileSize; // Shift to center pos of block initial tile
 	position.x -= (int)position.x % (int)mTileSize.x;
