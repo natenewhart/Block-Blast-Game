@@ -73,6 +73,11 @@ const std::vector<sf::Vector2f> Block::GetGlobalTilePositions() const
 
 sf::Vector2f Block::GetPosition() const { return mPosition; }
 
+sf::Vector2f Block::GetCenterPosition() const
+{
+	return mPosition + 0.5f * mTileRect.getSize();
+}
+
 void Block::SetPosition(sf::Vector2f position)
 {
 	mPosition = position;

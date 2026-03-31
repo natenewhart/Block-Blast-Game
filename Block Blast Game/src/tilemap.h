@@ -32,7 +32,8 @@ public:
 	
 	bool DeleteBlock(const Block& block);
 	
-	sf::Vector2f SnapToGrid(sf::Vector2f position) const; // Take pixel pos and return position of closest tile pos (top left of tile)
+	sf::Vector2f SnapToTile(sf::Vector2f position) const;  // Take pixel pos and return position of current tile (top left)
+	//sf::Vector2f SnapToCenterOfTile(sf::Vector2f position) const; // Take pixel pos and return position of center of the current tile position is in
 	// TODO: Decide weather place block and delete block should just be place and delete tile therefore you handle the block placing and deleting outside the class
 
 private:
@@ -46,7 +47,7 @@ private:
 	void DeleteTile(sf::Vector2i gridPosition); // Deletes a tile at the specified grid position
 
 	// TODO: possible inline for all three of these functions
-	sf::Vector2i GetGridPosition(sf::Vector2f screenPosition) const ; // Converts position in screen space to the row and column of tilemap grid space, returns (-1, -1) if position is outside of tilemap bounds
+	sf::Vector2i GetGridPosition(sf::Vector2f screenPosition) const ; // Converts position in screen space to the col, row of tilemap which is the tile that position is inside of, returns (-1, -1) if position is outside of tilemap bounds
 	bool IsBlockPlaceable(const Block& block) const;   // Checks if block is inside the tile map and checks if any tile positions are filled on tilemap at the block tile positions
 	bool IsBlockPlaceable(sf::Vector2f position, Block::Shape shape) const; // Overload doesn't require block object
 	void PlaceBlockAtGridPosition(const Block& block); // Places block on tilemap at given grid position by setting tiles at block tile positions to occupied and block color. Returns true if block was placed successfully, false if any tile positions of block were occupied on tilemap

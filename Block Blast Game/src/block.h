@@ -58,6 +58,7 @@ public:
 	const Shape GetShape() const; // Get block shape by calculating index of block signature in BLOCK_SIGNATURES array
 	const std::vector<sf::Vector2f> GetGlobalTilePositions() const; // Get block tile positions in pixel reference frame
 	sf::Vector2f GetPosition() const; // Return top left corner of tile in block at (0, 0) given by BLOCK_SIGNATURES
+	sf::Vector2f GetCenterPosition() const; // Return center position of block by averaging the tile positions in pixel reference frame
 
 	void SetPosition(sf::Vector2f position);
 	void SetColor(sf::Color color);

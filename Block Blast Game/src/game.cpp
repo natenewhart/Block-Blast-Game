@@ -135,8 +135,8 @@ void Game::UpdateBlocks()
 			{
 				//tileMap.PlaceBlock(blockPlacementOutline); // DEBUG
 
-				//sf::Vector2f highlightPos = tileMap.SnapToGrid(activeBlock->GetPosition());
-				blockPlacementOutline.SetPosition(tileMap.SnapToGrid(closestOpenPos));
+				//sf::Vector2f highlightPos = tileMap.SnapToClosestTile(activeBlock->GetPosition());
+				blockPlacementOutline.SetPosition(tileMap.SnapToTile(closestOpenPos));
 				//std::println("closest open pos: {}, {}", blockPlacementOutline.GetPosition().x, blockPlacementOutline.GetPosition().y);
 			}
 			else
