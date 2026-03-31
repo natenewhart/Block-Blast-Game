@@ -53,12 +53,7 @@ private:
 	void PlaceBlockAtGridPosition(const Block& block); // Places block on tilemap at given grid position by setting tiles at block tile positions to occupied and block color. Returns true if block was placed successfully, false if any tile positions of block were occupied on tilemap
 
 	bool IsGridPosition(sf::Vector2i gridPosition) const; // Checks if grid position is within bounds of tilemap
-	
 
-	struct DistanceCompare
-	{
-		bool operator()(const std::pair<sf::Vector2i, float>& a, const std::pair<sf::Vector2i, float>& b) const;
-	};
 
 private:
 	int mWidth;  // Number of tiles in horizontal direction
@@ -69,8 +64,6 @@ private:
 	sf::Vector2f mPosition;      // Top left corner of tilemap
 	sf::Vector2f mTileSize;      // Tile dimensions (width, height) in pixels
 	sf::Vertex mGridVertices[4]; // Vertices for drawing grid lines (2 vertical and 2 horizontal)
-
-	std::priority_queue<std::pair<sf::Vector2i, float>, std::vector<std::pair<sf::Vector2i, float>>, DistanceCompare> mNearestTiles; // Min-heap priority queue to store empty tile positions for efficient retrieval of closest empty tile position for block placement
 
 	sf::RectangleShape mTileRect; // Rectangle shape used for drawing tiles. We can reuse the same shape and just change its position and color for each tile.
 };
