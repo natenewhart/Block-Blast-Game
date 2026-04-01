@@ -20,6 +20,8 @@ public:
 	TileMap(sf::Vector2f position, sf::Vector2f tileSize);
 
 	void Clear(); // All tiles set to empty and transparent color
+
+	void Update(); // Update tilemap state, check for completed rows and columns and delete tiles in those rows and columns
 	void Draw(sf::RenderWindow& window); // Draws grid lines and tiles
 
 	//sf::Vector2f GetGridPosition(sf::Vector2f screenPosition); // Converts position in screen space to the row and column of tilemap grid space, returns (-1, -1) if position is outside of tilemap bounds
@@ -47,6 +49,11 @@ private:
 	void DeleteTile(int row, int col); // Deletes a tile at the specified row and column
 	void DeleteTile(sf::Vector2i gridPosition); // Deletes a tile at the specified grid position
 
+	void ClearRow   (int row);
+	void ClearColumn(int col);
+
+	void CheckAndClearFullLines();
+
 	// TODO: possible inline for all three of these functions
 	sf::Vector2i GetGridPosition(sf::Vector2f screenPosition) const ; // Converts position in screen space to the col, row of tilemap which is the tile that position is inside of, returns (-1, -1) if position is outside of tilemap bounds
 	bool IsBlockPlaceable(const Block& block) const;   // Checks if block is inside the tile map and checks if any tile positions are filled on tilemap at the block tile positions
@@ -54,7 +61,6 @@ private:
 	void PlaceBlockAtGridPosition(const Block& block); // Places block on tilemap at given grid position by setting tiles at block tile positions to occupied and block color. Returns true if block was placed successfully, false if any tile positions of block were occupied on tilemap
 
 	bool IsGridPosition(sf::Vector2i gridPosition) const; // Checks if grid position is within bounds of tilemap
-
 
 private:
 	int mWidth;  // Number of tiles in horizontal direction

@@ -61,7 +61,12 @@ void TileMap::Clear()
 	}
 }
 
-void TileMap::Draw(sf::RenderWindow& window) 
+void TileMap::Update()
+{
+	CheckAndClearFullLines();
+}
+
+void TileMap::Draw(sf::RenderWindow& window)
 {
 	DrawTiles(window);
 	DrawGridLines(window);
@@ -180,6 +185,55 @@ void TileMap::DeleteTile(int row, int col)
 void TileMap::DeleteTile(sf::Vector2i gridPosition)
 {
 	DeleteTile(gridPosition.y, gridPosition.x);
+}
+
+void TileMap::ClearRow(int row)
+{
+	for (int col = 0; col < mWidth; col++)
+	{
+		DeleteTile(row, col);
+	}
+}
+
+void TileMap::ClearColumn(int col)
+{
+	for (int row = 0; row < mHeight; row++)
+	{
+		DeleteTile(row, col);
+	}
+}
+
+void TileMap::CheckAndClearFullLines()
+{
+	// Check for full rows
+	for (int row = 0; row < mHeight; row++)
+	{
+		int rowCount = 0;
+		for (int col = 0; col < mWidth; col++)
+		{
+			if (!mTiles[row][col].isEmpty) rowCount++;
+			else break;
+		}
+		if (rowCount == mWidth)
+		{
+			ClearRow(row);
+		}
+	}
+
+	// Check for full columns
+	for (int col = 0; col < mWidth; col++)
+	{
+		int colCount = 0;
+		for (int row = 0; row < mHeight; row++)
+		{
+			if (!mTiles[row][col].isEmpty) colCount++;
+			else break;
+		}
+		if (colCount == mHeight)
+		{
+			ClearColumn(col);
+		}
+	}
 }
 
 sf::Vector2i TileMap::GetGridPosition(sf::Vector2f screenPosition) const

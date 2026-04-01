@@ -25,7 +25,7 @@ Game::Game()
 
 	blockHand[0] = Block(Block::Shape::ThreeByThree,    sf::Vector2f(800, 100), 0, sf::Color::Red,   tileSize);
 	blockHand[1] = Block(Block::Shape::ThreeByThree,   sf::Vector2f(800, 300), 0, sf::Color::Green, tileSize);
-	blockHand[2] = Block(Block::Shape::OneByOne,    sf::Vector2f(800, 500), 0, sf::Color::Blue,  tileSize);
+	blockHand[2] = Block(Block::Shape::TwoByTwo,    sf::Vector2f(800, 500), 0, sf::Color::Blue,  tileSize);
 }
 
 void Game::Init() {}
@@ -67,6 +67,7 @@ void Game::Update()
 	text.setPosition(screenWidth - text.getLocalBounds().width - 9, 0);
 
 	UpdateBlocks();
+	tileMap.Update();
 }
 
 void Game::Render()
