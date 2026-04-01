@@ -2,8 +2,6 @@
 #include "library.h"
 #include <print>
 
-// TODO: tilemap gray / transparent grid lines or something. Or make the grid brighter
-
 TileMap::TileMap()
 	: mWidth (8)
 	, mHeight(8)
@@ -247,10 +245,6 @@ sf::Vector2i TileMap::GetGridPosition(sf::Vector2f screenPosition) const
 
 bool TileMap::IsBlockPlaceable(const Block& block) const
 {
-	// TODO: hyper opitimization: have function isGridPosition to check if that row,col is in the bounds of the graph. Then instead of calling block.GetTilePositions because it has big overhead
-	//		 instead get GridPos one time and then in the grid pos function don't check if it is in bounds do that outside of the grid pos function
-	//       additionally you should iterate over the block signature instead so that you can just add the tile index to the grid position and then check if that position is empty instead of calling get tile positions
-
 	sf::Vector2i gridPos = GetGridPosition(block.GetCenterPosition());
 
 	for (sf::Vector2f tilePos : block.GetSignature())
@@ -264,10 +258,6 @@ bool TileMap::IsBlockPlaceable(const Block& block) const
 
 bool TileMap::IsBlockPlaceable(sf::Vector2f position, Block::Shape shape) const
 {
-	// TODO: hyper opitimization: have function isGridPosition to check if that row,col is in the bounds of the graph. Then instead of calling block.GetTilePositions because it has big overhead
-	//		 instead get GridPos one time and then in the grid pos function don't check if it is in bounds do that outside of the grid pos function
-	//       additionally you should iterate over the block signature instead so that you can just add the tile index to the grid position and then check if that position is empty instead of calling get tile positions
-
 	sf::Vector2i gridPos = GetGridPosition(position);
 
 	for (sf::Vector2f tilePos : BLOCK_SIGNATURES[shape])
@@ -286,8 +276,6 @@ void TileMap::PlaceBlockAtGridPosition(const Block& block)
 	for (sf::Vector2f tilePos : block.GetSignature())
 	{
 		sf::Vector2i currPos = gridPos + sf::Vector2i(static_cast<int>(tilePos.x), static_cast<int>(tilePos.y));
-
-		//std::println("Placing tile at position: ({}, {})", currPos.x, currPos.y);
 
 		mTiles[currPos.y][currPos.x] = Tile(block.GetColor());
 	}

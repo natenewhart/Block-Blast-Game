@@ -27,7 +27,6 @@ public:
 	//sf::Vector2f GetGridPosition(sf::Vector2f screenPosition); // Converts position in screen space to the row and column of tilemap grid space, returns (-1, -1) if position is outside of tilemap bounds
 
 	bool IsTouching(sf::Vector2f position) const; // Checks if any tile positions of block are occupied on tilemap, used for checking valid block placement
-	//bool IsInBounds(sf::Vector2f position) const; // Checks if position is within bounds of tilemap, used for checking valid block placement
 	bool IsBlockInGrid(const Block& block) const;
 	bool PlaceBlock(Block& block); // Places block on tilemap by setting tiles at block tile positions to occupied and block color.
 	sf::Vector2f ClosestOpenBlockPosition(const Block& block) const; // Returns the position of the closest open tile to the block position. Used for finding the closest placeable position for a block when the initial position is not placeable. Returns (-1, -1) if no placeable position is found. TODO: optimize this function by only checking tiles within a certain radius of the block position and then expanding the radius until a placeable position is found or all tiles have been checked.
@@ -35,7 +34,6 @@ public:
 	bool DeleteBlock(const Block& block);
 	
 	sf::Vector2f SnapToTile(sf::Vector2f position) const;  // Take pixel pos and return position of current tile (top left)
-	//sf::Vector2f SnapToCenterOfTile(sf::Vector2f position) const; // Take pixel pos and return position of center of the current tile position is in
 	// TODO: Decide weather place block and delete block should just be place and delete tile therefore you handle the block placing and deleting outside the class
 
 private:
@@ -44,9 +42,9 @@ private:
 
 	// Draw Private Functions
 	void DrawGridLines(sf::RenderWindow& window); // Draws grid lines with top left corner at mPosition
-	void DrawTiles    (sf::RenderWindow& window);     // Draws tiles
+	void DrawTiles    (sf::RenderWindow& window); // Draws tiles
 
-	void DeleteTile(int row, int col); // Deletes a tile at the specified row and column
+	void DeleteTile(int row, int col);          // Deletes a tile at the specified row and column
 	void DeleteTile(sf::Vector2i gridPosition); // Deletes a tile at the specified grid position
 
 	void ClearRow   (int row);

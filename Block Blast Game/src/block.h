@@ -51,43 +51,41 @@ public:
 	Block(const Block& other); // Copy constructor
 	Block(Shape shape, sf::Vector2f position, int orientation, sf::Color color, sf::Vector2f tileSize);
 
-
 	// TODO: possibly delete getblocksignature function if not needed
-	sf::Color GetColor() const;
-	const tBlockSignature& GetSignature() const; // Get block shape by calculating index of block signature in BLOCK_SIGNATURES array
+	sf::Color   GetColor() const;
 	const Shape GetShape() const; // Get block shape by calculating index of block signature in BLOCK_SIGNATURES array
+	
+	const tBlockSignature& GetSignature() const; // Get block shape by calculating index of block signature in BLOCK_SIGNATURES array
 	const std::vector<sf::Vector2f> GetGlobalTilePositions() const; // Get block tile positions in pixel reference frame
-	sf::Vector2f GetPosition() const; // Return top left corner of tile in block at (0, 0) given by BLOCK_SIGNATURES
+	
+	sf::Vector2f GetPosition()       const; // Return top left corner of tile in block at (0, 0) given by BLOCK_SIGNATURES
 	sf::Vector2f GetCenterPosition() const; // Return center position of block by averaging the tile positions in pixel reference frame
 
 	void SetPosition(sf::Vector2f position);
-	void SetColor(sf::Color color);
+	void SetColor   (sf::Color    color);
+	 
+	bool IsTouching(sf::Vector2f pos) const; // Checks if any position vector is within bounds of block tiles
+	void Hide();                              // Hides block by setting signature to null pointer
 
-	inline bool IsTouching(sf::Vector2f pos); // Checks if any position vector is within bounds of block tiles
-	void Hide(); // Hides block by setting signature to null pointer
-
-	void HandleEvents(const sf::Event& event, sf::Vector2f mousePosition);
+	//void HandleEvents(const sf::Event& event, sf::Vector2f mousePosition);
 	void Update(sf::Vector2f mousePosition);
-	void Draw(sf::RenderWindow& window);
+	void Draw  (sf::RenderWindow& window);
 
 private:
 	void Init();
+	void PopulateVertexArray(); // Initializes vertex array based on block signature and tile size
 
-	//inline bool IsTouching(sf::Vector2f pos); // Checks if any position vector is within bounds of block tiles
+	sf::VertexArray mMesh;       // Vertex array used for drawing block, each tile is a quad which is 4 vertices
 
-	// TODO: block has a shape only and doesnt store signature this is wierd design style ngl
-	//const tBlockSignature* mBlockSignature;
-	Shape mShape;
-
-	sf::Vector2f mInitPosition; // Initial position of block when created, used for resetting block position after placing on tilemap
-	sf::Vector2f mPosition; // Top left corner of tile in block at (0, 0) given by BLOCK_SIGNATURES 
-	int mOrientation;       // 0, 1, 2, or 3 for 0, 90, 180, or 270 degree rotation
-
-	sf::Color mColor;
-	sf::RectangleShape mTileRect; // Rectangle shape used for drawing tiles
-	sf::Transform mTransform;
-
-	bool mIsStatic; // True if block isn't being moved by mouse, false otherwise
+	sf::Transform mTransform;    // Transform used to rotate and scale block based on orientation and tile size
+	sf::Color     mColor;
+	Shape         mShape;
+	int           mOrientation;  // 0, 1, 2, or 3 for 0, 90, 180, or 270 degree rotation
+	sf::Vector2f  mInitPosition; // Initial position of block when created, used for resetting block position after placing on tilemap
+	sf::Vector2f  mPosition;     // Top left corner of tile in block at (0, 0) given by BLOCK_SIGNATURES 
+	int           mOrientation;  // 0, 1, 2, or 3 for 0, 90, 180, or 270 degree rotation
+	
+	//bool mIsStatic; // True if block isn't being moved by mouse, false otherwise
 
 public:
 	enum Shape
@@ -115,22 +113,6 @@ public:
 };
 
 // ------------------------- Definitions -------------------------
-
-inline bool Block::IsTouching(sf::Vector2f pos) // Checks if any position vector is within bounds of block tiles
-{
-	if (mShape == Shape::Empty) return false; // TODO: delte if not needed
-
-	for (sf::Vector2f tilePos : BLOCK_SIGNATURES[mShape])
-	{
-		tilePos = mPosition + mTransform * tilePos;
-
-		if (isWithinRect(tilePos, mTileRect.getSize(), pos))
-		{
-			return true;
-		}
-	}
-	return false;
-}
 
 
 /*

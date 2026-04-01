@@ -5,6 +5,25 @@
 
 #include "SFML\Graphics.hpp"
 
+// Forward declare friend classes
+class Block;
+class TileMap;
+class Game;
+
+class TileSettings // Tile Settings singleton
+{
+private:
+	TileSettings();
+	static TileSettings& Get();
+
+private:
+	sf::Vector2f size; // Size of tile in pixels
+
+	friend class Block;
+	friend class TileMap;
+	friend class Game;
+};
+
 struct Tile
 {
 	Tile();
@@ -13,6 +32,8 @@ struct Tile
 	bool isEmpty;
 	sf::Color color;
 };
+
+// --------------------  Functions --------------------s
 
 // Todo possibly place this function within different header file
 

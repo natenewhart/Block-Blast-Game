@@ -7,8 +7,8 @@ Block::Block()
     , mPosition(mInitPosition)
     , mOrientation(0)
     , mColor(sf::Color::White)
-	, mTileRect(sf::Vector2f(50, 50))
-	, mIsStatic(true)
+	//, mTileRect(sf::Vector2f(50, 50))
+	//, mIsStatic(true)
 {
 	Init();
 }
@@ -19,9 +19,10 @@ Block::Block(const Block& other)
 	, mPosition(other.mPosition)
 	, mOrientation(other.mOrientation)
 	, mColor(other.mColor)
-	, mTileRect(other.mTileRect)
-	, mIsStatic(other.mIsStatic)
+	//, mTileRect(other.mTileRect)
+	//, mIsStatic(other.mIsStatic)
 	, mTransform(other.mTransform)
+	, mMesh(other.mMesh)
 {}
 
 Block::Block(Shape shape, sf::Vector2f position, int orientation, sf::Color color, sf::Vector2f tileSize)
@@ -30,19 +31,23 @@ Block::Block(Shape shape, sf::Vector2f position, int orientation, sf::Color colo
     , mPosition(position)
     , mOrientation(orientation)
     , mColor(color)
-	, mTileRect(tileSize)
-	, mIsStatic(true)
+	//, mTileRect(tileSize)
+	//, mIsStatic(true)
 {
 	Init();
 }
 
 void Block::Init()
 {
-	mTileRect.setFillColor(mColor);
-	//mTileRect = sf::RectangleShape(sf::Vector2f(1, 1));
-
+	//mTileRect.setFillColor(mColor);
+		
 	mTransform.rotate(mOrientation * 90.f);
-	mTransform.scale (mTileRect.getSize());
+	mTransform.scale (TileSettings::Get().size);
+}
+
+void Block::PopulateVertexArray()
+{
+
 }
 
 sf::Color Block::GetColor() const { return mColor; } 
@@ -56,13 +61,13 @@ const Block::Shape Block::GetShape() const
 const std::vector<sf::Vector2f> Block::GetGlobalTilePositions() const
 {
 	std::vector<sf::Vector2f> tilePositions;
-	if (mShape == Shape::Empty) return tilePositions; // Return empty vector if block shape is empty
+	if (mShape == Shape::Empty) return tilePositions;       // Return empty vector if block shape is empty
 
 	tilePositions.reserve(BLOCK_SIGNATURES[mShape].size()); // Reserve space for tile positions to avoid unnecessary reallocations
 
 	for (sf::Vector2f tileLocalPos : BLOCK_SIGNATURES[mShape])
 	{
-		sf::Vector2f tileGlobalPos = mPosition + mTransform * tileLocalPos;
+		sf::Vector2f tileGlobalPos = mTransform * tileLocalPos;
 		tilePositions.emplace_back(tileGlobalPos);
 	}
 	return tilePositions;
@@ -82,38 +87,54 @@ void Block::SetPosition(sf::Vector2f position)
 
 void Block::SetColor(sf::Color color) { mColor = color; mTileRect.setFillColor(color); }
 
+bool Block::IsTouching(sf::Vector2f pos) const // Checks if any position vector is within bounds of block tiles
+{
+	if (mShape == Shape::Empty) return false; // TODO: delte if not needed
+
+	for (sf::Vector2f tilePos : BLOCK_SIGNATURES[mShape])
+	{
+		tilePos = mPosition + mTransform * tilePos;
+
+		if (isWithinRect(tilePos, mTileRect.getSize(), pos))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 void Block::Hide()
 {
 	mShape    = Empty;
 	mIsStatic = true;
 }
 
-void Block::HandleEvents(const sf::Event& event, sf::Vector2f mousePosition)
-{
-	if (mIsStatic)
-	{
-		if (event.type == sf::Event::MouseButtonPressed && IsTouching(mousePosition))
-		{
-			mIsStatic = false;
-		}
-	}
-	else
-	{
-		if (event.type == sf::Event::MouseButtonReleased)
-		{
-			mIsStatic = true;
-			mPosition = mInitPosition;
-		}
-	}
-}
+//void Block::HandleEvents(const sf::Event& event, sf::Vector2f mousePosition)
+//{
+//	if (mIsStatic)
+//	{
+//		if (event.type == sf::Event::MouseButtonPressed && IsTouching(mousePosition))
+//		{
+//			mIsStatic = false;
+//		}
+//	}
+//	else
+//	{
+//		if (event.type == sf::Event::MouseButtonReleased)
+//		{
+//			mIsStatic = true;
+//			mPosition = mInitPosition;
+//		}
+//	}
+//}
 
-void Block::Update(sf::Vector2f mousePosition)
-{
-	if (!mIsStatic)
-	{
-		mPosition = mousePosition;
-	}
-}
+//void Block::Update(sf::Vector2f mousePosition)
+//{
+//	if (!mIsStatic)
+//	{
+//		mPosition = mousePosition;
+//	}
+//}
 
 void Block::Draw(sf::RenderWindow& window)
 {
@@ -124,10 +145,6 @@ void Block::Draw(sf::RenderWindow& window)
 	for (sf::Vector2f tileIndex : BLOCK_SIGNATURES[mShape])
 	{
 		sf::Vector2f tilePos = mPosition + mTransform.transformPoint(tileIndex);
-		//sf::Transform combinedTransform;
-		//combinedTransform.translate(mPosition);
-		//combinedTransform.combine(mTransform);
-		//combinedTransform.translate(tileIndex.x * tileSize.x, tileIndex.y * tileSize.y);
 		mTileRect.setPosition(tilePos);
 
 		window.draw(mTileRect);
