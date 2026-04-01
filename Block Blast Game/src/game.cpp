@@ -103,15 +103,16 @@ void Game::HandleBlockEvents()
 			if (block.IsTouching(mousePosition)) // Check if mouse is touching block
 			{
 				// Set active block
-				activeBlock = &block;
+				activeBlock             = &block;
 				activeBlockInitPosition = block.GetPosition(); // Active block initial position is used for resetting block position after placing on tilemap
-				blockOffset = activeBlockInitPosition - mousePosition;
+				blockOffset             = activeBlockInitPosition - mousePosition;
 				
 				// Set up block placement outline for block placement preview
-				blockPlacementOutline = *activeBlock;
+				blockPlacementOutline    = *activeBlock;
 				sf::Color translucentCol = activeBlock->GetColor();
-				translucentCol.a = 100;
+				translucentCol.a         = 100;
 				blockPlacementOutline.SetColor(translucentCol);
+
 				break;
 			}
 		}
@@ -124,6 +125,8 @@ void Game::UpdateBlocks()
 	{
 		activeBlock->SetPosition(mousePosition + blockOffset);
 
+		// TODO: time updates so that its not jittery to the player maybe every 5 frames
+		// TODO: make the ClosestOpenBlockPosition be a saved value that is updated based on the timer so that it isn't done twice per frame
 		if (lastActiveBlockPosition != activeBlock->GetPosition()) // If block has moved
 		{
 			sf::Vector2f closestOpenPos = tileMap.ClosestOpenBlockPosition(*activeBlock);
@@ -131,7 +134,6 @@ void Game::UpdateBlocks()
 			if (closestOpenPos.x != -1 && closestOpenPos.y != -1)
 			{
 				blockPlacementOutline.SetPosition(tileMap.SnapToTile(closestOpenPos));
-			//	blockPlacementOutline.SetPosition(closestOpenPos);
 			}
 			else
 			{

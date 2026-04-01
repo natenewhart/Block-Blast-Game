@@ -62,9 +62,9 @@ private:
 
 	std::vector<std::vector<Tile>> mTiles; // Stores tile data in a 2D vector (rows of columns). Important: declared
 
-	sf::Vector2f mPosition;      // Top left corner of tilemap
-	sf::Vector2f mTileSize;      // Tile dimensions (width, height) in pixels
-	sf::Vertex mGridVertices[4]; // Vertices for drawing grid lines (2 vertical and 2 horizontal)
+	sf::Vector2f mPosition;        // Top left corner of tilemap
+	sf::Vector2f mTileSize;        // Tile dimensions (width, height) in pixels
+	sf::Vertex   mGridVertices[4]; // Vertices for drawing grid lines (2 vertical and 2 horizontal)
 
 	const unsigned int cBlockSearchAreaSize; // Area of searching for finding open blocks for block placement if value is 1 then search 1x1 area around block. If value is 2 then search 3x3 area around block, etc.
 	const unsigned int cSearchAreaWidth;     // Width of search area for finding open blocks for block placement, calculated from cBlockSearchAreaSize

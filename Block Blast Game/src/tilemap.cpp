@@ -2,6 +2,7 @@
 #include "library.h"
 #include <print>
 
+// TODO: tilemap gray / transparent grid lines or something. Or make the grid brighter
 
 TileMap::TileMap()
 	: mWidth (8)
@@ -11,7 +12,7 @@ TileMap::TileMap()
 	, mPosition(100, 100)
 	, mGridVertices{sf::Vertex(), sf::Vertex(), sf::Vertex(), sf::Vertex()}
 	, mTileRect(mTileSize)
-	, cBlockSearchAreaSize(1)
+	, cBlockSearchAreaSize(2)
 	, cSearchAreaWidth(InitSearchAreaWidth(cBlockSearchAreaSize))
 {
 	Init();
@@ -25,7 +26,7 @@ TileMap::TileMap(sf::Vector2f position, sf::Vector2f tileSize)
 	, mPosition(position)
 	, mGridVertices{sf::Vertex(), sf::Vertex(), sf::Vertex(), sf::Vertex()}
 	, mTileRect(mTileSize)
-	, cBlockSearchAreaSize(3)
+	, cBlockSearchAreaSize(2)
 	, cSearchAreaWidth(InitSearchAreaWidth(cBlockSearchAreaSize))
 {
 	Init();
@@ -35,7 +36,8 @@ void TileMap::Init()
 {
 	for (auto& vertex : mGridVertices)
 	{
-		vertex.color = sf::Color::Red;
+		vertex.color    = sf::Color::White;
+		//vertex.color.a  = 100;
 		vertex.position = mPosition;
 	}
 	mGridVertices[1].position.y += mTileSize.y * mHeight;
