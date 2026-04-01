@@ -35,7 +35,6 @@ void TileMap::Init()
 	for (auto& vertex : mGridVertices)
 	{
 		vertex.color    = sf::Color::White;
-		//vertex.color.a  = 100;
 		vertex.position = mPosition;
 	}
 	mGridVertices[1].position.y += mTileSize.y * mHeight;
@@ -84,30 +83,31 @@ bool TileMap::PlaceBlock(Block& block)
 
 sf::Vector2f TileMap::ClosestOpenBlockPosition(const Block& block) const
 {
-	float minDistance = -1;
-	sf::Vector2f closestTilePos = {-1, -1};
+	float minDistance = std::numeric_limits<float>::max();
+	sf::Vector2f closestTilePos;
 
-	sf::Vector2f centerTilePos = SnapToTile(block.GetCenterPosition()) + 0.5f * mTileSize; // Center of tile that block is currently over
+	sf::Vector2f originTilePos = SnapToTile(block.GetCenterPosition()) + 0.5f * mTileSize; // Center of tile that block is currently over
 
 	for (int i = 0; i < cSearchAreaWidth * cSearchAreaWidth; i++)
 	{
-		int col = (i % cSearchAreaWidth) - cBlockSearchAreaSize; // Column offset from block position (-cBlockSearchAreaSize, ..., 0, ..., cBlockSearchAreaSize)
-		int row = (i / cSearchAreaWidth) - cBlockSearchAreaSize; // Row offset from block position (-cBlockSearchAreaSize, ..., 0, ..., cBlockSearchAreaSize)
+		int col = (i % cSearchAreaWidth) - cBlockSearchAreaSize; // Column offset from block position (-cBlockSearchAreaSize / 2, ..., 0, ..., cBlockSearchAreaSize / 2)
+		int row = (i / cSearchAreaWidth) - cBlockSearchAreaSize; // Row offset from block position (-cBlockSearchAreaSize / 2, ..., 0, ..., cBlockSearchAreaSize / 2)
 
-		sf::Vector2f tileCenterPos = centerTilePos + sf::Vector2f(col * mTileSize.x, row * mTileSize.y);
+		sf::Vector2f currTilePos = originTilePos + sf::Vector2f(col * mTileSize.x, row * mTileSize.y);
 		
-		if (IsBlockPlaceable(tileCenterPos, block.GetShape()))
+		if (IsBlockPlaceable(currTilePos, block.GetShape()))
 		{
-			float currDistance = distanceSquared(tileCenterPos, block.GetCenterPosition());
+			float currDistance = distanceSquared(currTilePos, block.GetCenterPosition());
 
-			if (currDistance < minDistance || minDistance == -1)
+			if (currDistance < minDistance)
 			{
 				minDistance    = currDistance;
-				closestTilePos = tileCenterPos;
+				closestTilePos = currTilePos;
 			}
 		}
 	}
-	return closestTilePos;
+	if (minDistance != std::numeric_limits<float>::max()) return SnapToTile(closestTilePos);
+	return sf::Vector2f(-1, -1);
 }
 
 bool TileMap::DeleteBlock(const Block& block)
@@ -116,7 +116,7 @@ bool TileMap::DeleteBlock(const Block& block)
 	{
 		sf::Vector2i gridPos = GetGridPosition(block.GetPosition());
 
-		for (sf::Vector2f tilePos : block.GetSignature())
+		for (sf::Vector2f tilePos : BLOCK_SIGNATURES[block.GetShape()])
 		{
 			sf::Vector2i currPos = gridPos + sf::Vector2i(static_cast<int>(tilePos.x), static_cast<int>(tilePos.y));
 			DeleteTile(currPos);
@@ -247,7 +247,7 @@ bool TileMap::IsBlockPlaceable(const Block& block) const
 {
 	sf::Vector2i gridPos = GetGridPosition(block.GetCenterPosition());
 
-	for (sf::Vector2f tilePos : block.GetSignature())
+	for (sf::Vector2f tilePos : BLOCK_SIGNATURES[block.GetShape()])
 	{
 		sf::Vector2i currGridPos = gridPos + sf::Vector2i(static_cast<int>(tilePos.x), static_cast<int>(tilePos.y));
 
@@ -273,7 +273,7 @@ void TileMap::PlaceBlockAtGridPosition(const Block& block)
 {
 	sf::Vector2i gridPos = GetGridPosition(block.GetPosition());
 
-	for (sf::Vector2f tilePos : block.GetSignature())
+	for (sf::Vector2f tilePos : BLOCK_SIGNATURES[block.GetShape()])
 	{
 		sf::Vector2i currPos = gridPos + sf::Vector2i(static_cast<int>(tilePos.x), static_cast<int>(tilePos.y));
 
@@ -285,7 +285,7 @@ bool TileMap::IsBlockInGrid(const Block& block) const
 {
 	sf::Vector2i gridPos = GetGridPosition(block.GetPosition());
 
-	for (sf::Vector2f tilePos : block.GetSignature())
+	for (sf::Vector2f tilePos : BLOCK_SIGNATURES[block.GetShape()])
 	{
 		sf::Vector2i currGridPos = gridPos + sf::Vector2i(static_cast<int>(tilePos.x), static_cast<int>(tilePos.y));
 

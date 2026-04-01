@@ -30,15 +30,9 @@
 using tBlockSignature = std::vector<sf::Vector2f>;
 
 // TODO: decide if these need to be globals or not. could be stored in game. could be stored as static members who knows
+// TODO: put this into a game singleton or make its own singleton class that can be accessed by block and tilemap
 constexpr int NUMBER_OF_BLOCK_TYPES = 16;
 extern const tBlockSignature BLOCK_SIGNATURES[NUMBER_OF_BLOCK_TYPES];
-
-//struct Block
-//{
-//	sf::Vector2f mPosition;
-//	sf::Transform mTransform;
-//	sf::VertexArray mMesh;
-//};
 
 class Block
 {
@@ -54,9 +48,6 @@ public:
 	// TODO: possibly delete getblocksignature function if not needed
 	sf::Color   GetColor() const;
 	const Shape GetShape() const; // Get block shape by calculating index of block signature in BLOCK_SIGNATURES array
-	
-	const tBlockSignature& GetSignature() const; // Get block shape by calculating index of block signature in BLOCK_SIGNATURES array
-	const std::vector<sf::Vector2f> GetGlobalTilePositions() const; // Get block tile positions in pixel reference frame
 	
 	sf::Vector2f GetPosition()       const; // Return top left corner of tile in block at (0, 0) given by BLOCK_SIGNATURES
 	sf::Vector2f GetCenterPosition() const; // Return center position of block by averaging the tile positions in pixel reference frame
@@ -76,17 +67,14 @@ private:
 	void PopulateVertexArray(); // Initializes vertex array based on block signature and tile size
 
 	sf::VertexArray mMesh;       // Vertex array used for drawing block, each tile is a quad which is 4 vertices
-
+	
 	sf::Transform mTransform;    // Transform used to rotate and scale block based on orientation and tile size
 	sf::Color     mColor;
 	Shape         mShape;
-	int           mOrientation;  // 0, 1, 2, or 3 for 0, 90, 180, or 270 degree rotation
 	sf::Vector2f  mInitPosition; // Initial position of block when created, used for resetting block position after placing on tilemap
 	sf::Vector2f  mPosition;     // Top left corner of tile in block at (0, 0) given by BLOCK_SIGNATURES 
 	int           mOrientation;  // 0, 1, 2, or 3 for 0, 90, 180, or 270 degree rotation
 	
-	//bool mIsStatic; // True if block isn't being moved by mouse, false otherwise
-
 public:
 	enum Shape
 	{

@@ -5,6 +5,7 @@
 
 #include "SFML\Graphics.hpp"
 
+// TODOL: move this singleton somewhere else. have a game singleton with sub singletons for different categories of game data. tile settings could be a sub singleton of game singleton that is accessed by block and tilemap when they need tile size information. this way we can avoid having a global variable for tile size and we can also easily access other game data from the block and tilemap classes if needed in the future.
 // Forward declare friend classes
 class Block;
 class TileMap;

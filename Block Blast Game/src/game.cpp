@@ -24,8 +24,8 @@ Game::Game()
 	text.setString(std::to_string(frameRateLimit));
 
 	blockHand[0] = Block(Block::Shape::ThreeByThree,    sf::Vector2f(800, 100), 0, sf::Color::Red,   tileSize);
-	blockHand[1] = Block(Block::Shape::ThreeByThree,   sf::Vector2f(800, 300), 0, sf::Color::Green, tileSize);
-	blockHand[2] = Block(Block::Shape::LShapeMedium,    sf::Vector2f(800, 500), 0, sf::Color::Blue,  tileSize);
+	blockHand[1] = Block(Block::Shape::ThreeByThree,    sf::Vector2f(800, 300), 0, sf::Color::Green, tileSize);
+	blockHand[2] = Block(Block::Shape::OneByOne,    sf::Vector2f(800, 500), 0, sf::Color::Blue,  tileSize);
 }
 
 void Game::Init() {}
@@ -131,10 +131,11 @@ void Game::UpdateBlocks()
 		if (lastActiveBlockPosition != activeBlock->GetPosition()) // If block has moved
 		{
 			sf::Vector2f closestOpenPos = tileMap.ClosestOpenBlockPosition(*activeBlock);
+			std::println("Closest open block pos {}, {}", closestOpenPos.x, closestOpenPos.y);
 
 			if (closestOpenPos.x != -1 && closestOpenPos.y != -1)
 			{
-				blockPlacementOutline.SetPosition(tileMap.SnapToTile(closestOpenPos));
+				blockPlacementOutline.SetPosition(closestOpenPos);
 			}
 			else
 			{
