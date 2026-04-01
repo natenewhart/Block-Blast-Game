@@ -1,6 +1,5 @@
 #include "block.h"
 #include <iostream>
-#include <unordered_set>
 #include <print>	
 
 Block::Block()
@@ -99,7 +98,6 @@ bool Block::IsTouching(sf::Vector2f pos) const // Checks if any position vector 
 		sf::Vector2f worldPos = mTransform.transformPoint(localTilePos);
 
 		sf::Vector2f size = TileSettings::Get().size;
-		std::println("worldPos: ({}, {}) size: ({}, {}) checking pos: ({}, {})", worldPos.x, worldPos.y, size.x, size.y, pos.x, pos.y);
 
 		if (isWithinRect(worldPos, TileSettings::Get().size, pos)) return true;
 	}
