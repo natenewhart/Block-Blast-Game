@@ -2,8 +2,7 @@
 #include <iostream>
 
 Block::Block()
-    : mBlockSignature(nullptr)
-	, mShape(Shape::Empty)
+	: mShape(Shape::Empty)
 	, mInitPosition(0.f, 0.f)
     , mPosition(mInitPosition)
     , mOrientation(0)
@@ -15,8 +14,7 @@ Block::Block()
 }
 
 Block::Block(const Block& other)
-	: mBlockSignature(other.mBlockSignature)
-	, mShape(other.mShape)
+	: mShape(other.mShape)
 	, mInitPosition(other.mInitPosition)
 	, mPosition(other.mPosition)
 	, mOrientation(other.mOrientation)
@@ -27,8 +25,7 @@ Block::Block(const Block& other)
 {}
 
 Block::Block(Shape shape, sf::Vector2f position, int orientation, sf::Color color, sf::Vector2f tileSize)
-	: mBlockSignature(&BLOCK_SIGNATURES[shape])
-	, mShape(shape)
+	: mShape(shape)
 	, mInitPosition(position)
     , mPosition(position)
     , mOrientation(orientation)
@@ -48,8 +45,8 @@ void Block::Init()
 	mTransform.scale (mTileRect.getSize());
 }
 
-sf::Color Block::GetColor() const { return mColor; }
-const tBlockSignature& Block::GetSignature() const { return *mBlockSignature; }
+sf::Color Block::GetColor() const { return mColor; } 
+const tBlockSignature& Block::GetSignature() const { return BLOCK_SIGNATURES[mShape]; }
 
 const Block::Shape Block::GetShape() const
 {
@@ -59,11 +56,11 @@ const Block::Shape Block::GetShape() const
 const std::vector<sf::Vector2f> Block::GetGlobalTilePositions() const
 {
 	std::vector<sf::Vector2f> tilePositions;
-	if (!mBlockSignature) return tilePositions; // Return empty vector if block signature is null pointer
+	if (mShape == Shape::Empty) return tilePositions; // Return empty vector if block shape is empty
 
-	tilePositions.reserve(mBlockSignature->size()); // Reserve space for tile positions to avoid unnecessary reallocations
+	tilePositions.reserve(BLOCK_SIGNATURES[mShape].size()); // Reserve space for tile positions to avoid unnecessary reallocations
 
-	for (sf::Vector2f tileLocalPos : *mBlockSignature)
+	for (sf::Vector2f tileLocalPos : BLOCK_SIGNATURES[mShape])
 	{
 		sf::Vector2f tileGlobalPos = mPosition + mTransform * tileLocalPos;
 		tilePositions.emplace_back(tileGlobalPos);
@@ -87,7 +84,7 @@ void Block::SetColor(sf::Color color) { mColor = color; mTileRect.setFillColor(c
 
 void Block::Hide()
 {
-	mBlockSignature = nullptr;
+	mShape    = Empty;
 	mIsStatic = true;
 }
 
@@ -120,11 +117,11 @@ void Block::Update(sf::Vector2f mousePosition)
 
 void Block::Draw(sf::RenderWindow& window)
 {
-	if (mBlockSignature == nullptr) return; // Don't draw if block signature is null
+	if (mShape == Shape::Empty) return; // Don't draw if block shape is empty
 
 	sf::Vector2f tileSize = mTileRect.getSize();
 
-	for (sf::Vector2f tileIndex : *mBlockSignature)
+	for (sf::Vector2f tileIndex : BLOCK_SIGNATURES[mShape])
 	{
 		sf::Vector2f tilePos = mPosition + mTransform.transformPoint(tileIndex);
 		//sf::Transform combinedTransform;

@@ -42,10 +42,10 @@ private:
 	void Init(); // Initializes tilemap data and grid vertices
 	int InitSearchAreaWidth(int blockSearchAreaSize) const; // Initialize search area width constant variable
 
+	// Draw Private Functions
 	void DrawGridLines(sf::RenderWindow& window); // Draws grid lines with top left corner at mPosition
 	void DrawTiles    (sf::RenderWindow& window);     // Draws tiles
 
-	// TODO: inline these functions and see if it improves performance since they will be called a lot and have very little code
 	void DeleteTile(int row, int col); // Deletes a tile at the specified row and column
 	void DeleteTile(sf::Vector2i gridPosition); // Deletes a tile at the specified grid position
 
@@ -54,13 +54,13 @@ private:
 
 	void CheckAndClearFullLines();
 
-	// TODO: possible inline for all three of these functions
 	sf::Vector2i GetGridPosition(sf::Vector2f screenPosition) const ; // Converts position in screen space to the col, row of tilemap which is the tile that position is inside of, returns (-1, -1) if position is outside of tilemap bounds
-	bool IsBlockPlaceable(const Block& block) const;   // Checks if block is inside the tile map and checks if any tile positions are filled on tilemap at the block tile positions
+	
+	bool IsGridPosition  (sf::Vector2i gridPosition) const; // Checks if grid position is within bounds of tilemap
+	bool IsBlockPlaceable(const Block& block)        const; // Checks if block is inside the tile map and checks if any tile positions are filled on tilemap at the block tile positions
 	bool IsBlockPlaceable(sf::Vector2f position, Block::Shape shape) const; // Overload doesn't require block object
+	
 	void PlaceBlockAtGridPosition(const Block& block); // Places block on tilemap at given grid position by setting tiles at block tile positions to occupied and block color. Returns true if block was placed successfully, false if any tile positions of block were occupied on tilemap
-
-	bool IsGridPosition(sf::Vector2i gridPosition) const; // Checks if grid position is within bounds of tilemap
 
 private:
 	int mWidth;  // Number of tiles in horizontal direction

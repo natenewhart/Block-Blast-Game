@@ -76,7 +76,7 @@ private:
 	//inline bool IsTouching(sf::Vector2f pos); // Checks if any position vector is within bounds of block tiles
 
 	// TODO: block has a shape only and doesnt store signature this is wierd design style ngl
-	const tBlockSignature* mBlockSignature;
+	//const tBlockSignature* mBlockSignature;
 	Shape mShape;
 
 	sf::Vector2f mInitPosition; // Initial position of block when created, used for resetting block position after placing on tilemap
@@ -118,9 +118,9 @@ public:
 
 inline bool Block::IsTouching(sf::Vector2f pos) // Checks if any position vector is within bounds of block tiles
 {
-	if (!mBlockSignature) return false; // TODO: delte if not needed
+	if (mShape == Shape::Empty) return false; // TODO: delte if not needed
 
-	for (sf::Vector2f tilePos : *mBlockSignature)
+	for (sf::Vector2f tilePos : BLOCK_SIGNATURES[mShape])
 	{
 		tilePos = mPosition + mTransform * tilePos;
 
