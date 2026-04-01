@@ -123,9 +123,10 @@ bool TileMap::DeleteBlock(const Block& block)
 
 sf::Vector2f TileMap::SnapToTile(sf::Vector2f position) const
 {
-	position.x -= (int)position.x % (int)mTileSize.x;
-	position.y -= (int)position.y % (int)mTileSize.y;	
-	return position;
+	sf::Vector2f relativePos = position - mPosition;
+	relativePos.x -= (int)relativePos.x % (int)mTileSize.x;
+	relativePos.y -= (int)relativePos.y % (int)mTileSize.y;
+	return mPosition + relativePos;
 }
 
 bool TileMap::IsTouching(sf::Vector2f position) const

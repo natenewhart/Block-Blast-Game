@@ -120,28 +120,21 @@ void Game::HandleBlockEvents()
 
 void Game::UpdateBlocks()
 {
-	//Block testBlock(Block::Shape::OneByOne, sf::Vector2f(300, 300), 0, sf::Color::Red, tileSize);
 	if (activeBlock)
 	{
-		//tileMap.Clear(); // DEBUG
 		activeBlock->SetPosition(mousePosition + blockOffset);
-	
+
 		if (lastActiveBlockPosition != activeBlock->GetPosition()) // If block has moved
 		{
-			// TODO: check if block has any tile touching the tileMap first so you don't have to check closest open block every frame
 			sf::Vector2f closestOpenPos = tileMap.ClosestOpenBlockPosition(*activeBlock);
-			//sf::Vector2f closestOpenPos(-1, -1);
+
 			if (closestOpenPos.x != -1 && closestOpenPos.y != -1)
 			{
-				//tileMap.PlaceBlock(blockPlacementOutline); // DEBUG
-
-				//sf::Vector2f highlightPos = tileMap.SnapToClosestTile(activeBlock->GetPosition());
 				blockPlacementOutline.SetPosition(tileMap.SnapToTile(closestOpenPos));
-				//std::println("closest open pos: {}, {}", blockPlacementOutline.GetPosition().x, blockPlacementOutline.GetPosition().y);
+			//	blockPlacementOutline.SetPosition(closestOpenPos);
 			}
 			else
 			{
-				//std::println("reset outline pos");
 				blockPlacementOutline.SetPosition(activeBlock->GetPosition()); // TODO: bad solution, maybe just skip drawing step if block isnt in map
 			}
 
