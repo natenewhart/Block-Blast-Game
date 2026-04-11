@@ -70,7 +70,7 @@ private:
 	// Block Management Variables
 	Block* activeBlock; // Pointer to block currently being moved by mouse, nullptr if no block is being moved
 	Block  blockHand[3]; // Block queue which stores 3 blocks to be placed at each turn
-	Block  blockPlacementOutline; // Placed block highlight to check location of block placement
+	//Block  blockPlacementOutline; // Placed block highlight to check location of block placement
 	sf::Vector2f activeBlockInitPosition; // Initial position of active block when picked up, used for resetting block position after placing on tilemap
 	sf::Vector2f blockOffset; // Offset between block position and mouse position to maintain relative position while dragging
 	sf::Vector2f lastActiveBlockPosition; // Last position of active block, used for checking if block is being moved and for resetting block position after placing on tilemap

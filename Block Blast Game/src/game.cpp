@@ -23,9 +23,9 @@ Game::Game()
 	text.setFillColor(sf::Color::White);
 	text.setString(std::to_string(frameRateLimit));
 
-	blockHand[0] = Block(Block::Shape::ThreeByThree,    sf::Vector2f(800, 100), 0, sf::Color::Red,   tileSize);
-	blockHand[1] = Block(Block::Shape::ThreeByThree,    sf::Vector2f(800, 300), 0, sf::Color::Green, tileSize);
-	blockHand[2] = Block(Block::Shape::OneByOne,    sf::Vector2f(800, 500), 0, sf::Color::Blue,  tileSize);
+	blockHand[0] = Block(Block::Shape::ThreeByThree, sf::Vector2f(800, 100), 0, sf::Color::Cyan,   tileSize);
+	blockHand[1] = Block(Block::Shape::TShape,       sf::Vector2f(800, 300), 0, sf::Color::Green,  tileSize);
+	blockHand[2] = Block(Block::Shape::LShapeLarge,  sf::Vector2f(800, 500), 1, sf::Color::Blue,   tileSize);
 }
 
 void Game::Init() {}
@@ -66,13 +66,13 @@ void Game::Update()
 	text.setString(std::to_string(static_cast<int>(1.f / deltaTime + 0.5f)));
 	text.setPosition(screenWidth - text.getLocalBounds().width - 9, 0);
 
-	UpdateBlocks();
 	tileMap.Update();
+	UpdateBlocks();
 }
 
 void Game::Render()
 {
-	window.clear();
+	window.clear(sf::Color(20, 20, 20));
 
 	// Render order
 	tileMap.Draw(window);
@@ -85,7 +85,7 @@ void Game::Render()
 
 void Game::HandleBlockEvents()
 {
-	if (activeBlock && event.type == sf::Event::MouseButtonReleased)
+	if (activeBlock && event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left)
 	{
 		if (tileMap.PlaceBlock(*activeBlock)) // Try to place block on tilemap, if block is placeable then place block and hide block in block hand, otherwise reset block position to original position
 		{
@@ -97,7 +97,7 @@ void Game::HandleBlockEvents()
 		}
 		activeBlock = nullptr;
 	}
-	else if (event.type == sf::Event::MouseButtonPressed) // Mouse button pressed: player grabbing acive block
+	else if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) // Mouse button pressed: player grabbing acive block
 	{
 		for (auto& block : blockHand)
 		{
@@ -107,12 +107,13 @@ void Game::HandleBlockEvents()
 				activeBlock             = &block;
 				activeBlockInitPosition = block.GetPosition(); // Active block initial position is used for resetting block position after placing on tilemap
 				blockOffset             = activeBlockInitPosition - mousePosition;
+				activeBlock->SetPosition(mousePosition + blockOffset); // Set block position to mouse position with offset to maintain relative position while dragging
 				
 				// Set up block placement outline for block placement preview
-				blockPlacementOutline    = *activeBlock;
-				sf::Color translucentCol = activeBlock->GetColor();
-				translucentCol.a         = 100;
-				blockPlacementOutline.SetColor(translucentCol);
+				//blockPlacementOutline    = *activeBlock;
+				//sf::Color translucentCol = activeBlock->GetColor();
+				//translucentCol.a         = 100;
+				//blockPlacementOutline.SetColor(translucentCol);
 
 				break;
 			}
@@ -125,23 +126,10 @@ void Game::UpdateBlocks()
 	if (activeBlock)
 	{
 		activeBlock->SetPosition(mousePosition + blockOffset);
+		tileMap.PlaceBlockOverlay(*activeBlock);
 
-		// TODO: time updates so that its not jittery to the player maybe every 5 frames
-		// TODO: make the ClosestOpenBlockPosition be a saved value that is updated based on the timer so that it isn't done twice per frame
-		if (lastActiveBlockPosition != activeBlock->GetPosition()) // If block has moved
+		if (lastActiveBlockPosition != activeBlock->GetPosition())
 		{
-			sf::Vector2f closestOpenPos = tileMap.ClosestOpenBlockPosition(*activeBlock);
-			std::println("Closest open block pos {}, {}", closestOpenPos.x, closestOpenPos.y);
-
-			if (closestOpenPos.x != -1 && closestOpenPos.y != -1)
-			{
-				blockPlacementOutline.SetPosition(closestOpenPos);
-			}
-			else
-			{
-				blockPlacementOutline.SetPosition(activeBlock->GetPosition()); // TODO: bad solution, maybe just skip drawing step if block isnt in map
-			}
-
 			lastActiveBlockPosition = activeBlock->GetPosition();
 		}
 	}
@@ -156,7 +144,7 @@ void Game::DrawBlocks()
 	}
 	if (activeBlock)
 	{
-		blockPlacementOutline.Draw(window); // Draw placement highlight on grid
+		//blockPlacementOutline.Draw(window); // Draw placement highlight on grid
 		activeBlock->Draw(window); // Draw active block on top of other blocks
 	}
 }

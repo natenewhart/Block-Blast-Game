@@ -27,11 +27,12 @@ public:
 	//sf::Vector2f GetGridPosition(sf::Vector2f screenPosition); // Converts position in screen space to the row and column of tilemap grid space, returns (-1, -1) if position is outside of tilemap bounds
 
 	bool IsTouching(sf::Vector2f position) const; // Checks if any tile positions of block are occupied on tilemap, used for checking valid block placement
-	bool IsBlockInGrid(const Block& block) const;
+	//bool IsBlockInGrid(const Block& block) const;
 	bool PlaceBlock(Block& block); // Places block on tilemap by setting tiles at block tile positions to occupied and block color.
+	bool PlaceBlockOverlay(Block block); // Places block outline on tilemap by setting tiles at block tile positions to occupied and block color with transparency. Used for block placement preview when player is moving block around tilemap. Returns true if block outline was placed successfully, false if any tile positions of block were occupied on tilemap
 	sf::Vector2f ClosestOpenBlockPosition(const Block& block) const; // Returns the position of the closest open tile to the block position. Used for finding the closest placeable position for a block when the initial position is not placeable. Returns (-1, -1) if no placeable position is found. TODO: optimize this function by only checking tiles within a certain radius of the block position and then expanding the radius until a placeable position is found or all tiles have been checked.
 	
-	bool DeleteBlock(const Block& block);
+	//bool DeleteBlock(const Block& block);
 	
 	sf::Vector2f SnapToTile(sf::Vector2f position) const;  // Take pixel pos and return position of current tile (top left)
 	// TODO: Decide weather place block and delete block should just be place and delete tile therefore you handle the block placing and deleting outside the class
@@ -55,16 +56,18 @@ private:
 	sf::Vector2i GetGridPosition(sf::Vector2f screenPosition) const ; // Converts position in screen space to the col, row of tilemap which is the tile that position is inside of, returns (-1, -1) if position is outside of tilemap bounds
 	
 	bool IsGridPosition  (sf::Vector2i gridPosition) const; // Checks if grid position is within bounds of tilemap
-	bool IsBlockPlaceable(const Block& block)        const; // Checks if block is inside the tile map and checks if any tile positions are filled on tilemap at the block tile positions
-	bool IsBlockPlaceable(sf::Vector2f position, Block::Shape shape) const; // Overload doesn't require block object
+	//bool IsBlockPlaceable(const Block& block)        const; // Checks if block is inside the tile map and checks if any tile positions are filled on tilemap at the block tile positions
+	bool IsBlockPlaceable(const Block& block, sf::Vector2f newBlockPos) const; // Overload doesn't require block object
 	
-	void PlaceBlockAtGridPosition(const Block& block); // Places block on tilemap at given grid position by setting tiles at block tile positions to occupied and block color. Returns true if block was placed successfully, false if any tile positions of block were occupied on tilemap
+	void PlaceBlockOnTileMap(const Block& block);        // Places block on tilemap at given grid position by setting tiles at block tile positions to occupied and block color. Returns true if block was placed successfully, false if any tile positions of block were occupied on tilemap
+	void PlaceBlockOverlayOnTileMap(const Block& block); // Places block overlay on tilemap at given grid position by setting tiles at block tile positions to occupied and block color with transparency. Used for block placement preview when player is moving block around tilemap. Returns true if block overlay was placed successfully, false if any tile positions of block were occupied on tilemap
 
 private:
 	int mWidth;  // Number of tiles in horizontal direction
 	int mHeight; // Number of tiles in vertical direction
 
-	std::vector<std::vector<Tile>> mTiles; // Stores tile data in a 2D vector (rows of columns). Important: declared
+	std::vector<std::vector<Tile>>  mTiles; // Stores tile data in a 2D vector (rows of columns). Important: declared
+	std::vector<std::vector<sf::Color>> mTileOverlayColors; // Stores the overlayed
 
 	sf::Vector2f mPosition;        // Top left corner of tilemap
 	sf::Vector2f mTileSize;        // Tile dimensions (width, height) in pixels
@@ -74,6 +77,7 @@ private:
 	const unsigned int cSearchAreaWidth;     // Width of search area for finding open blocks for block placement, calculated from cBlockSearchAreaSize
 
 	sf::RectangleShape mTileRect; // Rectangle shape used for drawing tiles. We can reuse the same shape and just change its position and color for each tile.
+
 };
 
 // ------------------- Header Definitions -------------------

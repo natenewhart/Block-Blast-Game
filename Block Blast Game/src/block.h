@@ -51,11 +51,17 @@ public:
 	
 	sf::Vector2f GetPosition()       const; // Return top left corner of tile in block at (0, 0) given by BLOCK_SIGNATURES
 	sf::Vector2f GetCenterPosition() const; // Return center position of block by averaging the tile positions in pixel reference frame
+	
+	// Delete this if its not used
+	//sf::Vector2i RotateToBlockOrientation(sf::Vector2i gridPos) const;       // Rotate grid position to block orientation by applying rotation transform based on block orientation
+
+	//sf::Vector2f RotateSignatureToBlockOrientation(sf::Vector2f signaturePos) const;       // Rotate grid position to block orientation by applying rotation transform based on block orientation
+	sf::Vector2f ConvertSignatureToWorldPosition  (sf::Vector2f signaturePos) const; // Convert block signature position to world position by applying block transform to signature position
 
 	void SetPosition(sf::Vector2f position);
 	void SetColor   (sf::Color    color);
 	 
-	bool IsTouching(sf::Vector2f pos) const; // Checks if any position vector is within bounds of block tiles
+	bool IsTouching(sf::Vector2f position) const; // Checks if any position vector is within bounds of block tiles
 	void Hide();                              // Hides block by setting signature to null pointer
 
 	//void HandleEvents(const sf::Event& event, sf::Vector2f mousePosition);
@@ -66,9 +72,11 @@ private:
 	void Init();
 	void PopulateVertexArray(); // Initializes vertex array based on block signature and tile size
 
+	sf::Vector2f ConvertToBlockLocalPosition(sf::Vector2f worldPosition) const; // Convert world position to block local position by applying inverse transform
+
 	sf::VertexArray mMesh;       // Vertex array used for drawing block, each tile is a quad which is 4 vertices
 	
-	sf::Transform mTransform;    // Transform used to rotate and scale block based on orientation and tile size
+	sf::Transform mTransform;          // Final transform applied to block which updates based on block position
 	sf::Color     mColor;
 	Shape         mShape;
 	sf::Vector2f  mInitPosition; // Initial position of block when created, used for resetting block position after placing on tilemap

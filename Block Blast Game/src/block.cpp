@@ -3,40 +3,50 @@
 #include <print>	
 
 Block::Block()
-	: mShape(Shape::Empty)
+	: mShape       (Shape::Empty)
 	, mInitPosition(0.f, 0.f)
-    , mPosition(mInitPosition)
-    , mOrientation(0)
-    , mColor(sf::Color::White)
+    , mPosition    (mInitPosition)
+    , mOrientation (0)
+    , mColor       (sf::Color::White)
 {
 	Init();
 }
 
 Block::Block(const Block& other)
-	: mShape(other.mShape)
+	: mShape       (other.mShape)
 	, mInitPosition(other.mInitPosition)
-	, mPosition(other.mPosition)
-	, mOrientation(other.mOrientation)
-	, mColor(other.mColor)
-	, mTransform(other.mTransform)
-	, mMesh(other.mMesh)
-{}
+	, mPosition    (other.mPosition)
+	, mOrientation (other.mOrientation)
+	, mColor       (other.mColor)
+{
+	Init();
+}
 
 Block::Block(Shape shape, sf::Vector2f position, int orientation, sf::Color color, sf::Vector2f tileSize)
-	: mShape(shape)
+	: mShape       (shape)
 	, mInitPosition(position)
-    , mPosition(position)
-    , mOrientation(orientation)
-    , mColor(color)
+    , mPosition    (position)
+    , mOrientation (orientation)
+    , mColor       (color)
 {
 	Init();
 }
 
 void Block::Init()
 {
+	//mBaseTransform = sf::Transform::Identity;
+	//mTransform.rotate(mOrientation * 90.f);
+	//mTransform.scale(TileSettings::Get().size);
+
+	mTransform = sf::Transform::Identity;
 	mTransform.translate(mPosition);
 	mTransform.rotate(mOrientation * 90.f);
 	mTransform.scale(TileSettings::Get().size);
+
+	//sf::Transform rotationTransform = sf::Transform::Identity;
+	//rotationTransform.rotate(mOrientation * 90.f);
+
+	//mInverseTransform = mTransform.getInverse();
 
 	PopulateVertexArray();
 }
@@ -48,10 +58,19 @@ void Block::PopulateVertexArray()
 
 	for (sf::Vector2f tileLocalPos : BLOCK_SIGNATURES[mShape]) // Each position in the signature creates a quad of 4 vertices in vertex array for drawing the block
 	{
+		if (tileLocalPos == sf::Vector2f(0, 0)) // ORIGIN TILE IS RED FOR DEBUG PURPOUSES, DELETE LATER
+		{
+			mMesh.append(sf::Vertex(tileLocalPos + sf::Vector2f(0, 0), sf::Color::Red));
+			mMesh.append(sf::Vertex(tileLocalPos + sf::Vector2f(1, 0), sf::Color::Red));
+			mMesh.append(sf::Vertex(tileLocalPos + sf::Vector2f(1, 1), sf::Color::Red));
+			mMesh.append(sf::Vertex(tileLocalPos + sf::Vector2f(0, 1), sf::Color::Red));
+			continue;
+		}
+
 		mMesh.append(sf::Vertex(tileLocalPos + sf::Vector2f(0, 0),  mColor));
 		mMesh.append(sf::Vertex(tileLocalPos + sf::Vector2f(1, 0),  mColor));
-		mMesh.append(sf::Vertex(tileLocalPos + sf::Vector2f(1, 1), mColor));
-		mMesh.append(sf::Vertex(tileLocalPos + sf::Vector2f(0, 1), mColor));
+		mMesh.append(sf::Vertex(tileLocalPos + sf::Vector2f(1, 1),  mColor));
+		mMesh.append(sf::Vertex(tileLocalPos + sf::Vector2f(0, 1),  mColor));
 	}
 }
 
@@ -67,6 +86,49 @@ sf::Vector2f Block::GetPosition() const { return mPosition; }
 sf::Vector2f Block::GetCenterPosition() const
 {
 	return mPosition + 0.5f * TileSettings::Get().size;
+}
+
+sf::Vector2f Block::ConvertToBlockLocalPosition(sf::Vector2f worldPosition) const
+{
+	return mTransform.getInverse().transformPoint(worldPosition);
+}
+
+//
+//sf::Vector2f Block::RotateSignatureToBlockOrientation(sf::Vector2f signaturePos) const
+//{
+//	//switch (mOrientation)
+//	//{
+//	//	case 0:  return { signaturePos.x,  signaturePos.y };  // 0°
+//	//	case 1:  return { -signaturePos.y,  signaturePos.x }; // 90°
+//	//	case 2:  return { -signaturePos.x, -signaturePos.y }; // 180°
+//	//	case 3:  return { signaturePos.y, -signaturePos.x };  // 270°
+//	//	default: return signaturePos;
+//	//}
+//	//sf::Transform rotationTransform = sf::Transform::Identity;
+//	//rotationTransform.rotate(mOrientation * 90.f);
+//	//return rotationTransform.transformPoint(signaturePos);
+//}
+
+//sf::Vector2f Block::RotateSignatureToBlockOrientation(sf::Vector2f signaturePos) const
+//{
+//	// Use the same rotation semantics as the block's transform so placement math
+//	// and visual transform agree. Rotate around origin (0,0) by the block orientation.
+//	sf::Transform rot = sf::Transform::Identity;
+//	rot.rotate(mOrientation * 90.f);
+//
+//	sf::Vector2f rotated = rot.transformPoint(signaturePos);
+//
+//	// Round to the nearest integer tile coordinates to avoid floating point
+//	// drift when used as grid offsets.
+//	rotated.x = std::round(rotated.x);
+//	rotated.y = std::round(rotated.y);
+//
+//	return rotated;
+//}
+
+sf::Vector2f Block::ConvertSignatureToWorldPosition(sf::Vector2f signaturePos) const
+{
+	return mTransform.transformPoint(signaturePos);
 }
 
 void Block::SetPosition(sf::Vector2f position)
@@ -89,19 +151,29 @@ void Block::SetColor(sf::Color color)
 	}
 }
 
-bool Block::IsTouching(sf::Vector2f pos) const // Checks if any position vector is within bounds of block tiles
+bool Block::IsTouching(sf::Vector2f position) const // Checks if any position vector is within bounds of block tiles
 {
 	if (mShape == Shape::Empty) return false; // TODO: delte if not needed
 
+	sf::Vector2f localPos = ConvertToBlockLocalPosition(position); // Convert position to block local position by applying inverse transform
+	
 	for (sf::Vector2f localTilePos : BLOCK_SIGNATURES[mShape])
 	{
-		sf::Vector2f worldPos = mTransform.transformPoint(localTilePos);
-
-		sf::Vector2f size = TileSettings::Get().size;
-
-		if (isWithinRect(worldPos, TileSettings::Get().size, pos)) return true;
+		if (isWithinRect(localTilePos, { 1.f, 1.f }, localPos)) return true;
 	}
 	return false;
+
+	//if (mShape == Shape::Empty) return false; // TODO: delte if not needed
+
+	//for (sf::Vector2f localTilePos : BLOCK_SIGNATURES[mShape])
+	//{
+	//	sf::Vector2f worldPos = mTransform.transformPoint(localTilePos);
+
+	//	sf::Vector2f size = TileSettings::Get().size;
+
+	//	if (isWithinRect(worldPos, TileSettings::Get().size, position)) return true;
+	//}
+	//return false;
 }
 
 void Block::Hide()
