@@ -23,9 +23,9 @@ Game::Game()
 	text.setFillColor(sf::Color::White);
 	text.setString(std::to_string(frameRateLimit));
 
-	blockHand[0] = Block(Block::Shape::ThreeByThree, sf::Vector2f(800, 100), 0, sf::Color::Cyan,   tileSize);
-	blockHand[1] = Block(Block::Shape::SShape,       sf::Vector2f(800, 300), 3, sf::Color::Green,  tileSize);
-	blockHand[2] = Block(Block::Shape::LShapeSmall,  sf::Vector2f(800, 500), 1, sf::Color::Blue,   tileSize);
+	blockHand[0] = Block(Block::Shape::ThreeByThree, sf::Vector2f(800, 100), 0, sf::Color::Cyan);
+	blockHand[1] = Block(Block::Shape::SShape,       sf::Vector2f(800, 300), 3, sf::Color::Green);
+	blockHand[2] = Block(Block::Shape::LShapeSmall,  sf::Vector2f(800, 500), 1, sf::Color::Blue);
 }
 
 void Game::Init() {}
@@ -93,7 +93,7 @@ void Game::HandleBlockEvents()
 		}
 		else
 		{
-			activeBlock->SetPosition(activeBlockInitPosition); // Reset block position to original position
+			activeBlock->SetBlockCenter(activeBlockInitPosition); // Reset block position to original position
 		}
 		activeBlock = nullptr;
 	}
@@ -105,10 +105,12 @@ void Game::HandleBlockEvents()
 			{
 				// Set active block
 				activeBlock             = &block;
-				activeBlockInitPosition = block.GetPosition(); // Active block initial position is used for resetting block position after placing on tilemap
-				blockOffset             = activeBlockInitPosition - mousePosition;
-				activeBlock->SetPosition(mousePosition + blockOffset); // Set block position to mouse position with offset to maintain relative position while dragging
-				
+				activeBlockInitPosition = block.GetBlockCenterPosition(); // Active block initial position is used for resetting block position after placing on tilemap
+				//blockOffset             = activeBlock->CalculateBlockCenter() - mousePosition;
+				//activeBlock->SetBlockCenter(mousePosition + blockOffset); // Set block position to mouse position with offset to maintain relative position while dragging
+				activeBlock->SetBlockCenter(mousePosition);
+
+
 				break;
 			}
 		}
@@ -121,6 +123,9 @@ void Game::UpdateBlocks()
 	{
 		//activeBlock->SetPosition(mousePosition + blockOffset);
 		activeBlock->SetBlockCenter(mousePosition);
+		//blockOffset = activeBlock->CalculateBlockCenter() - mousePosition; // offset to center
+		//activeBlock->SetBlockCenter(mousePosition + blockOffset);
+
 		tileMap.PlaceBlockOverlay(*activeBlock);
 
 		if (lastActiveBlockPosition != activeBlock->GetPosition())

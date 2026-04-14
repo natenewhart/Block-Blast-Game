@@ -86,7 +86,7 @@ bool TileMap::PlaceBlock(Block& block)
 	sf::Vector2f newBlockPos = ClosestOpenBlockPosition(block);
 	if (newBlockPos.x != -1 && newBlockPos.y != -1)
 	{
-		//std::println("Block overlay position: ({}, {})", newBlockPos.x, newBlockPos.y);
+		std::println("Block placement position: ({}, {})", newBlockPos.x, newBlockPos.y);
 		block.SetPosition(newBlockPos);
 		PlaceBlockOnTileMap(block);
 		return true;
@@ -99,7 +99,7 @@ bool TileMap::PlaceBlockOverlay(Block block)
 	sf::Vector2f newBlockPos = ClosestOpenBlockPosition(block);
 	if (newBlockPos.x != -1 && newBlockPos.y != -1)
 	{
-		//std::println("Block overlay position: ({}, {})", newBlockPos.x, newBlockPos.y);
+		std::println("Block overlay position: ({}, {})", newBlockPos.x, newBlockPos.y);
 		block.SetPosition(newBlockPos);
 		PlaceBlockOverlayOnTileMap(block);
 		return true;
@@ -277,8 +277,6 @@ bool TileMap::IsBlockPlaceable(const Block& block, sf::Vector2f newBlockPos) con
 	for (sf::Vector2f localTilePos : BLOCK_SIGNATURES[block.GetShape()])
 	{
 		sf::Vector2f tileWorldPos = tempBlock.ConvertSignatureToWorldPosition(localTilePos);
-		//tileWorldPos += 0.5f * mTileSize; // Check the center of the tile for more accurate placement
-
 		sf::Vector2i currGridPos  = GetGridPosition(tileWorldPos);
 
 		if (!IsGridPosition(currGridPos) || mTiles[currGridPos.y][currGridPos.x].isEmpty == false) return false;

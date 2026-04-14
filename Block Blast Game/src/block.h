@@ -43,14 +43,15 @@ public:
 
 	Block();
 	Block(const Block& other); // Copy constructor
-	Block(Shape shape, sf::Vector2f position, int orientation, sf::Color color, sf::Vector2f tileSize);
+	Block(Shape shape, sf::Vector2f position, int orientation, sf::Color color);
 
 	sf::Color   GetColor() const;
 	const Shape GetShape() const; // Get block shape by calculating index of block signature in BLOCK_SIGNATURES array
 	
 	sf::Vector2f GetPosition() const; // Return top left corner of tile in block at (0, 0) given by BLOCK_SIGNATURES
 	sf::Vector2f GetBlockOriginCenter() const; // Return center position of block by averaging the tile positions in pixel reference frame
-	
+	sf::Vector2f GetBlockCenterPosition() const; // Calculate center position of block by averaging the tile positions in pixel reference frame
+
 	sf::Vector2f ConvertSignatureToWorldPosition  (sf::Vector2f signaturePos) const; // Convert block signature position to world position by applying block transform to signature position
 
 	void SetPosition   (sf::Vector2f position);       // Set position of origin tile in block
@@ -69,8 +70,6 @@ private:
 	void Init();
 	void PopulateVertexArray(); // Initializes vertex array based on block signature and tile size
 
-	sf::Vector2f CalculateBlockCenter() const; // Calculate center position of block by averaging the tile positions in pixel reference frame
-
 	sf::Vector2f ConvertToBlockLocalPosition(sf::Vector2f worldPosition) const; // Convert world position to block local position by applying inverse transform
 
 	sf::VertexArray mMesh;       // Vertex array used for drawing block, each tile is a quad which is 4 vertices
@@ -78,7 +77,6 @@ private:
 	sf::Transform mTransform;          // Final transform applied to block which updates based on block position
 	sf::Color     mColor;
 	Shape         mShape;
-	sf::Vector2f  mInitPosition; // Initial position of block when created, used for resetting block position after placing on tilemap
 	sf::Vector2f  mPosition;     // Top left corner of tile in block at (0, 0) given by BLOCK_SIGNATURES 
 	int           mOrientation;  // 0, 1, 2, or 3 for 0, 90, 180, or 270 degree rotation
 	

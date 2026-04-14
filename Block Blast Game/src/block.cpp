@@ -4,8 +4,7 @@
 
 Block::Block()
 	: mShape       (Shape::Empty)
-	, mInitPosition(0.f, 0.f)
-    , mPosition    (mInitPosition)
+    , mPosition    (0.f, 0.f)
     , mOrientation (0)
     , mColor       (sf::Color::White)
 {
@@ -14,17 +13,15 @@ Block::Block()
 
 Block::Block(const Block& other)
 	: mShape       (other.mShape)
-	, mInitPosition(other.mInitPosition)
 	, mPosition    (other.mPosition)
 	, mOrientation (other.mOrientation)
 	, mColor       (other.mColor)
-{
-	Init();
-}
+	, mTransform   (other.mTransform)
+	, mMesh        (other.mMesh)
+{}
 
-Block::Block(Shape shape, sf::Vector2f position, int orientation, sf::Color color, sf::Vector2f tileSize)
+Block::Block(Shape shape, sf::Vector2f position, int orientation, sf::Color color)
 	: mShape       (shape)
-	, mInitPosition(position)
     , mPosition    (position)
     , mOrientation (orientation)
     , mColor       (color)
@@ -34,23 +31,8 @@ Block::Block(Shape shape, sf::Vector2f position, int orientation, sf::Color colo
 
 void Block::Init()
 {
-	//mBaseTransform = sf::Transform::Identity;
-	//mTransform.rotate(mOrientation * 90.f);
-	//mTransform.scale(TileSettings::Get().size);
-
-	//tBlockCenter(mPosition); // Set position of block based on center position which is the initial position passed in constructor. This also initializes the block transform based on the block position and orientation.
-
-	mTransform = sf::Transform::Identity;
-	mTransform.translate(mPosition);
-	mTransform.rotate(mOrientation * 90.f);
-	mTransform.scale(TileSettings::Get().size);
-
+	SetPosition   (mPosition);
 	SetBlockCenter(mPosition);
-
-	//sf::Transform rotationTransform = sf::Transform::Identity;
-	//rotationTransform.rotate(mOrientation * 90.f);
-
-	//mInverseTransform = mTransform.getInverse();
 
 	PopulateVertexArray();
 }
@@ -78,14 +60,11 @@ void Block::PopulateVertexArray()
 	}
 }
 
-sf::Color Block::GetColor() const { return mColor; } 
+sf::Color          Block::GetColor()    const { return mColor; } 
 
-const Block::Shape Block::GetShape() const
-{
-	return mShape;
-}
+const Block::Shape Block::GetShape()    const { return mShape; }
 
-sf::Vector2f Block::GetPosition() const { return mPosition; }
+sf::Vector2f       Block::GetPosition() const { return mPosition; }
 
 sf::Vector2f Block::GetBlockOriginCenter() const
 {
@@ -102,7 +81,7 @@ sf::Vector2f Block::ConvertSignatureToWorldPosition(sf::Vector2f signaturePos) c
 	return mTransform.transformPoint(signaturePos);
 }
 
-sf::Vector2f Block::CalculateBlockCenter() const
+sf::Vector2f Block::GetBlockCenterPosition() const
 {
 	sf::Vector2f max(0.f, 0.f);
 
@@ -126,10 +105,10 @@ void Block::SetPosition(sf::Vector2f position)
 
 void Block::SetBlockCenter(sf::Vector2f centerPosition)
 {
-	sf::Vector2f diff = centerPosition - CalculateBlockCenter();
-	mPosition += diff;
+	sf::Vector2f diff   = centerPosition - GetBlockCenterPosition();
+	sf::Vector2f newPos = mPosition + diff;
 
-	SetPosition(mPosition);
+	SetPosition(newPos);
 }
 
 void Block::SetColor(sf::Color color)
