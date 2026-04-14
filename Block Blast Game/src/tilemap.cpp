@@ -86,7 +86,6 @@ bool TileMap::PlaceBlock(Block& block)
 	sf::Vector2f newBlockPos = ClosestOpenBlockPosition(block);
 	if (newBlockPos.x != -1 && newBlockPos.y != -1)
 	{
-		std::println("Block placement position: ({}, {})", newBlockPos.x, newBlockPos.y);
 		block.SetPosition(newBlockPos);
 		PlaceBlockOnTileMap(block);
 		return true;
@@ -99,7 +98,6 @@ bool TileMap::PlaceBlockOverlay(Block block)
 	sf::Vector2f newBlockPos = ClosestOpenBlockPosition(block);
 	if (newBlockPos.x != -1 && newBlockPos.y != -1)
 	{
-		std::println("Block overlay position: ({}, {})", newBlockPos.x, newBlockPos.y);
 		block.SetPosition(newBlockPos);
 		PlaceBlockOverlayOnTileMap(block);
 		return true;

@@ -31,8 +31,8 @@ Block::Block(Shape shape, sf::Vector2f position, int orientation, sf::Color colo
 
 void Block::Init()
 {
-	SetPosition   (mPosition);
-	SetBlockCenter(mPosition);
+	SetPosition(mPosition);
+	SetBlockCenterPosition(mPosition);
 
 	PopulateVertexArray();
 }

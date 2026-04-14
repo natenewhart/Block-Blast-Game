@@ -7,8 +7,6 @@
 #include "SFML/Graphics.hpp"
 #include "tile.h"
 
-// NEW TODO: store shape and orientation not signature. when you need signature you should rotate the matrix to the correct orientation first
-
 /*
 * Blocks are stored using block signatures which contain vectors of tile positions in relation to an origin tile at 0,0.
 * 
@@ -18,8 +16,6 @@
 * The block class then contains a pointer to the block signature and
 * an orientation which is used to determine how the block is rotated.
 */
-
-// TODO: delete update and event functions, delete isStatic, delete init position and just reset position to 0,0 when block is placed on tilemap, delete copy constructor and just create new blocks with constructor when needed, delete hide function and just set block signature to null pointer when block is placed on tilemap
 
 // --------------------------- HUGE TODO -------------------------
 // Reorganize the block handling system.
@@ -39,8 +35,6 @@ class Block
 public:
 	enum Shape; // Each represents index of block signature in BLOCK_SIGNATURES array
 
-	// TODO: copy constructor overhead? check how creating new blocks work and avoid 350+ byte overhead
-
 	Block();
 	Block(const Block& other); // Copy constructor
 	Block(Shape shape, sf::Vector2f position, int orientation, sf::Color color);
@@ -55,7 +49,7 @@ public:
 	sf::Vector2f ConvertSignatureToWorldPosition  (sf::Vector2f signaturePos) const; // Convert block signature position to world position by applying block transform to signature position
 
 	void SetPosition   (sf::Vector2f position);       // Set position of origin tile in block
-	void SetBlockCenter(sf::Vector2f centerPosition); // Set block position given the center of the entire block
+	void SetBlockCenterPosition(sf::Vector2f centerPosition); // Set block position given the center of the entire block
 
 	void SetColor   (sf::Color color);
 	 
@@ -104,16 +98,3 @@ public:
 		ThreeDiagonal
 	};
 };
-
-// ------------------------- Definitions -------------------------
-
-
-/*
-* TODO:
-* 
-* Blocks are stored with an origin tile 0,0 and then each of the tile vectors in relation by index
-* Blocks have an orientation which is used to determine how the block is rotated
-* 
-* Then have a function which takes position vectors in this frame and puts any block vector into
-* pixel frame which coordinate system OR puts it into frame of tilemap coordinate system (row, col)
-*/

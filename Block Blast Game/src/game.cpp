@@ -10,7 +10,7 @@ Game::Game()
 	, state(State::Play)
 	, mousePosition(0, 0)
 	, activeBlock(nullptr)
-{
+{ 
 	window.create(sf::VideoMode(screenWidth, screenHeight), "Block Blast");
 	window.setFramerateLimit(frameRateLimit);
 
@@ -24,7 +24,7 @@ Game::Game()
 	text.setString(std::to_string(frameRateLimit));
 
 	blockHand[0] = Block(Block::Shape::ThreeByThree, sf::Vector2f(800, 100), 0, sf::Color::Cyan);
-	blockHand[1] = Block(Block::Shape::SShape,       sf::Vector2f(800, 300), 3, sf::Color::Green);
+	blockHand[1] = Block(Block::Shape::FiveByOne,       sf::Vector2f(800, 300), 3, sf::Color::Green);
 	blockHand[2] = Block(Block::Shape::LShapeSmall,  sf::Vector2f(800, 500), 1, sf::Color::Blue);
 }
 
@@ -93,7 +93,7 @@ void Game::HandleBlockEvents()
 		}
 		else
 		{
-			activeBlock->SetBlockCenter(activeBlockInitPosition); // Reset block position to original position
+			activeBlock->SetBlockCenterPosition(activeBlockInitPosition); // Reset block position to original position
 		}
 		activeBlock = nullptr;
 	}
@@ -108,7 +108,7 @@ void Game::HandleBlockEvents()
 				activeBlockInitPosition = block.GetBlockCenterPosition(); // Active block initial position is used for resetting block position after placing on tilemap
 				//blockOffset             = activeBlock->CalculateBlockCenter() - mousePosition;
 				//activeBlock->SetBlockCenter(mousePosition + blockOffset); // Set block position to mouse position with offset to maintain relative position while dragging
-				activeBlock->SetBlockCenter(mousePosition);
+				activeBlock->SetBlockCenterPosition(mousePosition);
 
 
 				break;
@@ -122,7 +122,7 @@ void Game::UpdateBlocks()
 	if (activeBlock)
 	{
 		//activeBlock->SetPosition(mousePosition + blockOffset);
-		activeBlock->SetBlockCenter(mousePosition);
+		activeBlock->SetBlockCenterPosition(mousePosition);
 		//blockOffset = activeBlock->CalculateBlockCenter() - mousePosition; // offset to center
 		//activeBlock->SetBlockCenter(mousePosition + blockOffset);
 
