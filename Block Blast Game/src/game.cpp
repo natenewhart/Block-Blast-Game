@@ -24,7 +24,7 @@ Game::Game()
 	text.setString(std::to_string(frameRateLimit));
 
 	blockHand[0] = Block(Block::Shape::ThreeByThree, sf::Vector2f(800, 100), 0, sf::Color::Cyan,   tileSize);
-	blockHand[1] = Block(Block::Shape::TShape,       sf::Vector2f(800, 300), 0, sf::Color::Green,  tileSize);
+	blockHand[1] = Block(Block::Shape::TShape,       sf::Vector2f(800, 300), 3, sf::Color::Green,  tileSize);
 	blockHand[2] = Block(Block::Shape::LShapeLarge,  sf::Vector2f(800, 500), 1, sf::Color::Blue,   tileSize);
 }
 
@@ -109,12 +109,6 @@ void Game::HandleBlockEvents()
 				blockOffset             = activeBlockInitPosition - mousePosition;
 				activeBlock->SetPosition(mousePosition + blockOffset); // Set block position to mouse position with offset to maintain relative position while dragging
 				
-				// Set up block placement outline for block placement preview
-				//blockPlacementOutline    = *activeBlock;
-				//sf::Color translucentCol = activeBlock->GetColor();
-				//translucentCol.a         = 100;
-				//blockPlacementOutline.SetColor(translucentCol);
-
 				break;
 			}
 		}

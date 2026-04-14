@@ -45,20 +45,17 @@ public:
 	Block(const Block& other); // Copy constructor
 	Block(Shape shape, sf::Vector2f position, int orientation, sf::Color color, sf::Vector2f tileSize);
 
-	// TODO: possibly delete getblocksignature function if not needed
 	sf::Color   GetColor() const;
 	const Shape GetShape() const; // Get block shape by calculating index of block signature in BLOCK_SIGNATURES array
 	
-	sf::Vector2f GetPosition()       const; // Return top left corner of tile in block at (0, 0) given by BLOCK_SIGNATURES
-	sf::Vector2f GetCenterPosition() const; // Return center position of block by averaging the tile positions in pixel reference frame
+	sf::Vector2f GetPosition() const; // Return top left corner of tile in block at (0, 0) given by BLOCK_SIGNATURES
+	sf::Vector2f GetBlockOriginCenter() const; // Return center position of block by averaging the tile positions in pixel reference frame
 	
-	// Delete this if its not used
-	//sf::Vector2i RotateToBlockOrientation(sf::Vector2i gridPos) const;       // Rotate grid position to block orientation by applying rotation transform based on block orientation
-
-	//sf::Vector2f RotateSignatureToBlockOrientation(sf::Vector2f signaturePos) const;       // Rotate grid position to block orientation by applying rotation transform based on block orientation
 	sf::Vector2f ConvertSignatureToWorldPosition  (sf::Vector2f signaturePos) const; // Convert block signature position to world position by applying block transform to signature position
 
-	void SetPosition(sf::Vector2f position);
+	void SetPosition   (sf::Vector2f position);       // Set position of origin tile in block
+	void SetBlockCenter(sf::Vector2f centerPosition); // Set the center of the entire block in world space
+
 	void SetColor   (sf::Color    color);
 	 
 	bool IsTouching(sf::Vector2f position) const; // Checks if any position vector is within bounds of block tiles
@@ -71,6 +68,8 @@ public:
 private:
 	void Init();
 	void PopulateVertexArray(); // Initializes vertex array based on block signature and tile size
+
+	sf::Vector2f CalculateBlockCenter() const; // Calculate center position of block by averaging the tile positions in pixel reference frame
 
 	sf::Vector2f ConvertToBlockLocalPosition(sf::Vector2f worldPosition) const; // Convert world position to block local position by applying inverse transform
 

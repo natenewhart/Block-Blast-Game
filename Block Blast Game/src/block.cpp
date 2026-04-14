@@ -74,6 +74,23 @@ void Block::PopulateVertexArray()
 	}
 }
 
+sf::Vector2f Block::CalculateBlockCenter() const
+{
+	sf::Vector2f center(0.f, 0.f); // Calculated center of block
+	sf::Vector2f count (0.f, 0.f); // Total # of blocks added in each direction
+
+	for (sf::Vector2f tileLocalPos : BLOCK_SIGNATURES[mShape])
+	{
+		center += tileLocalPos;
+
+		if (tileLocalPos.x != 0) count.x++;
+		if (tileLocalPos.y != 0) count.y++;
+	}
+	center.x /= count.x;
+	center.y /= count.y;
+	return center + sf::Vector2f(0.5f, 0.5f);
+}
+
 sf::Color Block::GetColor() const { return mColor; } 
 
 const Block::Shape Block::GetShape() const
@@ -83,9 +100,9 @@ const Block::Shape Block::GetShape() const
 
 sf::Vector2f Block::GetPosition() const { return mPosition; }
 
-sf::Vector2f Block::GetCenterPosition() const
+sf::Vector2f Block::GetBlockOriginCenter() const
 {
-	return mPosition + 0.5f * TileSettings::Get().size;
+	return mTransform.transformPoint(sf::Vector2f(0.5f, 0.5f));
 }
 
 sf::Vector2f Block::ConvertToBlockLocalPosition(sf::Vector2f worldPosition) const
@@ -139,6 +156,11 @@ void Block::SetPosition(sf::Vector2f position)
 	mTransform.translate(mPosition);
 	mTransform.rotate   (mOrientation * 90.f);
 	mTransform.scale    (TileSettings::Get().size);
+}
+
+void Block::SetBlockCenter(sf::Vector2f centerPosition)
+{
+
 }
 
 void Block::SetColor(sf::Color color)

@@ -112,18 +112,20 @@ sf::Vector2f TileMap::ClosestOpenBlockPosition(const Block& block) const
 	float minDistance = std::numeric_limits<float>::max();
 	sf::Vector2f closestTilePos;
 
-	sf::Vector2f originTilePos = SnapToTile(block.GetCenterPosition()); // Center of tile that block is currently over
-
+	sf::Vector2f originTilePos = SnapToTile(block.GetBlockOriginCenter()); // Top left corner of tile that block origin center is inside of
+	
 	for (int i = 0; i < cSearchAreaWidth * cSearchAreaWidth; i++)
 	{
 		int col = (i % cSearchAreaWidth) - cBlockSearchAreaSize; // Column offset from block position (-cBlockSearchAreaSize / 2, ..., 0, ..., cBlockSearchAreaSize / 2)
 		int row = (i / cSearchAreaWidth) - cBlockSearchAreaSize; // Row offset from block position (-cBlockSearchAreaSize / 2, ..., 0, ..., cBlockSearchAreaSize / 2)
 
+		// Top left corner of each tile in search area around block position
 		sf::Vector2f currTilePos = originTilePos + sf::Vector2f(col * mTileSize.x, row * mTileSize.y);
 		
 		if (IsBlockPlaceable(block, currTilePos))
 		{
-			float currDistance = distanceSquared(currTilePos + 0.5f * mTileSize, block.GetCenterPosition());
+			// Get distance between block origin center and current tile center
+			float currDistance = distanceSquared(currTilePos + 0.5f * mTileSize, block.GetBlockOriginCenter());
 
 			if (currDistance < minDistance)
 			{
@@ -269,15 +271,14 @@ sf::Vector2i TileMap::GetGridPosition(sf::Vector2f screenPosition) const
 
 bool TileMap::IsBlockPlaceable(const Block& block, sf::Vector2f newBlockPos) const
 {
-	// Convert the candidate center position into the block's top-left grid origin.
-	// The signature offsets are relative to the block origin (top-left tile at mPosition),
-	// while newBlockCenterPos is a tile center. Subtract half a tile to get the origin.
-	Block tempBlock = block; // Create a temporary block to avoid modifying the original block's position
+	Block tempBlock = block;            // Temporary block with new position
 	tempBlock.SetPosition(newBlockPos);
 
 	for (sf::Vector2f localTilePos : BLOCK_SIGNATURES[block.GetShape()])
 	{
 		sf::Vector2f tileWorldPos = tempBlock.ConvertSignatureToWorldPosition(localTilePos);
+		//tileWorldPos += 0.5f * mTileSize; // Check the center of the tile for more accurate placement
+
 		sf::Vector2i currGridPos  = GetGridPosition(tileWorldPos);
 
 		if (!IsGridPosition(currGridPos) || mTiles[currGridPos.y][currGridPos.x].isEmpty == false) return false;
