@@ -24,8 +24,8 @@ Game::Game()
 	text.setString(std::to_string(frameRateLimit));
 
 	blockHand[0] = Block(Block::Shape::ThreeByThree, sf::Vector2f(800, 100), 0, sf::Color::Cyan,   tileSize);
-	blockHand[1] = Block(Block::Shape::TShape,       sf::Vector2f(800, 300), 3, sf::Color::Green,  tileSize);
-	blockHand[2] = Block(Block::Shape::LShapeLarge,  sf::Vector2f(800, 500), 1, sf::Color::Blue,   tileSize);
+	blockHand[1] = Block(Block::Shape::SShape,       sf::Vector2f(800, 300), 3, sf::Color::Green,  tileSize);
+	blockHand[2] = Block(Block::Shape::LShapeSmall,  sf::Vector2f(800, 500), 1, sf::Color::Blue,   tileSize);
 }
 
 void Game::Init() {}
@@ -119,7 +119,8 @@ void Game::UpdateBlocks()
 {
 	if (activeBlock)
 	{
-		activeBlock->SetPosition(mousePosition + blockOffset);
+		//activeBlock->SetPosition(mousePosition + blockOffset);
+		activeBlock->SetBlockCenter(mousePosition);
 		tileMap.PlaceBlockOverlay(*activeBlock);
 
 		if (lastActiveBlockPosition != activeBlock->GetPosition())

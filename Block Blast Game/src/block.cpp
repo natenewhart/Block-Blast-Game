@@ -38,10 +38,14 @@ void Block::Init()
 	//mTransform.rotate(mOrientation * 90.f);
 	//mTransform.scale(TileSettings::Get().size);
 
+	//tBlockCenter(mPosition); // Set position of block based on center position which is the initial position passed in constructor. This also initializes the block transform based on the block position and orientation.
+
 	mTransform = sf::Transform::Identity;
 	mTransform.translate(mPosition);
 	mTransform.rotate(mOrientation * 90.f);
 	mTransform.scale(TileSettings::Get().size);
+
+	SetBlockCenter(mPosition);
 
 	//sf::Transform rotationTransform = sf::Transform::Identity;
 	//rotationTransform.rotate(mOrientation * 90.f);
@@ -74,23 +78,6 @@ void Block::PopulateVertexArray()
 	}
 }
 
-sf::Vector2f Block::CalculateBlockCenter() const
-{
-	sf::Vector2f center(0.f, 0.f); // Calculated center of block
-	sf::Vector2f count (0.f, 0.f); // Total # of blocks added in each direction
-
-	for (sf::Vector2f tileLocalPos : BLOCK_SIGNATURES[mShape])
-	{
-		center += tileLocalPos;
-
-		if (tileLocalPos.x != 0) count.x++;
-		if (tileLocalPos.y != 0) count.y++;
-	}
-	center.x /= count.x;
-	center.y /= count.y;
-	return center + sf::Vector2f(0.5f, 0.5f);
-}
-
 sf::Color Block::GetColor() const { return mColor; } 
 
 const Block::Shape Block::GetShape() const
@@ -110,42 +97,21 @@ sf::Vector2f Block::ConvertToBlockLocalPosition(sf::Vector2f worldPosition) cons
 	return mTransform.getInverse().transformPoint(worldPosition);
 }
 
-//
-//sf::Vector2f Block::RotateSignatureToBlockOrientation(sf::Vector2f signaturePos) const
-//{
-//	//switch (mOrientation)
-//	//{
-//	//	case 0:  return { signaturePos.x,  signaturePos.y };  // 0°
-//	//	case 1:  return { -signaturePos.y,  signaturePos.x }; // 90°
-//	//	case 2:  return { -signaturePos.x, -signaturePos.y }; // 180°
-//	//	case 3:  return { signaturePos.y, -signaturePos.x };  // 270°
-//	//	default: return signaturePos;
-//	//}
-//	//sf::Transform rotationTransform = sf::Transform::Identity;
-//	//rotationTransform.rotate(mOrientation * 90.f);
-//	//return rotationTransform.transformPoint(signaturePos);
-//}
-
-//sf::Vector2f Block::RotateSignatureToBlockOrientation(sf::Vector2f signaturePos) const
-//{
-//	// Use the same rotation semantics as the block's transform so placement math
-//	// and visual transform agree. Rotate around origin (0,0) by the block orientation.
-//	sf::Transform rot = sf::Transform::Identity;
-//	rot.rotate(mOrientation * 90.f);
-//
-//	sf::Vector2f rotated = rot.transformPoint(signaturePos);
-//
-//	// Round to the nearest integer tile coordinates to avoid floating point
-//	// drift when used as grid offsets.
-//	rotated.x = std::round(rotated.x);
-//	rotated.y = std::round(rotated.y);
-//
-//	return rotated;
-//}
-
 sf::Vector2f Block::ConvertSignatureToWorldPosition(sf::Vector2f signaturePos) const
 {
 	return mTransform.transformPoint(signaturePos);
+}
+
+sf::Vector2f Block::CalculateBlockCenter() const
+{
+	sf::Vector2f max(0.f, 0.f);
+
+	for (sf::Vector2f tileLocalPos : BLOCK_SIGNATURES[mShape])
+	{
+		if (tileLocalPos.x > max.x) max.x = tileLocalPos.x;
+		if (tileLocalPos.y > max.y) max.y = tileLocalPos.y;
+	}
+	return mTransform.transformPoint(max / 2.f + sf::Vector2f(0.5f, 0.5f));
 }
 
 void Block::SetPosition(sf::Vector2f position)
@@ -160,7 +126,10 @@ void Block::SetPosition(sf::Vector2f position)
 
 void Block::SetBlockCenter(sf::Vector2f centerPosition)
 {
+	sf::Vector2f diff = centerPosition - CalculateBlockCenter();
+	mPosition += diff;
 
+	SetPosition(mPosition);
 }
 
 void Block::SetColor(sf::Color color)
@@ -184,18 +153,6 @@ bool Block::IsTouching(sf::Vector2f position) const // Checks if any position ve
 		if (isWithinRect(localTilePos, { 1.f, 1.f }, localPos)) return true;
 	}
 	return false;
-
-	//if (mShape == Shape::Empty) return false; // TODO: delte if not needed
-
-	//for (sf::Vector2f localTilePos : BLOCK_SIGNATURES[mShape])
-	//{
-	//	sf::Vector2f worldPos = mTransform.transformPoint(localTilePos);
-
-	//	sf::Vector2f size = TileSettings::Get().size;
-
-	//	if (isWithinRect(worldPos, TileSettings::Get().size, position)) return true;
-	//}
-	//return false;
 }
 
 void Block::Hide()

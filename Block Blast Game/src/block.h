@@ -54,9 +54,9 @@ public:
 	sf::Vector2f ConvertSignatureToWorldPosition  (sf::Vector2f signaturePos) const; // Convert block signature position to world position by applying block transform to signature position
 
 	void SetPosition   (sf::Vector2f position);       // Set position of origin tile in block
-	void SetBlockCenter(sf::Vector2f centerPosition); // Set the center of the entire block in world space
+	void SetBlockCenter(sf::Vector2f centerPosition); // Set block position given the center of the entire block
 
-	void SetColor   (sf::Color    color);
+	void SetColor   (sf::Color color);
 	 
 	bool IsTouching(sf::Vector2f position) const; // Checks if any position vector is within bounds of block tiles
 	void Hide();                              // Hides block by setting signature to null pointer
