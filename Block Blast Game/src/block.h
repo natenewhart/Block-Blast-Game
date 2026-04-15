@@ -32,6 +32,7 @@ extern const tBlockSignature BLOCK_SIGNATURES[NUMBER_OF_BLOCK_TYPES];
 
 class Block
 {
+//using tBlockSignature = std::vector<sf::Vector2f>;
 public:
 	enum Shape; // Each represents index of block signature in BLOCK_SIGNATURES array
 
@@ -66,6 +67,10 @@ private:
 
 	sf::Vector2f ConvertToBlockLocalPosition(sf::Vector2f worldPosition) const; // Convert world position to block local position by applying inverse transform
 
+private:
+	static constexpr unsigned int csNumberOfBlockTypes = 16; // Number of block types, used for defining size of block signature array
+	static const tBlockSignature  csBlockSignatures[csNumberOfBlockTypes]; // Array of block signatures which contain vectors of tile positions in relation to an origin tile at 0,0. Each block type has a different signature which is used to determine the shape of the block.
+
 	sf::VertexArray mMesh;       // Vertex array used for drawing block, each tile is a quad which is 4 vertices
 	
 	sf::Transform mTransform;          // Final transform applied to block which updates based on block position
@@ -73,7 +78,7 @@ private:
 	Shape         mShape;
 	sf::Vector2f  mPosition;     // Top left corner of tile in block at (0, 0) given by BLOCK_SIGNATURES 
 	int           mOrientation;  // 0, 1, 2, or 3 for 0, 90, 180, or 270 degree rotation
-	
+
 public:
 	enum Shape
 	{

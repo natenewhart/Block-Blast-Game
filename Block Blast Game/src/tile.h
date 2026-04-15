@@ -36,10 +36,7 @@ struct Tile
 
 // --------------------  Functions --------------------s
 
-sf::Vector2f getCenterOfTile(sf::Vector2f tilePosition, sf::Vector2f tileSize);
-
 // Todo possibly place this function within different header file
-
 inline bool isWithinRect(sf::Vector2f rectTopLeft, sf::Vector2f rectScale, sf::Vector2f pos) // Is pos within rectangle of given size and position
 {
 	return pos.x >= rectTopLeft.x && pos.x <= rectTopLeft.x + rectScale.x &&
