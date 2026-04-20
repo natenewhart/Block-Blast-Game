@@ -56,6 +56,9 @@ private:
 	void PlaceBlockOverlayOnTileMap(const Block& block); // Places block overlay on tilemap at given grid position by setting tiles at block tile positions to occupied and block color with transparency. Used for block placement preview when player is moving block around tilemap. Returns true if block overlay was placed successfully, false if any tile positions of block were occupied on tilemap
 
 private:
+	sf::RectangleShape mTileRect;        // Rectangle shape used for drawing tiles. We can reuse the same shape and just change its position and color for each tile.
+	sf::Vertex         mGridVertices[4]; // Vertices for drawing grid lines (2 vertical and 2 horizontal)
+
 	int mWidth;  // Number of tiles in horizontal direction
 	int mHeight; // Number of tiles in vertical direction
 
@@ -64,11 +67,7 @@ private:
 
 	sf::Vector2f mPosition;        // Top left corner of tilemap
 	sf::Vector2f mTileSize;        // Tile dimensions (width, height) in pixels
-	sf::Vertex   mGridVertices[4]; // Vertices for drawing grid lines (2 vertical and 2 horizontal)
 
 	const unsigned int cBlockSearchAreaSize; // Area of searching for finding open blocks for block placement if value is 1 then search 1x1 area around block. If value is 2 then search 3x3 area around block, etc.
 	const unsigned int cSearchAreaWidth;     // Width of search area for finding open blocks for block placement, calculated from cBlockSearchAreaSize
-
-	sf::RectangleShape mTileRect; // Rectangle shape used for drawing tiles. We can reuse the same shape and just change its position and color for each tile.
-
 };
