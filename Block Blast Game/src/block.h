@@ -75,7 +75,7 @@ private:
 	sf::VertexArray mMesh;       // Vertex array used for drawing block, each tile is a quad which is 4 vertices
 	
 	sf::Vector2f mPosition;     // Top left corner of tile in block at (0, 0) given by BLOCK_SIGNATURES 
-	int          mOrientation;  // 0, 1, 2, or 3 for 0, 90, 180, or 270 degree rotation\
+	int          mOrientation;  // 0, 1, 2, or 3 for 0, 90, 180, or 270 degree rotation
 	Shape		 mShape;        // Block shape which is used to determine block signature and therefore block tile positions
 	sf::Color    mColor;        // Block color which is used for drawing block and placing block on tilemap
 
