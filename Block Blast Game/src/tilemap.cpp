@@ -1,16 +1,17 @@
 #include "tilemap.h"
 #include "library.h"
+#include "tile.h"
 #include <print>
 
 TileMap::TileMap()
-	: mWidth (8)
+	: mTileRect(TileSettings::Get().size)
+	, mGridVertices{ sf::Vertex(), sf::Vertex(), sf::Vertex(), sf::Vertex() }
+	, mWidth (8)
 	, mHeight(8)
 	, mTiles(mHeight, std::vector<Tile>(mWidth))
 	, mTileOverlayColors(mHeight, std::vector<sf::Color>(mWidth, sf::Color::Transparent))
-	, mTileSize(50, 50)
 	, mPosition(100, 100)
-	, mGridVertices{sf::Vertex(), sf::Vertex(), sf::Vertex(), sf::Vertex()}
-	, mTileRect(mTileSize)
+	, mTileSize(TileSettings::Get().size)
 	, cBlockSearchAreaSize(2)
 	, cSearchAreaWidth(InitSearchAreaWidth(cBlockSearchAreaSize))
 {
@@ -18,14 +19,14 @@ TileMap::TileMap()
 }
 
 TileMap::TileMap(sf::Vector2f position, sf::Vector2f tileSize)
-	: mWidth(8)
+	: mTileRect(tileSize)
+	, mGridVertices{ sf::Vertex(), sf::Vertex(), sf::Vertex(), sf::Vertex() }
+	, mWidth(8)
 	, mHeight(8)
 	, mTiles(mHeight, std::vector<Tile>(mWidth))
 	, mTileOverlayColors(mHeight, std::vector<sf::Color>(mWidth, sf::Color::Transparent))
-	, mTileSize(tileSize)
 	, mPosition(position)
-	, mGridVertices{sf::Vertex(), sf::Vertex(), sf::Vertex(), sf::Vertex()}
-	, mTileRect(mTileSize)
+	, mTileSize(tileSize)
 	, cBlockSearchAreaSize(2)
 	, cSearchAreaWidth(InitSearchAreaWidth(cBlockSearchAreaSize))
 {

@@ -28,7 +28,7 @@ x86/
 [Aa][Rr][Mm]64/
 bld/
 [Bb]in/
-bin-int/ # My custom removal of bin-intermediate
+bin-int/
 [Oo]bj/
 [Oo]ut/
 [Ll]og/
