@@ -115,7 +115,7 @@ sf::Vector2f TileMap::ClosestOpenBlockPosition(const Block& block) const
 	for (int i = 0; i < cSearchAreaWidth * cSearchAreaWidth; i++)
 	{
 		int col = (i % cSearchAreaWidth) - cBlockSearchAreaSize; // Column offset from block position (-cBlockSearchAreaSize / 2, ..., 0, ..., cBlockSearchAreaSize / 2)
-		int row = (i / cSearchAreaWidth) - cBlockSearchAreaSize; // Row offset from block position (-cBlockSearchAreaSize / 2, ..., 0, ..., cBlockSearchAreaSize / 2)
+		int row = (i / cSearchAreaWidth) - cBlockSearchAreaSize; // Row offset from block position    (-cBlockSearchAreaSize / 2, ..., 0, ..., cBlockSearchAreaSize / 2)
 
 		// Top left corner of each tile in search area around block position
 		sf::Vector2f currTilePos = originTilePos + sf::Vector2f(col * mTileSize.x, row * mTileSize.y);
@@ -132,12 +132,11 @@ sf::Vector2f TileMap::ClosestOpenBlockPosition(const Block& block) const
 			}
 		}
 	}
-
+	
 	if (minDistance < std::numeric_limits<float>::max())
 	{
 		return SnapToTile(closestTilePos + 0.5f * mTileSize);
 	}
-
 	return sf::Vector2f(-1, -1);
 }
 
