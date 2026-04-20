@@ -30,8 +30,8 @@ struct Tile
 	Tile();
 	Tile(sf::Color col);
 
-	bool isEmpty;
 	sf::Color color;
+	bool isEmpty;
 };
 
 // --------------------  Functions --------------------s
