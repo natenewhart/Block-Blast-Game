@@ -62,7 +62,7 @@ private:
 	int mWidth;  // Number of tiles in horizontal direction
 	int mHeight; // Number of tiles in vertical direction
 
-	std::vector<std::vector<Tile>>  mTiles; // Stores tile data in a 2D vector (rows of columns). Important: declared
+	std::vector<std::vector<Tile>>      mTiles; // Stores tile data in a 2D vector (rows of columns). Important: declared
 	std::vector<std::vector<sf::Color>> mTileOverlayColors; // Stores the overlayed
 
 	sf::Vector2f mPosition;        // Top left corner of tilemap
