@@ -73,10 +73,11 @@ private:
 
 	sf::Transform   mTransform;          // Final transform applied to block which updates based on block position
 	sf::VertexArray mMesh;       // Vertex array used for drawing block, each tile is a quad which is 4 vertices
-	sf::Vector2f    mPosition;     // Top left corner of tile in block at (0, 0) given by BLOCK_SIGNATURES 
-	sf::Color       mColor;
-	Shape           mShape;
-	int             mOrientation;  // 0, 1, 2, or 3 for 0, 90, 180, or 270 degree rotation
+	
+	sf::Vector2f mPosition;     // Top left corner of tile in block at (0, 0) given by BLOCK_SIGNATURES 
+	int          mOrientation;  // 0, 1, 2, or 3 for 0, 90, 180, or 270 degree rotation\
+	Shape		 mShape;        // Block shape which is used to determine block signature and therefore block tile positions
+	sf::Color    mColor;        // Block color which is used for drawing block and placing block on tilemap
 
 public:
 	enum Shape
