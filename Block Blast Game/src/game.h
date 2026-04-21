@@ -10,13 +10,26 @@
 
 class Game
 {
+	// ----------------- Member Types -----------------
+private:
+	enum GameState { Play, Pause }; // Game state enum representing all game states 
+	struct State // Game state struct holding all event data related to current game state and updates
+	{
+		sf::Vector2f mousePosition;
+
+		GameState gameState;
+		
+		bool mouseLeftButtonPressed;
+		bool mouseLeftButtonReleased;
+	};
+
+	// ----------------- Member Functions -----------------
 public:
 	Game();
 
 	void MainLoop(); // Block Blast Game Loop
 
 private:
-
 	void Init(); // Initializes Game State and variables - used in constructor
 	//void LoadConfig(); // Loads game settings from file
 	/* TODO:
@@ -38,49 +51,36 @@ private:
 	// TODO: should IsActiveBlockTouchingTileMap be inline?
 	void CreateNewBlockHand(); // Updates blockHand with three new blocks based on current tile map state. Implements block spawning algorithm
 
-	enum State
-	{
-		Play,
-		Pause
-	};
-
-// ----------------- Member Variables -----------------
-
+	// ----------------- Member Variables -----------------
+private:
 	// SFML Members
-	sf::RenderWindow window; // SFML render window
-	sf::Event event;         // Event variable used to store event for evnt handling. Will generallly store last event popped from event queue.
+	sf::RenderWindow mWindow; // SFML render window
+	sf::Event mEvent;         // Event variable used to store event for evnt handling. Will generallly store last event popped from event queue.
+	State mState;
 
-	DeltaTimeCalculator deltaTimeCalculator;
-
+	DeltaTimeCalculator mDeltaTimeCalculator;
 	// Window Parameters
-
 	// TODO: locked game ratio for computer and only resizeable proportionlly to such ratio
-	int screenWidth;
-	int screenHeight;
-	int frameRateLimit; // SFML window's set FPS Limit
+    int mScreenWidth;
+	int mScreenHeight;
+	int mFrameRateLimit; // SFML window's set FPS Limit
 
 	// Game Variables
-	State state;     // Game state variable
-	float deltaTime; // Last frame delta time value
-	sf::Vector2f mousePosition; // Top left corner of tilemap grid
-
-	sf::Vector2f tileSize; // Tile dimensions in pixels
-	TileMap tileMap;
+    float mDeltaTime; // Last frame delta time value
+	sf::Vector2f mTileSize; // Tile dimensions in pixels
+	TileMap mTileMap;
 
 	// Block Management Variables
-	Block* activeBlock; // Pointer to block currently being moved by mouse, nullptr if no block is being moved
-	Block  blockHand[3]; // Block queue which stores 3 blocks to be placed at each turn
-	sf::Vector2f activeBlockInitPosition; // Initial position of active block when picked up, used for resetting block position after placing on tilemap
-	sf::Vector2f blockOffset; // Offset between block position and mouse position to maintain relative position while dragging
-	sf::Vector2f lastActiveBlockPosition; // Last position of active block, used for checking if block is being moved and for resetting block position after placing on tilemap
+    Block* mActiveBlock; // Pointer to block currently being moved by mouse, nullptr if no block is being moved
+	Block  mBlockHand[3]; // Block queue which stores 3 blocks to be placed at each turn
+	sf::Vector2f mActiveBlockInitPosition; // Initial position of active block when picked up, used for resetting block position after placing on tilemap
+	sf::Vector2f mBlockOffset; // Offset between block position and mouse position to maintain relative position while dragging
+	sf::Vector2f mLastActiveBlockPosition; // Last position of active block, used for checking if block is being moved and for resetting block position after placing on tilemap
 	//const sf::Vector2f defaultBlockHandPositions[3]; // Default positions for blocks in block hand, used for resetting block position after placing on tilemap
-	
-
-	//TODO: activeBlock struct?
 
 	// Display Variables
-	sf::Text text; // Temporary text variable for testing
-	sf::Font font; // Temporary font variable for testing
+    sf::Text mText; // Temporary text variable for testing
+	sf::Font mFont; // Temporary font variable for testing
 };
 // TODO: Block Manager of some sort to handle block creation and storage of block signatures, maybe also block queue management?
 /*

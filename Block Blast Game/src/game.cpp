@@ -2,39 +2,37 @@
 #include <print>
 
 Game::Game()
-	: screenWidth(1280), screenHeight(720)
-	, frameRateLimit(100)
-	, deltaTime(1.f / frameRateLimit)
-	, tileSize(50, 50)
-	, tileMap(sf::Vector2f(100, 100), tileSize)
-	, state(State::Play)
-	, mousePosition(0, 0)
-	, activeBlock(nullptr)
-{ 
-	window.create(sf::VideoMode(screenWidth, screenHeight), "Block Blast");
-	window.setFramerateLimit(frameRateLimit);
+	: mScreenWidth(1280), mScreenHeight(720)
+	, mFrameRateLimit(100)
+	, mDeltaTime(1.f / mFrameRateLimit)
+	, mTileSize(50, 50)
+	, mTileMap(sf::Vector2f(100, 100), mTileSize)
+	, mActiveBlock(nullptr)
+{
+	mWindow.create(sf::VideoMode(mScreenWidth, mScreenHeight), "Block Blast");
+	mWindow.setFramerateLimit(mFrameRateLimit);
 
 	// Initialize Text
-	if (!font.loadFromFile("res/cour.ttf")) // Replace "arial.ttf" with the path to your font file
+	if (!mFont.loadFromFile("res/cour.ttf")) // Replace "arial.ttf" with the path to your font file
 		std::quick_exit(-1);
 
-	text.setFont(font);
-	text.setCharacterSize(24);
-	text.setFillColor(sf::Color::White);
-	text.setString(std::to_string(frameRateLimit));
+	mText.setFont(mFont);
+	mText.setCharacterSize(24);
+	mText.setFillColor(sf::Color::White);
+	mText.setString(std::to_string(mFrameRateLimit));
 
-	blockHand[0] = Block(Block::Shape::ThreeByThree, sf::Vector2f(800, 100), 0, sf::Color::Cyan);
-	blockHand[1] = Block(Block::Shape::FiveByOne,       sf::Vector2f(800, 300), 3, sf::Color::Green);
-	blockHand[2] = Block(Block::Shape::LShapeSmall,  sf::Vector2f(800, 500), 1, sf::Color::Blue);
+	mBlockHand[0] = Block(Block::Shape::ThreeByThree, sf::Vector2f(800, 100), 0, sf::Color::Cyan);
+	mBlockHand[1] = Block(Block::Shape::FiveByOne,       sf::Vector2f(800, 300), 3, sf::Color::Green);
+	mBlockHand[2] = Block(Block::Shape::LShapeSmall,  sf::Vector2f(800, 500), 1, sf::Color::Blue);
 }
 
 void Game::Init() {}
 
 void Game::MainLoop()
 {
-	while (window.isOpen())
+    while (mWindow.isOpen())
 	{
-		deltaTime = deltaTimeCalculator.GetDeltaTime();
+		mDeltaTime = mDeltaTimeCalculator.GetDeltaTime();
 
 		HandleEvents();
 		Update();
@@ -42,107 +40,126 @@ void Game::MainLoop()
 	}
 }
 
+// ------------------- Event Handling Methods -------------------
+
 void Game::HandleEvents()
 {
-	while (window.pollEvent(event))
+    while (mWindow.pollEvent(mEvent))
 	{
-		if (event.type == sf::Event::Closed)
+		if (mEvent.type == sf::Event::Closed)
 		{
-			window.close();
+			mWindow.close();
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
 		{
-			window.close();
+			mWindow.close();
 		}
 
 		HandleBlockEvents();
 	}
 }
 
+void Game::HandleBlockEvents()
+{
+    if (mEvent.type == sf::Event::MouseButtonReleased && mEvent.mouseButton.button == sf::Mouse::Left)
+	{
+		mState.mouseLeftButtonPressed  = false;
+		mState.mouseLeftButtonReleased = true;
+	}
+	if (mEvent.type == sf::Event::MouseButtonPressed && mEvent.mouseButton.button == sf::Mouse::Left) // Mouse button pressed: player grabbing acive block
+	{
+		mState.mouseLeftButtonPressed  = true;
+		mState.mouseLeftButtonReleased = false;
+	}
+}
+
+// ------------------- Update Methods -------------------
+
 void Game::Update()
 {
-	mousePosition = sf::Vector2f(sf::Mouse::getPosition(window));
+    mState.mousePosition = sf::Vector2f(sf::Mouse::getPosition(mWindow));
 
-	text.setString(std::to_string(static_cast<int>(1.f / deltaTime + 0.5f)));
-	text.setPosition(screenWidth - text.getLocalBounds().width - 9, 0);
+	mText.setString(std::to_string(static_cast<int>(1.f / mDeltaTime + 0.5f)));
+	mText.setPosition(mScreenWidth - mText.getLocalBounds().width - 9, 0);
 
-	tileMap.Update();
+	mTileMap.Update();
 	UpdateBlocks();
 }
 
-void Game::Render()
+void Game::UpdateBlocks()
 {
-	window.clear(sf::Color(20, 20, 20));
-
-	// Render order
-	tileMap.Draw(window);
-	DrawBlocks();
-
-	window.draw(text); // Draw FPS onto screen
-
-	window.display();
-}
-
-void Game::HandleBlockEvents()
-{
-	if (activeBlock && event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left)
+    if (mActiveBlock)
 	{
-		if (tileMap.PlaceBlock(*activeBlock)) // Try to place block on tilemap, if block is placeable then place block and hide block in block hand, otherwise reset block position to original position
+		mActiveBlock->SetBlockCenterPosition(mState.mousePosition);
+		mTileMap.PlaceBlockOverlay(*mActiveBlock);
+
+		if (mLastActiveBlockPosition != mActiveBlock->GetPosition())
 		{
-			activeBlock->Hide(); // Hide block after placing on tilemap
+			mLastActiveBlockPosition = mActiveBlock->GetPosition();
 		}
-		else
+
+		if (mState.mouseLeftButtonReleased)
 		{
-			activeBlock->SetBlockCenterPosition(activeBlockInitPosition); // Reset block position to original position
+			if (mTileMap.PlaceBlock(*mActiveBlock)) // Try to place block on tilemap, if block is placeable then place block and hide block in block hand, otherwise reset block position to original position
+			{
+				mActiveBlock->Hide(); // Hide block after placing on tilemap
+			}
+			else
+			{
+				mActiveBlock->SetBlockCenterPosition(mActiveBlockInitPosition); // Reset block position to original position
+			}
+			mActiveBlock = nullptr;
 		}
-		activeBlock = nullptr;
 	}
-	else if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) // Mouse button pressed: player grabbing acive block
+	else if (mState.mouseLeftButtonPressed)
 	{
-		for (auto& block : blockHand)
+		for (auto& block : mBlockHand)
 		{
-			if (block.IsTouching(mousePosition)) // Check if mouse is touching block
+			if (block.IsTouching(mState.mousePosition)) // Check if mouse is touching block
 			{
 				// Set active block
-				activeBlock             = &block;
-				activeBlockInitPosition = block.GetBlockCenterPosition(); // Active block initial position is used for resetting block position after placing on tilemap
-				activeBlock->SetBlockCenterPosition(mousePosition);
-
+				mActiveBlock = &block;
+				mActiveBlockInitPosition = block.GetBlockCenterPosition(); // Active block initial position is used for resetting block position after placing on tilemap
+				mActiveBlock->SetBlockCenterPosition(mState.mousePosition);
 
 				break;
 			}
 		}
 	}
+
 }
 
-void Game::UpdateBlocks()
-{
-	if (activeBlock)
-	{
-		activeBlock->SetBlockCenterPosition(mousePosition);
-		tileMap.PlaceBlockOverlay(*activeBlock);
-
-		if (lastActiveBlockPosition != activeBlock->GetPosition())
-		{
-			lastActiveBlockPosition = activeBlock->GetPosition();
-		}
-	}
-}
-
-void Game::DrawBlocks()
-{
-	for (auto& block : blockHand)
-	{
-		if (&block != activeBlock) // Preserve draw order: active block is drawn on top of other blocks
-			block.Draw(window);
-	}
-	if (activeBlock)
-	{
-		activeBlock->Draw(window); // Draw active block on top of other blocks
-	}
-}
+// ------------------- Update Helper Functions -------------------
 
 void Game::CreateNewBlockHand()
 {
 
+}
+
+// ------------------- Draw Methods -------------------
+
+void Game::Render()
+{
+    mWindow.clear(sf::Color(20, 20, 20));
+
+	// Render order
+	mTileMap.Draw(mWindow);
+	DrawBlocks();
+
+	mWindow.draw(mText); // Draw FPS onto screen
+
+	mWindow.display();
+}
+
+void Game::DrawBlocks()
+{
+    for (auto& block : mBlockHand)
+	{
+		if (&block != mActiveBlock) // Preserve draw order: active block is drawn on top of other blocks
+			block.Draw(mWindow);
+	}
+	if (mActiveBlock)
+	{
+		mActiveBlock->Draw(mWindow); // Draw active block on top of other blocks
+	}
 }
