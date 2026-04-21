@@ -32,10 +32,11 @@ extern const tBlockSignature BLOCK_SIGNATURES[NUMBER_OF_BLOCK_TYPES];
 
 class Block
 {
-//using tBlockSignature = std::vector<sf::Vector2f>;
 public:
+	//using tBlockSignature = std::vector<sf::Vector2f>;
 	enum Shape; // Each represents index of block signature in BLOCK_SIGNATURES array
 
+public:
 	Block();
 	Block(const Block& other); // Copy constructor
 	Block(Shape shape, sf::Vector2f position, int orientation, sf::Color color);
@@ -47,9 +48,9 @@ public:
 	sf::Vector2f GetBlockOriginCenter() const; // Return center position of block by averaging the tile positions in pixel reference frame
 	sf::Vector2f GetBlockCenterPosition() const; // Calculate center position of block by averaging the tile positions in pixel reference frame
 
-	sf::Vector2f ConvertSignatureToWorldPosition  (sf::Vector2f signaturePos) const; // Convert block signature position to world position by applying block transform to signature position
+	sf::Vector2f ConvertSignatureToWorldPosition(sf::Vector2f signaturePos) const; // Convert block signature position to world position by applying block transform to signature position
 
-	void SetPosition   (sf::Vector2f position);       // Set position of origin tile in block
+	void SetPosition(sf::Vector2f position);       // Set position of origin tile in block
 	void SetBlockCenterPosition(sf::Vector2f centerPosition); // Set block position given the center of the entire block
 
 	void SetColor   (sf::Color color);
@@ -68,8 +69,8 @@ private:
 	sf::Vector2f ConvertToBlockLocalPosition(sf::Vector2f worldPosition) const; // Convert world position to block local position by applying inverse transform
 
 private:
-	static constexpr unsigned int csNumberOfBlockTypes = 16; // Number of block types, used for defining size of block signature array
-	static const tBlockSignature  csBlockSignatures[csNumberOfBlockTypes]; // Array of block signatures which contain vectors of tile positions in relation to an origin tile at 0,0. Each block type has a different signature which is used to determine the shape of the block.
+	static constexpr unsigned int scNumberOfBlockTypes = 16; // Number of block types, used for defining size of block signature array
+	static const tBlockSignature  scBlockSignatures[scNumberOfBlockTypes]; // Array of block signatures which contain vectors of tile positions in relation to an origin tile at 0,0. Each block type has a different signature which is used to determine the shape of the block.
 
 	sf::Transform   mTransform; // Final transform applied to block which updates based on block position
 	sf::VertexArray mMesh;      // Vertex array used for drawing block, each tile is a quad which is 4 vertices

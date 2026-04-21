@@ -44,15 +44,6 @@ void Block::PopulateVertexArray()
 
 	for (sf::Vector2f tileLocalPos : BLOCK_SIGNATURES[mShape]) // Each position in the signature creates a quad of 4 vertices in vertex array for drawing the block
 	{
-		//if (tileLocalPos == sf::Vector2f(0, 0)) // ORIGIN TILE IS RED FOR DEBUG PURPOUSES, DELETE LATER
-		//{
-		//	mMesh.append(sf::Vertex(tileLocalPos + sf::Vector2f(0, 0), sf::Color::Red));
-		//	mMesh.append(sf::Vertex(tileLocalPos + sf::Vector2f(1, 0), sf::Color::Red));
-		//	mMesh.append(sf::Vertex(tileLocalPos + sf::Vector2f(1, 1), sf::Color::Red));
-		//	mMesh.append(sf::Vertex(tileLocalPos + sf::Vector2f(0, 1), sf::Color::Red));
-		//	continue;
-		//}
-
 		mMesh.append(sf::Vertex(tileLocalPos + sf::Vector2f(0, 0),  mColor));
 		mMesh.append(sf::Vertex(tileLocalPos + sf::Vector2f(1, 0),  mColor));
 		mMesh.append(sf::Vertex(tileLocalPos + sf::Vector2f(1, 1),  mColor));
@@ -145,7 +136,7 @@ void Block::Draw(sf::RenderWindow& window)
 	window.draw(mMesh, mTransform);
 }
 
-const tBlockSignature Block::csBlockSignatures[csNumberOfBlockTypes] =
+const tBlockSignature Block::scBlockSignatures[scNumberOfBlockTypes] =
 {
 	{}, // Empty
 

@@ -10,20 +10,26 @@
 
 class Game
 {
-	// ----------------- Member Types -----------------
+// ----------------- Member Types -----------------
 private:
-	enum GameState { Play, Pause }; // Game state enum representing all game states 
-	struct State // Game state struct holding all event data related to current game state and updates
+	// Define GameState and State before they are used as member variables
+	enum GameState
+	{ 
+		Play,
+		Pause
+	};
+
+	struct State 
 	{
 		sf::Vector2f mousePosition;
 
 		GameState gameState;
-		
+
 		bool mouseLeftButtonPressed;
 		bool mouseLeftButtonReleased;
 	};
 
-	// ----------------- Member Functions -----------------
+// ----------------- Member Functions -----------------
 public:
 	Game();
 
@@ -51,7 +57,7 @@ private:
 	// TODO: should IsActiveBlockTouchingTileMap be inline?
 	void CreateNewBlockHand(); // Updates blockHand with three new blocks based on current tile map state. Implements block spawning algorithm
 
-	// ----------------- Member Variables -----------------
+// ----------------- Member Variables -----------------
 private:
 	// SFML Members
 	sf::RenderWindow mWindow; // SFML render window
@@ -80,6 +86,7 @@ private:
     sf::Text mText; // Temporary text variable for testing
 	sf::Font mFont; // Temporary font variable for testing
 };
+
 // TODO: Block Manager of some sort to handle block creation and storage of block signatures, maybe also block queue management?
 /*
 * Handle the drawing of blocks
