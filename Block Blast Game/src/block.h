@@ -23,23 +23,18 @@
 // There should be a set position function that edits the transform
 // A draw function that uses the transfrom which passes to the gpu
 
-using tBlockSignature = std::vector<sf::Vector2f>;
-
-// TODO: decide if these need to be globals or not. could be stored in game. could be stored as static members who knows
-// TODO: put this into a game singleton or make its own singleton class that can be accessed by block and tilemap
-constexpr int NUMBER_OF_BLOCK_TYPES = 16;
-extern const tBlockSignature BLOCK_SIGNATURES[NUMBER_OF_BLOCK_TYPES];
-
 class Block
 {
 public:
-	//using tBlockSignature = std::vector<sf::Vector2f>;
+	using tBlockSignature = std::vector<sf::Vector2f>;
 	enum Shape; // Each represents index of block signature in BLOCK_SIGNATURES array
 
 public:
 	Block();
 	Block(const Block& other); // Copy constructor
 	Block(Shape shape, sf::Vector2f position, int orientation, sf::Color color);
+
+	const tBlockSignature& GetSignature() const; // Get block signature by calculating index of block shape in BLOCK_SIGNATURES array
 
 	sf::Color   GetColor() const;
 	const Shape GetShape() const; // Get block shape by calculating index of block signature in BLOCK_SIGNATURES array

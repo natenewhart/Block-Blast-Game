@@ -29,6 +29,11 @@ Block::Block(Shape shape, sf::Vector2f position, int orientation, sf::Color colo
 	Init();
 }
 
+const Block::tBlockSignature& Block::GetSignature() const
+{
+	return scBlockSignatures[mShape];
+}
+
 void Block::Init()
 {
 	SetPosition(mPosition);
@@ -42,7 +47,7 @@ void Block::PopulateVertexArray()
 	mMesh.clear();
 	mMesh.setPrimitiveType(sf::Quads);
 
-	for (sf::Vector2f tileLocalPos : BLOCK_SIGNATURES[mShape]) // Each position in the signature creates a quad of 4 vertices in vertex array for drawing the block
+	for (sf::Vector2f tileLocalPos : GetSignature()) // Each position in the signature creates a quad of 4 vertices in vertex array for drawing the block
 	{
 		mMesh.append(sf::Vertex(tileLocalPos + sf::Vector2f(0, 0),  mColor));
 		mMesh.append(sf::Vertex(tileLocalPos + sf::Vector2f(1, 0),  mColor));
@@ -76,7 +81,7 @@ sf::Vector2f Block::GetBlockCenterPosition() const
 {
 	sf::Vector2f max(0.f, 0.f);
 
-	for (sf::Vector2f tileLocalPos : BLOCK_SIGNATURES[mShape])
+	for (sf::Vector2f tileLocalPos : GetSignature())
 	{
 		if (tileLocalPos.x > max.x) max.x = tileLocalPos.x;
 		if (tileLocalPos.y > max.y) max.y = tileLocalPos.y;
@@ -118,7 +123,7 @@ bool Block::IsTouching(sf::Vector2f position) const // Checks if any position ve
 
 	sf::Vector2f localPos = ConvertToBlockLocalPosition(position); // Convert position to block local position by applying inverse transform
 	
-	for (sf::Vector2f localTilePos : BLOCK_SIGNATURES[mShape])
+	for (sf::Vector2f localTilePos : GetSignature())
 	{
 		if (isWithinRect(localTilePos, { 1.f, 1.f }, localPos)) return true;
 	}
@@ -136,7 +141,7 @@ void Block::Draw(sf::RenderWindow& window)
 	window.draw(mMesh, mTransform);
 }
 
-const tBlockSignature Block::scBlockSignatures[scNumberOfBlockTypes] =
+const Block::tBlockSignature Block::scBlockSignatures[scNumberOfBlockTypes] =
 {
 	{}, // Empty
 
@@ -200,74 +205,6 @@ const tBlockSignature Block::scBlockSignatures[scNumberOfBlockTypes] =
 	{ //ThreeDiagonal
 						{2, 2},
 				{1, 1},
-		{0, 0}
-	},
-};
-
-const tBlockSignature BLOCK_SIGNATURES[NUMBER_OF_BLOCK_TYPES] =
-{
-	{}, // Empty
-
-	{ //OneByOne
-		{0, 0}
-	}, 
-	{ //TwoByOne
-		{0, 0},{1, 0}
-	}, 
-	{ //ThreeByOne
-		{0, 0}, {1, 0}, {2, 0}
-	}, 
-	{ //FourByOne
-		{0, 0}, {1, 0}, {2, 0}, {3, 0}
-	}, 
-	{ //FiveByOne
-		{0, 0}, {1, 0}, {2, 0}, {3, 0}, {4, 0}
-	}, 
-
-	{ //TwoByTwo
-		{0, 1}, {1, 1},
-		{0, 0}, {1, 0}
-	},
-	{ //TwoByThree
-		{0, 2}, {1, 2},
-		{0, 1}, {1, 1},
-		{0, 0}, {1, 0}
-	},
-	{ //ThreeByThree
-		{0, 2}, {1, 2}, {2, 2},
-		{0, 1}, {1, 1}, {2, 1},
-		{0, 0}, {1, 0}, {2, 0}
-	},
-
-	{ //LShapeLarge
-		{0, 2},
-		{0, 1},
-		{0, 0}, {1, 0}, {2, 0}
-	},
-	{ //LShapeMedium
-		{0, 2},
-		{0, 1},
-		{0, 0}, {1, 0}
-	},
-	{ //LShapeSmall
-		{0, 1},
-		{0, 0}, {1, 0}
-	},
-	{ //TShape
-		        {1, 1},
-		{0, 0}, {1, 0}, {2, 0},
-	},
-	{ //SShape
-				{1, 1}, {2, 1},
-		{0, 0}, {1, 0}
-	},
-	{ //TwoDiagonal
-			    {1, 1},
-		{0, 0}
-	},
-	{ //ThreeDiagonal
-		                {2, 2},
-		        {1, 1},
 		{0, 0}
 	},
 };

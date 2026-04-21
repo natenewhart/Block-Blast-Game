@@ -271,7 +271,7 @@ bool TileMap::IsBlockPlaceable(const Block& block, sf::Vector2f newBlockPos) con
 	Block tempBlock = block;            // Temporary block with new position
 	tempBlock.SetPosition(newBlockPos);
 
-	for (sf::Vector2f localTilePos : BLOCK_SIGNATURES[block.GetShape()])
+	for (sf::Vector2f localTilePos : block.GetSignature())
 	{
 		sf::Vector2f tileWorldPos = tempBlock.ConvertSignatureToWorldPosition(localTilePos);
 		sf::Vector2i currGridPos  = GetGridPosition(tileWorldPos);
@@ -283,7 +283,7 @@ bool TileMap::IsBlockPlaceable(const Block& block, sf::Vector2f newBlockPos) con
 
 void TileMap::PlaceBlockOnTileMap(const Block& block)
 {
-	for (sf::Vector2f localTilePos : BLOCK_SIGNATURES[block.GetShape()])
+	for (sf::Vector2f localTilePos : block.GetSignature())
 	{
 		sf::Vector2f tileWorldPos = block.ConvertSignatureToWorldPosition(localTilePos);
 		sf::Vector2i currGridPos  = GetGridPosition(tileWorldPos);
@@ -294,7 +294,7 @@ void TileMap::PlaceBlockOnTileMap(const Block& block)
 
 void TileMap::PlaceBlockOverlayOnTileMap(const Block& block)
 {
-	for (sf::Vector2f localTilePos : BLOCK_SIGNATURES[block.GetShape()])
+	for (sf::Vector2f localTilePos : block.GetSignature())
 	{
 		sf::Vector2f tileWorldPos = block.ConvertSignatureToWorldPosition(localTilePos);
 		sf::Vector2i currGridPos = GetGridPosition(tileWorldPos);
