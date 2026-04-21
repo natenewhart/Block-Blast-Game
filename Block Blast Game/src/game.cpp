@@ -106,8 +106,6 @@ void Game::HandleBlockEvents()
 				// Set active block
 				activeBlock             = &block;
 				activeBlockInitPosition = block.GetBlockCenterPosition(); // Active block initial position is used for resetting block position after placing on tilemap
-				//blockOffset             = activeBlock->CalculateBlockCenter() - mousePosition;
-				//activeBlock->SetBlockCenter(mousePosition + blockOffset); // Set block position to mouse position with offset to maintain relative position while dragging
 				activeBlock->SetBlockCenterPosition(mousePosition);
 
 
@@ -121,11 +119,7 @@ void Game::UpdateBlocks()
 {
 	if (activeBlock)
 	{
-		//activeBlock->SetPosition(mousePosition + blockOffset);
 		activeBlock->SetBlockCenterPosition(mousePosition);
-		//blockOffset = activeBlock->CalculateBlockCenter() - mousePosition; // offset to center
-		//activeBlock->SetBlockCenter(mousePosition + blockOffset);
-
 		tileMap.PlaceBlockOverlay(*activeBlock);
 
 		if (lastActiveBlockPosition != activeBlock->GetPosition())
@@ -144,7 +138,6 @@ void Game::DrawBlocks()
 	}
 	if (activeBlock)
 	{
-		//blockPlacementOutline.Draw(window); // Draw placement highlight on grid
 		activeBlock->Draw(window); // Draw active block on top of other blocks
 	}
 }
