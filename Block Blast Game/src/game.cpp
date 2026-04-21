@@ -90,24 +90,25 @@ void Game::UpdateBlocks()
     if (mActiveBlock)
 	{
 		mActiveBlock->SetBlockCenterPosition(mState.mousePosition);
-		mTileMap.PlaceBlockOverlay(*mActiveBlock);
-
-		if (mLastActiveBlockPosition != mActiveBlock->GetPosition())
-		{
-			mLastActiveBlockPosition = mActiveBlock->GetPosition();
-		}
+		bool placeBlockOverlaySuccess = mTileMap.PlaceBlockOverlay(*mActiveBlock); // Place block overlay on tilemap for block placement preview, returns true if block is placeable and overlay was placed successfully, false if block is not placeable and overlay was not placed
 
 		if (mState.mouseLeftButtonReleased)
 		{
-			if (mTileMap.PlaceBlock(*mActiveBlock)) // Try to place block on tilemap, if block is placeable then place block and hide block in block hand, otherwise reset block position to original position
+			if (placeBlockOverlaySuccess)
 			{
-				mActiveBlock->Hide(); // Hide block after placing on tilemap
+				if (mTileMap.PlaceBlock(*mActiveBlock)) // Try to place block on tilemap, if block is placeable then place block and hide block in block hand, otherwise reset block position to original position
+				{
+					std::println("place");
+					mActiveBlock->Hide(); // Hide block after placing on tilemap
+				}
+				mActiveBlock = nullptr;
 			}
 			else
 			{
 				mActiveBlock->SetBlockCenterPosition(mActiveBlockInitPosition); // Reset block position to original position
+				std::println("not place");
+				mActiveBlock = nullptr;
 			}
-			mActiveBlock = nullptr;
 		}
 	}
 	else if (mState.mouseLeftButtonPressed)

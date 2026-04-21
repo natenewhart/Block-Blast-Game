@@ -12,8 +12,8 @@ TileMap::TileMap()
 	, mTiles(mHeight, std::vector<Tile>(mWidth))
 	, mTileOverlayColors(mHeight, std::vector<sf::Color>(mWidth, sf::Color::Transparent))
 	, mPosition(100, 100)
-	, cBlockSearchAreaSize(2)
-	, cSearchAreaWidth(InitSearchAreaWidth(cBlockSearchAreaSize))
+	, mcBlockSearchAreaSize(2)
+	, mcSearchAreaWidth(InitSearchAreaWidth(mcBlockSearchAreaSize))
 {
 	Init();
 }
@@ -26,8 +26,8 @@ TileMap::TileMap(sf::Vector2f position)
 	, mTiles(mHeight, std::vector<Tile>(mWidth))
 	, mTileOverlayColors(mHeight, std::vector<sf::Color>(mWidth, sf::Color::Transparent))
 	, mPosition(position)
-	, cBlockSearchAreaSize(2)
-	, cSearchAreaWidth(InitSearchAreaWidth(cBlockSearchAreaSize))
+	, mcBlockSearchAreaSize(2)
+	, mcSearchAreaWidth(InitSearchAreaWidth(mcBlockSearchAreaSize))
 {
 	Init();
 }
@@ -81,6 +81,15 @@ void TileMap::Draw(sf::RenderWindow& window)
 	DrawGridLines(window);
 }
 
+bool TileMap::IsBlockNearPlaceable(sf::Vector2f blockPosition) const
+{
+	float extraTiles = mcBlockSearchAreaSize - 1; // Number of tiles in search area around block position
+	sf::Vector2f newPos = mPosition - extraTiles * TileSettings::Get().size; // Top left corner of search area around block position
+	sf::Vector2f tileMapScale = sf::Vector2f(mWidth * TileSettings::Get().size.x, mHeight * TileSettings::Get().size.y) + (extraTiles * 2) * TileSettings::Get().size; // Size of tilemap plus search area around block position
+
+	return isWithinRect(newPos, tileMapScale, blockPosition);
+}
+
 bool TileMap::PlaceBlock(Block& block)
 {
 	sf::Vector2f newBlockPos = ClosestOpenBlockPosition(block);
@@ -112,10 +121,10 @@ sf::Vector2f TileMap::ClosestOpenBlockPosition(const Block& block) const
 
 	sf::Vector2f originTilePos = SnapToTile(block.GetBlockOriginCenter()); // Top left corner of tile that block origin center is inside of
 	
-	for (int i = 0; i < cSearchAreaWidth * cSearchAreaWidth; i++)
+	for (int i = 0; i < mcSearchAreaWidth * mcSearchAreaWidth; i++)
 	{
-		int col = (i % cSearchAreaWidth) - cBlockSearchAreaSize; // Column offset from block position (-cBlockSearchAreaSize / 2, ..., 0, ..., cBlockSearchAreaSize / 2)
-		int row = (i / cSearchAreaWidth) - cBlockSearchAreaSize; // Row offset from block position    (-cBlockSearchAreaSize / 2, ..., 0, ..., cBlockSearchAreaSize / 2)
+		int col = (i % mcSearchAreaWidth) - mcBlockSearchAreaSize; // Column offset from block position (-mcBlockSearchAreaSize / 2, ..., 0, ..., mcBlockSearchAreaSize / 2)
+		int row = (i / mcSearchAreaWidth) - mcBlockSearchAreaSize; // Row offset from block position    (-mcBlockSearchAreaSize / 2, ..., 0, ..., mcBlockSearchAreaSize / 2)
 
 		// Top left corner of each tile in search area around block position
 		sf::Vector2f currTilePos = originTilePos + sf::Vector2f(col * TileSettings::Get().size.x, row * TileSettings::Get().size.y);

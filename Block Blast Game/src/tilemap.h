@@ -24,6 +24,8 @@ public:
 	void Update(); // Update tilemap state, check for completed rows and columns and delete tiles in those rows and columns
 	void Draw(sf::RenderWindow& window); // Draws grid lines and tiles
 
+	bool IsBlockNearPlaceable(sf::Vector2f blockPosition) const; // Is block close enough to tilemap to warrant a placeability check
+	//TODO DELETE THIS IS TOUCHING
 	bool IsTouching(sf::Vector2f position) const; // Checks if any tile positions of block are occupied on tilemap, used for checking valid block placement
 	bool PlaceBlock(Block& block); // Places block on tilemap by setting tiles at block tile positions to occupied and block color.
 	bool PlaceBlockOverlay(Block block); // Places block outline on tilemap by setting tiles at block tile positions to occupied and block color with transparency. Used for block placement preview when player is moving block around tilemap. Returns true if block outline was placed successfully, false if any tile positions of block were occupied on tilemap
@@ -67,6 +69,6 @@ private:
 
 	sf::Vector2f mPosition;        // Top left corner of tilemap
 
-	const unsigned int cBlockSearchAreaSize; // Area of searching for finding open blocks for block placement if value is 1 then search 1x1 area around block. If value is 2 then search 3x3 area around block, etc.
-	const unsigned int cSearchAreaWidth;     // Width of search area for finding open blocks for block placement, calculated from cBlockSearchAreaSize
+	const unsigned int mcBlockSearchAreaSize; // Area of searching for finding open blocks for block placement if value is 1 then search 1x1 area around block. If value is 2 then search 3x3 area around block, etc.
+	const unsigned int mcSearchAreaWidth;     // Width of search area for finding open blocks for block placement, calculated from cBlockSearchAreaSize
 };

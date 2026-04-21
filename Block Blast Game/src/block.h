@@ -26,8 +26,8 @@
 class Block
 {
 public:
-	using tBlockSignature = std::vector<sf::Vector2f>;
-	enum Shape; // Each represents index of block signature in BLOCK_SIGNATURES array
+	using tBlockSignature = std::vector<sf::Vector2f>; // Block signature stores all block tile positions in relation to origin tile in block space
+	enum Shape; // Each represents index of block signature in BLOCK_SIGNATURES array, all different shapes
 
 public:
 	Block();
