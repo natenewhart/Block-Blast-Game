@@ -67,7 +67,6 @@ private:
 
 	// Game Variables
     float mDeltaTime; // Last frame delta time value
-	sf::Vector2f mTileSize; // Tile dimensions in pixels
 	TileMap mTileMap;
 
 	// Block Management Variables
@@ -76,7 +75,6 @@ private:
 	sf::Vector2f mActiveBlockInitPosition; // Initial position of active block when picked up, used for resetting block position after placing on tilemap
 	sf::Vector2f mBlockOffset; // Offset between block position and mouse position to maintain relative position while dragging
 	sf::Vector2f mLastActiveBlockPosition; // Last position of active block, used for checking if block is being moved and for resetting block position after placing on tilemap
-	//const sf::Vector2f defaultBlockHandPositions[3]; // Default positions for blocks in block hand, used for resetting block position after placing on tilemap
 
 	// Display Variables
     sf::Text mText; // Temporary text variable for testing

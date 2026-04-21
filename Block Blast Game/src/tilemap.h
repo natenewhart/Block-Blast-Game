@@ -17,7 +17,7 @@ class TileMap
 {
 public:
 	TileMap();
-	TileMap(sf::Vector2f position, sf::Vector2f tileSize);
+	TileMap(sf::Vector2f position);
 
 	void Clear(); // All tiles set to empty and transparent color
 
@@ -66,7 +66,6 @@ private:
 	std::vector<std::vector<sf::Color>> mTileOverlayColors; // Stores the overlayed
 
 	sf::Vector2f mPosition;        // Top left corner of tilemap
-	sf::Vector2f mTileSize;        // Tile dimensions (width, height) in pixels
 
 	const unsigned int cBlockSearchAreaSize; // Area of searching for finding open blocks for block placement if value is 1 then search 1x1 area around block. If value is 2 then search 3x3 area around block, etc.
 	const unsigned int cSearchAreaWidth;     // Width of search area for finding open blocks for block placement, calculated from cBlockSearchAreaSize

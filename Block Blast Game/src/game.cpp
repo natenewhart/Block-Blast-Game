@@ -5,8 +5,7 @@ Game::Game()
 	: mScreenWidth(1280), mScreenHeight(720)
 	, mFrameRateLimit(100)
 	, mDeltaTime(1.f / mFrameRateLimit)
-	, mTileSize(50, 50)
-	, mTileMap(sf::Vector2f(100, 100), mTileSize)
+	, mTileMap(sf::Vector2f(100, 100))
 	, mActiveBlock(nullptr)
 {
 	mWindow.create(sf::VideoMode(mScreenWidth, mScreenHeight), "Block Blast");
