@@ -94,6 +94,7 @@ void Game::UpdateBlocks()
 		// Boolean checks
 		bool nearPlaceable = mTileMap.IsBlockNearPlaceable(mActiveBlock->GetBlockCenterPosition()); // If block close enough to tilemap to be placed
 		sf::Vector2f closestOpenBlockPosition(-1, -1);
+		bool isPlaceable = false;
 
 		if (nearPlaceable)
 		{
@@ -101,13 +102,14 @@ void Game::UpdateBlocks()
 
 			if (closestOpenBlockPosition.x != -1 && closestOpenBlockPosition.y != -1)
 			{
+				isPlaceable = true;
+
 				Block blockOverlay = *mActiveBlock; // Create block overlay for block placement preview
 				blockOverlay.SetPosition(closestOpenBlockPosition);
 				mTileMap.PlaceBlockOnTileMapOverlay(blockOverlay); // Place block overlay on tilemap for block placement preview, returns true if block is placeable and overlay was placed successfully, false if block is not placeable and overlay was not placed
 			}
 		}
 			
-		bool isPlaceable = nearPlaceable && (closestOpenBlockPosition.x != -1 && closestOpenBlockPosition.y != -1); // Block is placeable if it is near enough to tilemap and there is an open tile position for the block to be placed on
 		if (mState.mouseLeftButtonReleased)
 		{
 			if (isPlaceable)
@@ -159,7 +161,7 @@ void Game::Render()
     mWindow.clear(sf::Color(20, 20, 20));
 
 	// Render order
-	//mTileMap.Draw(mWindow);
+	mTileMap.Draw(mWindow);
 	DrawBlocks();
 
 	mWindow.draw(mText); // Draw FPS onto screen
