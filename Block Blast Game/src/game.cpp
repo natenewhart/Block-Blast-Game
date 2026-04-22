@@ -96,11 +96,10 @@ void Game::UpdateBlocks()
 		{
 			if (placeBlockOverlaySuccess)
 			{
-				if (mTileMap.PlaceBlock(*mActiveBlock)) // Try to place block on tilemap, if block is placeable then place block and hide block in block hand, otherwise reset block position to original position
-				{
-					std::println("place");
-					mActiveBlock->Hide(); // Hide block after placing on tilemap
-				}
+				mTileMap.PlaceBlock(*mActiveBlock); // Try to place block on tilemap, if block is placeable then place block and hide block in block hand, otherwise reset block position to original position
+				
+				std::println("place");
+				mActiveBlock->Hide(); // Hide block after placing on tilemap
 				mActiveBlock = nullptr;
 			}
 			else
