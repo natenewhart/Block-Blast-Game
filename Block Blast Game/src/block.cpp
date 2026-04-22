@@ -11,15 +11,6 @@ Block::Block()
 	Init();
 }
 
-Block::Block(const Block& other)
-	: mShape       (other.mShape)
-	, mPosition    (other.mPosition)
-	, mOrientation (other.mOrientation)
-	, mColor       (other.mColor)
-	, mTransform   (other.mTransform)
-	, mMesh        (other.mMesh)
-{}
-
 Block::Block(Shape shape, sf::Vector2f position, int orientation, sf::Color color)
 	: mShape       (shape)
     , mPosition    (position)

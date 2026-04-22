@@ -31,7 +31,6 @@ public:
 
 public:
 	Block();
-	Block(const Block& other); // Copy constructor
 	Block(Shape shape, sf::Vector2f position, int orientation, sf::Color color);
 
 	const tBlockSignature& GetSignature() const; // Get block signature by calculating index of block shape in BLOCK_SIGNATURES array
