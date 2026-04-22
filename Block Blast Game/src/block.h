@@ -39,7 +39,7 @@ public:
 	const Shape GetShape() const; // Get block shape by calculating index of block signature in BLOCK_SIGNATURES array
 	
 	sf::Vector2f GetPosition() const; // Return top left corner of tile in block at (0, 0) given by BLOCK_SIGNATURES
-	sf::Vector2f GetBlockOriginCenter() const; // Return center position of block by averaging the tile positions in pixel reference frame
+	sf::Vector2f GetBlockOriginCenter() const;   // Return center position of origin block (0, 0) in pixel frame
 	sf::Vector2f GetBlockCenterPosition() const; // Calculate center position of block by averaging the tile positions in pixel reference frame
 
 	sf::Vector2f ConvertSignatureToWorldPosition(sf::Vector2f signaturePos) const; // Convert block signature position to world position by applying block transform to signature position

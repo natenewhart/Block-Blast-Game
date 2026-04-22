@@ -108,7 +108,7 @@ bool TileMap::PlaceBlockOverlay(Block block)
 	if (newBlockPos.x != -1 && newBlockPos.y != -1)
 	{
 		block.SetPosition(newBlockPos);
-		PlaceBlockOverlayOnTileMap(block);
+		PlaceBlockOnTileMapOverlay(block);
 		return true;
 	}
 	return false;
@@ -301,7 +301,7 @@ void TileMap::PlaceBlockOnTileMap(const Block& block)
 	}
 }
 
-void TileMap::PlaceBlockOverlayOnTileMap(const Block& block)
+void TileMap::PlaceBlockOnTileMapOverlay(const Block& block)
 {
 	for (sf::Vector2f localTilePos : block.GetSignature())
 	{

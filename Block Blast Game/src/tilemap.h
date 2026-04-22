@@ -33,6 +33,9 @@ public:
 	
 	sf::Vector2f SnapToTile(sf::Vector2f position) const;  // Take pixel pos and return position of current tile (top left)
 
+	void PlaceBlockOnTileMap(const Block& block);        // Places block on tilemap at given grid position by setting tiles at block tile positions to occupied and block color. Returns true if block was placed successfully, false if any tile positions of block were occupied on tilemap
+	void PlaceBlockOnTileMapOverlay(const Block& block); // Places block overlay on tilemap at given grid position by setting tiles at block tile positions to occupied and block color with transparency. Used for block placement preview when player is moving block around tilemap. Returns true if block overlay was placed successfully, false if any tile positions of block were occupied on tilemap
+
 private:
 	void Init(); // Initializes tilemap data and grid vertices
 	int InitSearchAreaWidth(int blockSearchAreaSize) const; // Initialize search area width constant variable
@@ -54,8 +57,8 @@ private:
 	bool IsGridPosition  (sf::Vector2i gridPosition) const; // Checks if grid position is within bounds of tilemap
 	bool IsBlockPlaceable(const Block& block, sf::Vector2f newBlockPos) const; // Overload doesn't require block object
 	
-	void PlaceBlockOnTileMap(const Block& block);        // Places block on tilemap at given grid position by setting tiles at block tile positions to occupied and block color. Returns true if block was placed successfully, false if any tile positions of block were occupied on tilemap
-	void PlaceBlockOverlayOnTileMap(const Block& block); // Places block overlay on tilemap at given grid position by setting tiles at block tile positions to occupied and block color with transparency. Used for block placement preview when player is moving block around tilemap. Returns true if block overlay was placed successfully, false if any tile positions of block were occupied on tilemap
+	//void PlaceBlockOnTileMap(const Block& block);        // Places block on tilemap at given grid position by setting tiles at block tile positions to occupied and block color. Returns true if block was placed successfully, false if any tile positions of block were occupied on tilemap
+	//void PlaceBlockOverlayOnTileMap(const Block& block); // Places block overlay on tilemap at given grid position by setting tiles at block tile positions to occupied and block color with transparency. Used for block placement preview when player is moving block around tilemap. Returns true if block overlay was placed successfully, false if any tile positions of block were occupied on tilemap
 
 private:
 	sf::RectangleShape mTileRect;        // Rectangle shape used for drawing tiles. We can reuse the same shape and just change its position and color for each tile.

@@ -3,7 +3,7 @@
 
 Game::Game()
 	: mScreenWidth(1280), mScreenHeight(720)
-	, mFrameRateLimit(100)
+	, mFrameRateLimit(0)
 	, mDeltaTime(1.f / mFrameRateLimit)
 	, mTileMap(sf::Vector2f(100, 100))
 	, mActiveBlock(nullptr)
@@ -87,28 +87,45 @@ void Game::Update()
 
 void Game::UpdateBlocks()
 {
-    if (mActiveBlock)
+	if (mActiveBlock)
 	{
 		mActiveBlock->SetBlockCenterPosition(mState.mousePosition);
-		bool placeBlockOverlaySuccess = mTileMap.PlaceBlockOverlay(*mActiveBlock); // Place block overlay on tilemap for block placement preview, returns true if block is placeable and overlay was placed successfully, false if block is not placeable and overlay was not placed
+		
+		// Boolean checks
+		bool nearPlaceable = mTileMap.IsBlockNearPlaceable(mActiveBlock->GetBlockCenterPosition()); // If block close enough to tilemap to be placed
+		sf::Vector2f closestOpenBlockPosition(-1, -1);
 
+		if (nearPlaceable)
+		{
+			closestOpenBlockPosition = mTileMap.ClosestOpenBlockPosition(*mActiveBlock); // Get closest placeable tile position to block position, returns (-1, -1) if no placeable position is found
+
+			if (closestOpenBlockPosition.x != -1 && closestOpenBlockPosition.y != -1)
+			{
+				Block blockOverlay = *mActiveBlock; // Create block overlay for block placement preview
+				blockOverlay.SetPosition(closestOpenBlockPosition);
+				mTileMap.PlaceBlockOnTileMapOverlay(blockOverlay); // Place block overlay on tilemap for block placement preview, returns true if block is placeable and overlay was placed successfully, false if block is not placeable and overlay was not placed
+			}
+		}
+			
+		bool isPlaceable = nearPlaceable && (closestOpenBlockPosition.x != -1 && closestOpenBlockPosition.y != -1); // Block is placeable if it is near enough to tilemap and there is an open tile position for the block to be placed on
 		if (mState.mouseLeftButtonReleased)
 		{
-			if (placeBlockOverlaySuccess)
+			if (isPlaceable)
 			{
-				mTileMap.PlaceBlock(*mActiveBlock); // Try to place block on tilemap, if block is placeable then place block and hide block in block hand, otherwise reset block position to original position
-				
-				std::println("place");
+				// place block
+				mActiveBlock->SetPosition(closestOpenBlockPosition);
+				mTileMap.PlaceBlockOnTileMap(*mActiveBlock); // Try to place block on tilemap, if block is placeable then place block and hide block in block hand, otherwise reset block position to original position
+
 				mActiveBlock->Hide(); // Hide block after placing on tilemap
 				mActiveBlock = nullptr;
 			}
 			else
 			{
+				// return to original position
 				mActiveBlock->SetBlockCenterPosition(mActiveBlockInitPosition); // Reset block position to original position
-				std::println("not place");
 				mActiveBlock = nullptr;
 			}
-		}
+		}	
 	}
 	else if (mState.mouseLeftButtonPressed)
 	{
@@ -142,7 +159,7 @@ void Game::Render()
     mWindow.clear(sf::Color(20, 20, 20));
 
 	// Render order
-	mTileMap.Draw(mWindow);
+	//mTileMap.Draw(mWindow);
 	DrawBlocks();
 
 	mWindow.draw(mText); // Draw FPS onto screen
