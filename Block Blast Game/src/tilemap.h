@@ -32,8 +32,6 @@ public:
 	void Draw(sf::RenderWindow& window); // Draws grid lines and tiles
 
 	bool IsBlockNearPlaceable(sf::Vector2f blockPosition) const; // Is block close enough to tilemap to warrant a placeability check
-	//TODO DELETE THIS IS TOUCHING
-	bool IsTouching(sf::Vector2f position) const; // Checks if any tile positions of block are occupied on tilemap, used for checking valid block placement
 	sf::Vector2f ClosestOpenBlockPosition(const Block& block) const; // Returns the position of the closest open tile to the block position. Used for finding the closest placeable position for a block when the initial position is not placeable. Returns (-1, -1) if no placeable position is found. TODO: optimize this function by only checking tiles within a certain radius of the block position and then expanding the radius until a placeable position is found or all tiles have been checked.
 	
 	sf::Vector2f SnapToTile(sf::Vector2f position) const;  // Take pixel pos and return position of current tile (top left)
@@ -49,11 +47,7 @@ private:
 	void DrawGridLines(sf::RenderWindow& window); // Draws grid lines with top left corner at mPosition
 	void DrawTiles    (sf::RenderWindow& window); // Draws tiles
 
-	void DeleteTile(int row, int col);          // Deletes a tile at the specified row and column
-	void DeleteTile(sf::Vector2i gridPosition); // Deletes a tile at the specified grid position
-
-	void ClearRow   (int row);
-	void ClearColumn(int col);
+	void DeleteTile(int index);          // Deletes a tile at the specified row and column
 
 	void CheckAndClearFullLines();
 

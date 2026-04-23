@@ -23,6 +23,13 @@
 // There should be a set position function that edits the transform
 // A draw function that uses the transfrom which passes to the gpu
 
+/*
+get shape
+GetRotationAndScaleTransform
+ConvertSignatureToWorldPosition
+SetColor
+*/
+
 class Block
 {
 public:
@@ -35,9 +42,7 @@ public:
 
 	const tBlockSignature& GetSignature() const; // Get block signature by calculating index of block shape in BLOCK_SIGNATURES array
 
-	sf::Color   GetColor() const;
-	const Shape GetShape() const; // Get block shape by calculating index of block signature in BLOCK_SIGNATURES array
-	
+	sf::Color    GetColor() const;
 	sf::Vector2f GetPosition() const; // Return top left corner of tile in block at (0, 0) given by BLOCK_SIGNATURES
 	sf::Vector2f GetBlockOriginCenter() const;   // Return center position of origin block (0, 0) in pixel frame
 	sf::Vector2f GetBlockCenterPosition() const; // Calculate center position of block by averaging the tile positions in pixel reference frame
@@ -45,21 +50,13 @@ public:
 
 	static sf::Vector2f RotateSignaturePosition(sf::Vector2f signaturePos, int orientation); 
 
-	const sf::Transform& GetRotationAndScaleTransform() const; // Get block transform which is used for drawing block and converting between world and block local positions
-
-	sf::Vector2f ConvertSignatureToWorldPosition(sf::Vector2f signaturePos) const; // Convert block signature position to world position by applying block transform to signature position
-
 	void SetPosition(sf::Vector2f position);       // Set position of origin tile in block
 	void SetBlockCenterPosition(sf::Vector2f centerPosition); // Set block position given the center of the entire block
-
-	void SetColor(sf::Color color);
 	 
 	bool IsTouching(sf::Vector2f position) const; // Checks if any position vector is within bounds of block tiles
 	void Hide();                              // Hides block by setting signature to null pointer
 
-	//void HandleEvents(const sf::Event& event, sf::Vector2f mousePosition);
-	void Update(sf::Vector2f mousePosition);
-	void Draw  (sf::RenderWindow& window);
+	void Draw(sf::RenderWindow& window);
 
 private:
 	void Init();

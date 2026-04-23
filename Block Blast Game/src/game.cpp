@@ -22,7 +22,7 @@ Game::Game()
 
 	mBlockHand[0] = Block(Block::Shape::ThreeByThree, sf::Vector2f(800, 100), 0, sf::Color::Cyan);
 	mBlockHand[1] = Block(Block::Shape::FiveByOne,       sf::Vector2f(800, 300), 2, sf::Color::Green);
-	mBlockHand[2] = Block(Block::Shape::TwoByOne,  sf::Vector2f(800, 500), 1, sf::Color::Blue);
+	mBlockHand[2] = Block(Block::Shape::FiveByOne,  sf::Vector2f(800, 500), 1, sf::Color::Blue);
 }
 
 void Game::Init() {}

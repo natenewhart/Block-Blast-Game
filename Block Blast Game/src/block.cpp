@@ -51,8 +51,6 @@ void Block::PopulateVertexArray()
 
 sf::Color          Block::GetColor()    const { return mColor; } 
 
-const Block::Shape Block::GetShape()    const { return mShape; }
-
 sf::Vector2f       Block::GetPosition() const { return mPosition; }
 
 sf::Vector2f Block::GetBlockOriginCenter() const
@@ -63,11 +61,6 @@ sf::Vector2f Block::GetBlockOriginCenter() const
 sf::Vector2f Block::ConvertToBlockLocalPosition(sf::Vector2f worldPosition) const
 {
 	return mTransform.getInverse().transformPoint(worldPosition);
-}
-
-sf::Vector2f Block::ConvertSignatureToWorldPosition(sf::Vector2f signaturePos) const
-{
-	return mTransform.transformPoint(signaturePos);
 }
 
 sf::Vector2f Block::GetBlockCenterPosition() const
@@ -95,11 +88,6 @@ sf::Vector2f Block::RotateSignaturePosition(sf::Vector2f signaturePos, int orien
 	return { signaturePos.x * d.x - signaturePos.y * d.y, signaturePos.x * d.y + signaturePos.y * d.x };
 }
 
-const sf::Transform& Block::GetRotationAndScaleTransform() const
-{
-	return mRotationScaleTransform;
-}
-
 void Block::SetPosition(sf::Vector2f position)
 {
 	mPosition  = position;
@@ -115,16 +103,6 @@ void Block::SetBlockCenterPosition(sf::Vector2f centerPosition)
 	sf::Vector2f newPos = mPosition + diff;
 
 	SetPosition(newPos);
-}
-
-void Block::SetColor(sf::Color color)
-{
-	mColor = color;
-
-	for (int i = 0; i < mMesh.getVertexCount(); i++)
-	{
-		mMesh[i].color = mColor;
-	}
 }
 
 bool Block::IsTouching(sf::Vector2f position) const // Checks if any position vector is within bounds of block tiles

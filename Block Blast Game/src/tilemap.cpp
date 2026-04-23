@@ -126,12 +126,6 @@ sf::Vector2f TileMap::SnapToTile(sf::Vector2f position) const
 	return mPosition + relativePos;
 }
 
-bool TileMap::IsTouching(sf::Vector2f position) const
-{
-	if (isWithinRect(mPosition, sf::Vector2f(mWidth * TileSettings::Get().size.x, mHeight * TileSettings::Get().size.y), position))
-		return true;
-}
-
 // ------------------- Private Member Functions -------------------
 
 void TileMap::DrawGridLines(sf::RenderWindow& window)
@@ -175,30 +169,9 @@ void TileMap::DrawTiles(sf::RenderWindow& window)
 	}
 }
 
-void TileMap::DeleteTile(int row, int col)
+void TileMap::DeleteTile(int index)
 {
-	mTiles[IndexTiles(row, col)] = Tile{sf::Color::Transparent, sf::Color::Transparent, true}; // Reset tile to default state (empty and transparent)
-}
-
-void TileMap::DeleteTile(sf::Vector2i gridPosition)
-{
-	DeleteTile(gridPosition.y, gridPosition.x);
-}
-
-void TileMap::ClearRow(int row)
-{
-	for (int col = 0; col < mWidth; col++)
-	{
-		DeleteTile(row, col);
-	}
-}
-
-void TileMap::ClearColumn(int col)
-{
-	for (int row = 0; row < mHeight; row++)
-	{
-		DeleteTile(row, col);
-	}
+	mTiles[index] = Tile{sf::Color::Transparent, sf::Color::Transparent, true}; // Reset tile to default state (empty and transparent)
 }
 
 void TileMap::CheckAndClearFullLines()
@@ -212,7 +185,11 @@ void TileMap::CheckAndClearFullLines()
 
 			if (j == i + mWidth - 1)
 			{
-				ClearRow(j / mWidth);
+				// Clear Row
+				for (int k = i; k < i + mWidth; k++)
+				{
+					DeleteTile(k);
+				}
 			}
 		}
 	}
@@ -226,7 +203,11 @@ void TileMap::CheckAndClearFullLines()
 
 			if (j == i + mWidth * (mHeight - 1))
 			{
-				ClearColumn(j % mWidth);
+				// Clear Column
+				for (int j = i; j < i + mWidth * mHeight; j += mWidth)
+				{
+					DeleteTile(j);
+				}
 			}
 		}
 	}
@@ -257,7 +238,6 @@ size_t TileMap::IndexTiles(size_t row, size_t col) const
 {
 	return row * mWidth + col;
 }
-
 
 void TileMap::PlaceBlockOnTileMap(const Block& block)
 {
