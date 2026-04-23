@@ -25,15 +25,6 @@ private:
 	friend class Game;
 };
 
-struct Tile
-{
-	Tile();
-	Tile(sf::Color col);
-
-	sf::Color color;
-	bool isEmpty;
-};
-
 // --------------------  Functions --------------------s
 
 // Todo possibly place this function within different header file

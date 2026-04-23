@@ -184,7 +184,7 @@ void TileMap::DrawTiles(sf::RenderWindow& window)
 
 void TileMap::DeleteTile(int row, int col)
 {
-	mTiles[row][col] = Tile(); // Reset tile to default state (empty and transparent)
+	mTiles[row][col] = Tile{sf::Color::Transparent, sf::Color::Transparent, true}; // Reset tile to default state (empty and transparent)
 }
 
 void TileMap::DeleteTile(sf::Vector2i gridPosition)
@@ -250,23 +250,6 @@ sf::Vector2i TileMap::GetGridPosition(sf::Vector2f screenPosition) const
 	return sf::Vector2i(col, row);
 }
 
-//
-//bool TileMap::IsBlockPlaceable(const Block& block, sf::Vector2f newBlockPos) const
-//{
-//	Block tempBlock = block;            // Temporary block with new position
-//	tempBlock.SetPosition(newBlockPos);
-//
-//	for (sf::Vector2f localTilePos : block.GetSignature())
-//	{
-//		sf::Vector2f tileWorldPos = tempBlock.ConvertSignatureToWorldPosition(localTilePos);
-//		sf::Vector2i currGridPos  = GetGridPosition(tileWorldPos);
-//
-//		if (!IsGridPosition(currGridPos) || mTiles[currGridPos.y][currGridPos.x].isEmpty == false) return false;
-//	}
-//	return true;
-//}
-
-
 bool TileMap::IsBlockPlaceable(const Block& block, sf::Vector2f newBlockPos) const
 {
 	for (sf::Vector2f localTilePos : block.GetSignature())
@@ -287,7 +270,7 @@ void TileMap::PlaceBlockOnTileMap(const Block& block)
 		sf::Vector2i initGridPos = GetGridPosition(block.GetPosition());
 		sf::Vector2i currGridPos = initGridPos + sf::Vector2i(Block::RotateSignaturePosition(localTilePos, block.GetOrientation()));
 
-		mTiles[currGridPos.y][currGridPos.x] = Tile(block.GetColor());
+		mTiles[currGridPos.y][currGridPos.x] = Tile{block.GetColor(), sf::Color::Transparent, false};
 	}
 }
 

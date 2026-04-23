@@ -52,7 +52,7 @@ public:
 	void SetPosition(sf::Vector2f position);       // Set position of origin tile in block
 	void SetBlockCenterPosition(sf::Vector2f centerPosition); // Set block position given the center of the entire block
 
-	void SetColor   (sf::Color color);
+	void SetColor(sf::Color color);
 	 
 	bool IsTouching(sf::Vector2f position) const; // Checks if any position vector is within bounds of block tiles
 	void Hide();                              // Hides block by setting signature to null pointer

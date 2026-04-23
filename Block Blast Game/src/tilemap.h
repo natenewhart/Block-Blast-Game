@@ -15,6 +15,13 @@
 
 class TileMap
 {
+private:
+	struct Tile
+	{
+		sf::Color color;
+		sf::Color overlayColor;
+		bool isEmpty;
+	};
 public:
 	TileMap();
 	TileMap(sf::Vector2f position);
@@ -67,6 +74,8 @@ private:
 
 	std::vector<std::vector<Tile>>      mTiles; // Stores tile data in a 2D vector (rows of columns). Important: declared
 	std::vector<std::vector<sf::Color>> mTileOverlayColors; // Stores the overlayed
+
+	//std::vector<Tile> mTileData;
 
 	sf::Vector2f mPosition;        // Top left corner of tilemap
 
