@@ -127,6 +127,7 @@ void Game::UpdateBlocksAndTileMap()
 			if (isPlaceable)
 			{
 				mTileMap.PlaceBlockOnTileMap(blockTileGridPositions, mActiveBlock->GetColor()); // Try to place block on tilemap, if block is placeable then place block and hide block in block hand, otherwise reset block position to original position
+				mTileMap.CheckAndClearFullLines(blockTileGridPositions, mActiveBlock->GetColor());
 
 				mActiveBlock->Hide(); // Hide block after placing on tilemap
 				mActiveBlock = nullptr;

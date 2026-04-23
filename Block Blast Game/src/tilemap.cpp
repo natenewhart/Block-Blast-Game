@@ -66,48 +66,44 @@ void TileMap::Clear()
 
 void TileMap::Update()
 {
-	CheckAndClearFullLines();
-
 	for (auto& tile : mTiles) // Reset tile overlay colors after each update
 	{
 		tile.overlayColor = sf::Color::Transparent;
 	}
 }
 
-void TileMap::CheckAndClearFullLines()
+
+void TileMap::CheckAndClearFullLines(const std::vector<int>& blockTileGridPositions, sf::Color blockColor)
 {
-	// Check for full rows
-	for (int i = 0; i < mWidth * mHeight; i += mWidth)
+	for (int index : blockTileGridPositions)
 	{
-		for (int j = i; j < i + mWidth; j++)
+		int row = index / mWidth;
+		int col = index % mWidth;
+		int rowStart = row * mWidth;
+		int colStart = col;
+		int colEnd = (mHeight - 1) * mWidth + col;
+
+		// Check row
+		for (int j = rowStart; j < rowStart + mWidth; j++)
 		{
 			if (mTiles[j].isEmpty) break;
 
-			if (j == i + mWidth - 1)
+			if (j == rowStart + mWidth - 1)
 			{
-				// Clear Row
-				for (int k = i; k < i + mWidth; k++)
-				{
+				for (int k = rowStart; k < rowStart + mWidth; k++)
 					DeleteTile(k);
-				}
 			}
 		}
-	}
 
-	// Check for full columns
-	for (int i = 0; i < mWidth; i++)
-	{
-		for (int j = i; j < i + mWidth * mHeight; j += mWidth)
+		// Check column
+		for (int j = colStart; j <= colEnd; j += mWidth)
 		{
 			if (mTiles[j].isEmpty) break;
 
-			if (j == i + mWidth * (mHeight - 1))
+			if (j == colEnd)
 			{
-				// Clear Column
-				for (int k = i; k < i + mWidth * mHeight; k += mWidth)
-				{
+				for (int k = colStart; k <= colEnd; k += mWidth)
 					DeleteTile(k);
-				}
 			}
 		}
 	}
@@ -115,44 +111,40 @@ void TileMap::CheckAndClearFullLines()
 
 void TileMap::CheckAndHighlightFullLines(const std::vector<int>& blockTileGridPositions, sf::Color blockColor)
 {
-	blockColor.a = 128; // Set alpha to 50% for highlighting
+	blockColor.a = 128;
 
 	for (int index : blockTileGridPositions)
 	{
 		int row = index / mWidth;
 		int col = index % mWidth;
+		int rowStart = row * mWidth;
+		int colStart = col;
+		int colEnd = (mHeight - 1) * mWidth + col;
 
-		for (int j = index - col; j < index - col + mWidth; j++) // Iterate across current row
+		// Check row
+		for (int j = rowStart; j < rowStart + mWidth; j++)
 		{
 			if (mTiles[j].isEmpty && mTiles[j].overlayColor == sf::Color::Transparent) break;
 
-			if (j == index - col + mWidth - 1)
+			if (j == rowStart + mWidth - 1)
 			{
-				std::println("found row");
-				// Clear Row
-				for (int k = index - col; k < index - col + mWidth; k++)
-				{
-					mTiles[k].overlayColor = blockColor; // Highlight full row
-				}
+				for (int k = rowStart; k < rowStart + mWidth; k++)
+					mTiles[k].overlayColor = blockColor;
 			}
 		}
 
-		for (int j = index; j < mWidth * mHeight - col; j += mWidth) // Iterate across current col
+		// Check column
+		for (int j = colStart; j <= colEnd; j += mWidth)
 		{
 			if (mTiles[j].isEmpty && mTiles[j].overlayColor == sf::Color::Transparent) break;
 
-			if (j == mWidth * mHeight - col - 1)
+			if (j == colEnd)
 			{
-				std::println("found col");
-				// Clear Column
-				for (int k = index; k < mWidth * mHeight - col; k += mWidth)
-				{
-					mTiles[k].overlayColor = blockColor; // Highlight full column
-				}
+				for (int k = colStart; k <= colEnd; k += mWidth)
+					mTiles[k].overlayColor = blockColor;
 			}
 		}
 	}
-
 }
 
 // ------------------- Block Placement Functions -------------------

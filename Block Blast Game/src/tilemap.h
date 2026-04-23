@@ -28,6 +28,8 @@ public:
 	void Clear(); // All tiles set to empty and transparent color
 
 	void Update(); // Update tilemap state, check for completed rows and columns and delete tiles in those rows and columns
+	
+	void CheckAndClearFullLines    (const std::vector<int>& blockTileGridPositions, sf::Color blockColor);
 	void CheckAndHighlightFullLines(const std::vector<int>& blockTileGridPositions, sf::Color blockColor); // Check for full rows and columns created by highlighted overlay and highlight them the color of active block, used for block placement preview when player is moving block around tilemap.
 	
 	void Draw(sf::RenderWindow& window); // Draws grid lines and tiles
@@ -51,8 +53,6 @@ private:
 	void DrawTiles    (sf::RenderWindow& window); // Draws tiles
 
 	void DeleteTile(int index);          // Deletes a tile at the specified row and column
-
-	void CheckAndClearFullLines();
 
 	sf::Vector2i GetGridPosition(sf::Vector2f screenPosition) const ; // Converts position in screen space to the col, row of tilemap which is the tile that position is inside of, returns (-1, -1) if position is outside of tilemap bounds
 	
