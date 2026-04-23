@@ -1,6 +1,5 @@
 #include "block.h"
 #include <iostream>
-#include <print>	
 
 Block::Block()
 	: mShape       (Shape::Empty)
@@ -83,7 +82,20 @@ sf::Vector2f Block::GetBlockCenterPosition() const
 	return mTransform.transformPoint(max / 2.f + sf::Vector2f(0.5f, 0.5f));
 }
 
-sf::Transform& Block::GetRotationAndScaleTransform()
+int Block::GetOrientation() const
+{
+	return mOrientation;
+}
+
+sf::Vector2f Block::RotateSignaturePosition(sf::Vector2f signaturePos, int orientation)
+{
+	static const sf::Vector2f kDir[4] = { {1,0},{0,1},{-1,0},{0,-1} };
+	sf::Vector2f d = kDir[orientation];
+
+	return { signaturePos.x * d.x - signaturePos.y * d.y, signaturePos.x * d.y + signaturePos.y * d.x };
+}
+
+const sf::Transform& Block::GetRotationAndScaleTransform() const
 {
 	return mRotationScaleTransform;
 }

@@ -41,8 +41,11 @@ public:
 	sf::Vector2f GetPosition() const; // Return top left corner of tile in block at (0, 0) given by BLOCK_SIGNATURES
 	sf::Vector2f GetBlockOriginCenter() const;   // Return center position of origin block (0, 0) in pixel frame
 	sf::Vector2f GetBlockCenterPosition() const; // Calculate center position of block by averaging the tile positions in pixel reference frame
+	int GetOrientation() const;       // Return block orientation which is 0, 1, 2, or 3 for 0, 90, 180, or 270 degree rotation
 
-	sf::Transform& GetRotationAndScaleTransform(); // Get block transform which is used for drawing block and converting between world and block local positions
+	static sf::Vector2f RotateSignaturePosition(sf::Vector2f signaturePos, int orientation); 
+
+	const sf::Transform& GetRotationAndScaleTransform() const; // Get block transform which is used for drawing block and converting between world and block local positions
 
 	sf::Vector2f ConvertSignatureToWorldPosition(sf::Vector2f signaturePos) const; // Convert block signature position to world position by applying block transform to signature position
 

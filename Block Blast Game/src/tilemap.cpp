@@ -90,30 +90,6 @@ bool TileMap::IsBlockNearPlaceable(sf::Vector2f blockPosition) const
 	return isWithinRect(newPos, tileMapScale, blockPosition);
 }
 
-bool TileMap::PlaceBlock(Block& block)
-{
-	sf::Vector2f newBlockPos = ClosestOpenBlockPosition(block);
-	if (newBlockPos.x != -1 && newBlockPos.y != -1)
-	{
-		block.SetPosition(newBlockPos);
-		PlaceBlockOnTileMap(block);
-		return true;
-	}
-	return false;
-}
-
-bool TileMap::PlaceBlockOverlay(Block block)
-{
-	sf::Vector2f newBlockPos = ClosestOpenBlockPosition(block);
-	if (newBlockPos.x != -1 && newBlockPos.y != -1)
-	{
-		block.SetPosition(newBlockPos);
-		PlaceBlockOnTileMapOverlay(block);
-		return true;
-	}
-	return false;
-}
-
 sf::Vector2f TileMap::ClosestOpenBlockPosition(const Block& block) const
 {
 	float minDistance = std::numeric_limits<float>::max();
@@ -274,39 +250,53 @@ sf::Vector2i TileMap::GetGridPosition(sf::Vector2f screenPosition) const
 	return sf::Vector2i(col, row);
 }
 
+//
+//bool TileMap::IsBlockPlaceable(const Block& block, sf::Vector2f newBlockPos) const
+//{
+//	Block tempBlock = block;            // Temporary block with new position
+//	tempBlock.SetPosition(newBlockPos);
+//
+//	for (sf::Vector2f localTilePos : block.GetSignature())
+//	{
+//		sf::Vector2f tileWorldPos = tempBlock.ConvertSignatureToWorldPosition(localTilePos);
+//		sf::Vector2i currGridPos  = GetGridPosition(tileWorldPos);
+//
+//		if (!IsGridPosition(currGridPos) || mTiles[currGridPos.y][currGridPos.x].isEmpty == false) return false;
+//	}
+//	return true;
+//}
+
 
 bool TileMap::IsBlockPlaceable(const Block& block, sf::Vector2f newBlockPos) const
 {
-	Block tempBlock = block;            // Temporary block with new position
-	tempBlock.SetPosition(newBlockPos);
-
 	for (sf::Vector2f localTilePos : block.GetSignature())
 	{
-		sf::Vector2f tileWorldPos = tempBlock.ConvertSignatureToWorldPosition(localTilePos);
-		sf::Vector2i currGridPos  = GetGridPosition(tileWorldPos);
+		sf::Vector2i initGridPos = GetGridPosition(newBlockPos);
+		sf::Vector2i currGridPos = initGridPos + sf::Vector2i(Block::RotateSignaturePosition(localTilePos, block.GetOrientation()));
 
 		if (!IsGridPosition(currGridPos) || mTiles[currGridPos.y][currGridPos.x].isEmpty == false) return false;
 	}
 	return true;
 }
 
+
 void TileMap::PlaceBlockOnTileMap(const Block& block)
 {
 	for (sf::Vector2f localTilePos : block.GetSignature())
 	{
-		sf::Vector2f tileWorldPos = block.ConvertSignatureToWorldPosition(localTilePos);
-		sf::Vector2i currGridPos  = GetGridPosition(tileWorldPos);
+		sf::Vector2i initGridPos = GetGridPosition(block.GetPosition());
+		sf::Vector2i currGridPos = initGridPos + sf::Vector2i(Block::RotateSignaturePosition(localTilePos, block.GetOrientation()));
 
 		mTiles[currGridPos.y][currGridPos.x] = Tile(block.GetColor());
 	}
 }
 
-void TileMap::PlaceBlockOnTileMapOverlay(const Block& block)
+void TileMap::PlaceBlockOnTileMapOverlay(const Block& block, sf::Vector2f blockPos)
 {
 	for (sf::Vector2f localTilePos : block.GetSignature())
 	{
-		sf::Vector2f tileWorldPos = block.ConvertSignatureToWorldPosition(localTilePos);
-		sf::Vector2i currGridPos = GetGridPosition(tileWorldPos);
+		sf::Vector2i initGridPos = GetGridPosition(blockPos);
+		sf::Vector2i currGridPos = initGridPos + sf::Vector2i(Block::RotateSignaturePosition(localTilePos, block.GetOrientation()));
 
 		sf::Color overlayColor = block.GetColor();
 		overlayColor.a = 128; // Set alpha to 50% for overlay

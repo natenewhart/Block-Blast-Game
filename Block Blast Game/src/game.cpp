@@ -22,7 +22,7 @@ Game::Game()
 
 	mBlockHand[0] = Block(Block::Shape::ThreeByThree, sf::Vector2f(800, 100), 0, sf::Color::Cyan);
 	mBlockHand[1] = Block(Block::Shape::FiveByOne,       sf::Vector2f(800, 300), 3, sf::Color::Green);
-	mBlockHand[2] = Block(Block::Shape::LShapeSmall,  sf::Vector2f(800, 500), 1, sf::Color::Blue);
+	mBlockHand[2] = Block(Block::Shape::TShape,  sf::Vector2f(800, 500), 1, sf::Color::Blue);
 }
 
 void Game::Init() {}
@@ -103,10 +103,7 @@ void Game::UpdateBlocks()
 			if (closestOpenBlockPosition.x != -1 && closestOpenBlockPosition.y != -1)
 			{
 				isPlaceable = true;
-
-				Block blockOverlay = *mActiveBlock; // Create block overlay for block placement preview
-				blockOverlay.SetPosition(closestOpenBlockPosition);
-				mTileMap.PlaceBlockOnTileMapOverlay(blockOverlay); // Place block overlay on tilemap for block placement preview, returns true if block is placeable and overlay was placed successfully, false if block is not placeable and overlay was not placed
+				mTileMap.PlaceBlockOnTileMapOverlay(*mActiveBlock, closestOpenBlockPosition); // Place block overlay on tilemap for block placement preview, returns true if block is placeable and overlay was placed successfully, false if block is not placeable and overlay was not placed
 			}
 		}
 			
