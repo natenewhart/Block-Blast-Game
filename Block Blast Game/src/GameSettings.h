@@ -7,23 +7,33 @@
 
 #include <SFML/Graphics.hpp>
 
+//TDOD: load settings from a json file. If a setting needs to be loaded then add it to the gamesettings object
+// load settings using constructor and save settings using destructor
+
 class GameSettings
 {
-// ---------------------------------------------------------------
+// ---------------------------- Settings Types -------------------------------
 private:
 	struct Tile
 	{
 		sf::Vector2f size;
 	};
 
+	struct TileMap
+	{
+		sf::Vector2f initialPosition;
+		size_t width;
+		size_t height;
+	};
 
-// ---------------------------------------------------------------
+// ---------------------------- Singleton Implementation -------------------------------
 public:
 	GameSettings();
 
-	static GameSettings& Get();
+	static const GameSettings& Get();
 
 public:
+	TileMap tileMap;
 	Tile tile;
 };
 

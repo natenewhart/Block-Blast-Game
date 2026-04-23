@@ -1,11 +1,13 @@
 #include "Game.h"
+#include "GameSettings.h"
+
 #include <print>
 
 Game::Game()
 	: mScreenWidth(1280), mScreenHeight(720)
 	, mFrameRateLimit(0)
 	, mDeltaTime(1.f / mFrameRateLimit)
-	, mTileMap(sf::Vector2f(100, 100))
+	, mTileMap(GameSettings::Get().tileMap.initialPosition)
 	, mActiveBlock(nullptr)
 {
 	mWindow.create(sf::VideoMode(mScreenWidth, mScreenHeight), "Block Blast");
@@ -21,8 +23,8 @@ Game::Game()
 	mText.setString(std::to_string(mFrameRateLimit));
 
 	mBlockHand[0] = Block(Block::Shape::ThreeByThree, sf::Vector2f(800, 100), 0, sf::Color::Cyan);
-	mBlockHand[1] = Block(Block::Shape::FiveByOne,       sf::Vector2f(800, 300), 2, sf::Color::Green);
-	mBlockHand[2] = Block(Block::Shape::FiveByOne,  sf::Vector2f(800, 500), 1, sf::Color::Blue);
+	mBlockHand[1] = Block(Block::Shape::FiveByOne,    sf::Vector2f(800, 300), 2, sf::Color::Green);
+	mBlockHand[2] = Block(Block::Shape::FiveByOne,    sf::Vector2f(800, 500), 1, sf::Color::Blue);
 }
 
 void Game::Init() {}
