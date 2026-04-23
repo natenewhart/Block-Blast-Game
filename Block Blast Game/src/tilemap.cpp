@@ -1,11 +1,11 @@
-#include "tilemap.h"
-#include "library.h"
-#include "tile.h"
+#include "Tilemap.h"
+#include "Library.h"
+#include "GameSettings.h"
 
 #include <print>
 
 TileMap::TileMap()
-	: mTileRect(TileSettings::Get().size)
+	: mTileRect(GameSettings::Get().tile.size)
 	, mGridVertices{ sf::Vertex(), sf::Vertex(), sf::Vertex(), sf::Vertex() }
 	, mWidth (8)
 	, mHeight(8)
@@ -18,7 +18,7 @@ TileMap::TileMap()
 }
 
 TileMap::TileMap(sf::Vector2f position)
-	: mTileRect(TileSettings::Get().size)
+	: mTileRect(GameSettings::Get().tile.size)
 	, mGridVertices{ sf::Vertex(), sf::Vertex(), sf::Vertex(), sf::Vertex() }
 	, mWidth(8)
 	, mHeight(8)
@@ -39,8 +39,8 @@ void TileMap::Init()
 		vertex.color    = sf::Color::White;
 		vertex.position = mPosition;
 	}
-	mGridVertices[1].position.y += TileSettings::Get().size.y * mHeight;
-	mGridVertices[3].position.x += TileSettings::Get().size.x * mWidth;
+	mGridVertices[1].position.y += GameSettings::Get().tile.size.y * mHeight;
+	mGridVertices[3].position.x += GameSettings::Get().tile.size.x * mWidth;
 
 	mTileRect.setFillColor(sf::Color::Transparent); // Placeholder color for empty tile
 }
@@ -118,8 +118,8 @@ void TileMap::CheckAndClearFullLines()
 bool TileMap::IsBlockNearPlaceable(sf::Vector2f blockPosition) const
 {
 	float extraTiles = mcBlockSearchAreaSize - 1; // Number of tiles in search area around block position
-	sf::Vector2f newPos = mPosition - extraTiles * TileSettings::Get().size; // Top left corner of search area around block position
-	sf::Vector2f tileMapScale = sf::Vector2f(mWidth * TileSettings::Get().size.x, mHeight * TileSettings::Get().size.y) + (extraTiles * 2) * TileSettings::Get().size; // Size of tilemap plus search area around block position
+	sf::Vector2f newPos = mPosition - extraTiles * GameSettings::Get().tile.size; // Top left corner of search area around block position
+	sf::Vector2f tileMapScale = sf::Vector2f(mWidth * GameSettings::Get().tile.size.x, mHeight * GameSettings::Get().tile.size.y) + (extraTiles * 2) * GameSettings::Get().tile.size; // Size of tilemap plus search area around block position
 
 	return isWithinRect(newPos, tileMapScale, blockPosition);
 }
@@ -137,12 +137,12 @@ sf::Vector2f TileMap::ClosestOpenBlockPosition(const Block& block) const
 		int row = (i / mcSearchAreaWidth) - mcBlockSearchAreaSize; // Row offset from block position    (-mcBlockSearchAreaSize / 2, ..., 0, ..., mcBlockSearchAreaSize / 2)
 
 		// Top left corner of each tile in search area around block position
-		sf::Vector2f currTilePos = originTilePos + sf::Vector2f(col * TileSettings::Get().size.x, row * TileSettings::Get().size.y);
+		sf::Vector2f currTilePos = originTilePos + sf::Vector2f(col * GameSettings::Get().tile.size.x, row * GameSettings::Get().tile.size.y);
 		
 		if (IsBlockPlaceable(block, currTilePos))
 		{
 			// Get distance between block origin center and current tile center
-			float currDistance = distanceSquared(currTilePos + 0.5f * TileSettings::Get().size, block.GetBlockOriginCenter());
+			float currDistance = distanceSquared(currTilePos + 0.5f * GameSettings::Get().tile.size, block.GetBlockOriginCenter());
 
 			if (currDistance < minDistance)
 			{
@@ -154,7 +154,7 @@ sf::Vector2f TileMap::ClosestOpenBlockPosition(const Block& block) const
 	
 	if (minDistance < std::numeric_limits<float>::max())
 	{
-		return SnapToTile(closestTilePos + 0.5f * TileSettings::Get().size);
+		return SnapToTile(closestTilePos + 0.5f * GameSettings::Get().tile.size);
 	}
 	return sf::Vector2f(-1, -1);
 }
@@ -200,8 +200,8 @@ void TileMap::PlaceBlockOnTileMapOverlay(const Block& block, sf::Vector2f blockP
 sf::Vector2f TileMap::SnapToTile(sf::Vector2f position) const
 {
 	sf::Vector2f relativePos = position - mPosition;
-	relativePos.x -= (int)relativePos.x % (int)TileSettings::Get().size.x;
-	relativePos.y -= (int)relativePos.y % (int)TileSettings::Get().size.y;
+	relativePos.x -= (int)relativePos.x % (int)GameSettings::Get().tile.size.x;
+	relativePos.y -= (int)relativePos.y % (int)GameSettings::Get().tile.size.y;
 	return mPosition + relativePos;
 }
 
@@ -213,8 +213,8 @@ void TileMap::DeleteTile(int index)
 sf::Vector2i TileMap::GetGridPosition(sf::Vector2f screenPosition) const
 {
 	sf::Vector2f relativePos = screenPosition - mPosition;
-	int col = static_cast<int>(relativePos.x / TileSettings::Get().size.x);
-	int row = static_cast<int>(relativePos.y / TileSettings::Get().size.y);
+	int col = static_cast<int>(relativePos.x / GameSettings::Get().tile.size.x);
+	int row = static_cast<int>(relativePos.y / GameSettings::Get().tile.size.y);
 
 	return sf::Vector2i(col, row);
 }
@@ -242,10 +242,10 @@ void TileMap::DrawGridLines(sf::RenderWindow& window)
 	for (int i = 0; i <= mWidth; i++)
 	{
 		window.draw(mGridVertices, 4, sf::Lines);
-		mGridVertices[0].position.x += TileSettings::Get().size.x;
-		mGridVertices[1].position.x += TileSettings::Get().size.x;
-		mGridVertices[2].position.y += TileSettings::Get().size.y;
-		mGridVertices[3].position.y += TileSettings::Get().size.y;
+		mGridVertices[0].position.x += GameSettings::Get().tile.size.x;
+		mGridVertices[1].position.x += GameSettings::Get().tile.size.x;
+		mGridVertices[2].position.y += GameSettings::Get().tile.size.y;
+		mGridVertices[3].position.y += GameSettings::Get().tile.size.y;
 	}
 	mGridVertices[0].position.x = mPosition.x;
 	mGridVertices[1].position.x = mPosition.x;
@@ -260,7 +260,7 @@ void TileMap::DrawTiles(sf::RenderWindow& window)
 		for (int col = 0; col < mWidth; col++)
 		{
 			const Tile& tile = mTiles[IndexTiles(row, col)];
-			mTileRect.setPosition(mPosition.x + col * TileSettings::Get().size.x, mPosition.y + row * TileSettings::Get().size.y);
+			mTileRect.setPosition(mPosition.x + col * GameSettings::Get().tile.size.x, mPosition.y + row * GameSettings::Get().tile.size.y);
 
 			if (!tile.isEmpty)
 			{

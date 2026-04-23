@@ -153,27 +153,27 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\library.cpp" />
-    <ClCompile Include="src\block.cpp" />
-    <ClCompile Include="src\deltatime.cpp" />
-    <ClCompile Include="src\game.cpp" />
-    <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\tile.cpp" />
-    <ClCompile Include="src\tilemap.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="src\library.h" />
-    <ClInclude Include="src\block.h" />
-    <ClInclude Include="src\deltatime.h" />
-    <ClInclude Include="src\game.h" />
-    <ClInclude Include="src\tile.h" />
-    <ClInclude Include="src\tilemap.h" />
-  </ItemGroup>
-  <ItemGroup>
     <Font Include="res\cour.ttf" />
     <Font Include="res\courbd.ttf" />
     <Font Include="res\courbi.ttf" />
     <Font Include="res\couri.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Block.cpp" />
+    <ClCompile Include="src\Deltatime.cpp" />
+    <ClCompile Include="src\Game.cpp" />
+    <ClCompile Include="src\GameSettings.cpp" />
+    <ClCompile Include="src\Library.cpp" />
+    <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="src\Tilemap.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Block.h" />
+    <ClInclude Include="src\Deltatime.h" />
+    <ClInclude Include="src\Game.h" />
+    <ClInclude Include="src\GameSettings.h" />
+    <ClInclude Include="src\Library.h" />
+    <ClInclude Include="src\Tilemap.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

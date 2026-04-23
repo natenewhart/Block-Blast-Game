@@ -1,6 +1,6 @@
 // main.cpp | Testing SFML
 
-#include "game.h"
+#include "Game.h"
 
 /* My naming conventions:
 * Classes: PascalCase

@@ -1,4 +1,4 @@
-#include "deltatime.h"
+#include "Deltatime.h"
 
 DeltaTimeCalculator::DeltaTimeCalculator() : prevTime(std::chrono::high_resolution_clock::now()) {}
 

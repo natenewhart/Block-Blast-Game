@@ -5,8 +5,7 @@
 #include <SFML/Graphics.hpp>
 #include <queue>
 
-#include "tile.h"
-#include "block.h"
+#include "Block.h"	
 
 #pragma once
 

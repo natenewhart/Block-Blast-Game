@@ -1,4 +1,4 @@
-#include "library.h"
+#include "Library.h"
 
 float distance(const sf::Vector2f& a, const sf::Vector2f& b)
 {

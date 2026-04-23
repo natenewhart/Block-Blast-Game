@@ -2,9 +2,9 @@
 // game.h
 
 #include "SFML/Graphics.hpp"
-#include "deltatime.h"
-#include "tilemap.h"
-#include "block.h"
+#include "Deltatime.h"
+#include "Tilemap.h"
+#include "Block.h"
 
 #pragma once
 

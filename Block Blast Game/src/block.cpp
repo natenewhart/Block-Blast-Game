@@ -1,4 +1,6 @@
-#include "block.h"
+#include "Block.h"
+#include "GameSettings.h"
+#include "Library.h"
 #include <iostream>
 
 Block::Block()
@@ -27,7 +29,7 @@ const Block::tBlockSignature& Block::GetSignature() const
 void Block::Init()
 {
 	mRotationScaleTransform.rotate(mOrientation * 90.f);
-	mRotationScaleTransform.scale(TileSettings::Get().size);
+	mRotationScaleTransform.scale(GameSettings::Get().tile.size);
 
 	SetPosition(mPosition);
 	SetBlockCenterPosition(mPosition);

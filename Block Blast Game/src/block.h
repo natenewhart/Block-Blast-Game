@@ -5,7 +5,6 @@
 
 #include<vector>
 #include "SFML/Graphics.hpp"
-#include "tile.h"
 
 /*
 * Blocks are stored using block signatures which contain vectors of tile positions in relation to an origin tile at 0,0.
