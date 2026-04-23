@@ -9,8 +9,7 @@ TileMap::TileMap()
 	, mGridVertices{ sf::Vertex(), sf::Vertex(), sf::Vertex(), sf::Vertex() }
 	, mWidth (8)
 	, mHeight(8)
-	, mTiles(mHeight, std::vector<Tile>(mWidth))
-	//, mTileOverlayColors(mHeight, std::vector<sf::Color>(mWidth, sf::Color::Transparent))
+	, mTiles(mHeight * mWidth, Tile{sf::Color::Transparent, sf::Color::Transparent, true})
 	, mPosition(100, 100)
 	, mcBlockSearchAreaSize(2)
 	, mcSearchAreaWidth(InitSearchAreaWidth(mcBlockSearchAreaSize))
@@ -23,8 +22,7 @@ TileMap::TileMap(sf::Vector2f position)
 	, mGridVertices{ sf::Vertex(), sf::Vertex(), sf::Vertex(), sf::Vertex() }
 	, mWidth(8)
 	, mHeight(8)
-	, mTiles(mHeight, std::vector<Tile>(mWidth))
-	//, mTileOverlayColors(mHeight, std::vector<sf::Color>(mWidth, sf::Color::Transparent))
+	, mTiles(mHeight * mWidth, Tile{sf::Color::Transparent, sf::Color::Transparent, true})
 	, mPosition(position)
 	, mcBlockSearchAreaSize(2)
 	, mcSearchAreaWidth(InitSearchAreaWidth(mcBlockSearchAreaSize))
@@ -52,13 +50,11 @@ int TileMap::InitSearchAreaWidth(int blockSearchAreaSize) const
 
 void TileMap::Clear()
 {
-	for (auto& row : mTiles)
+	for (auto& tile : mTiles)
 	{
-		for (auto& tile : row)
-		{
-			tile.isEmpty = true;
-			tile.color   = sf::Color::Transparent; // Placeholder color for empty tile
-		}
+		tile.isEmpty = true;
+		tile.color   = sf::Color::Transparent; // Placeholder color for empty tile
+		tile.overlayColor = sf::Color::Transparent; // Placeholder color for empty tile overlay
 	}
 }
 
@@ -66,12 +62,9 @@ void TileMap::Update()
 {
 	CheckAndClearFullLines();
 
-	for (auto& tileRow : mTiles) // Reset tile overlay colors after each update
+	for (auto& tile : mTiles) // Reset tile overlay colors after each update
 	{
-		for (auto& tile : tileRow)
-		{
-			tile.overlayColor = sf::Color::Transparent;
-		}
+		tile.overlayColor = sf::Color::Transparent;
 	}
 }
 
@@ -163,18 +156,18 @@ void TileMap::DrawTiles(sf::RenderWindow& window)
 	{
 		for (int col = 0; col < mWidth; col++)
 		{
-			const Tile& tile = mTiles[row][col];
+			const Tile& tile = mTiles[IndexTiles(row, col)];
 			mTileRect.setPosition(mPosition.x + col * TileSettings::Get().size.x, mPosition.y + row * TileSettings::Get().size.y);
 
 			if (!tile.isEmpty)
 			{
 				mTileRect.setFillColor(tile.color);
 			}
-			if (mTiles[row][col].overlayColor != sf::Color::Transparent)
+			if (mTiles[IndexTiles(row, col)].overlayColor != sf::Color::Transparent)
 			{
-				mTileRect.setFillColor(mTiles[row][col].overlayColor);
+				mTileRect.setFillColor(mTiles[IndexTiles(row, col)].overlayColor);
 			}
-			if (!tile.isEmpty || mTiles[row][col].overlayColor != sf::Color::Transparent)
+			if (!tile.isEmpty || mTiles[IndexTiles(row, col)].overlayColor != sf::Color::Transparent)
 			{
 				window.draw(mTileRect);
 			}
@@ -184,7 +177,7 @@ void TileMap::DrawTiles(sf::RenderWindow& window)
 
 void TileMap::DeleteTile(int row, int col)
 {
-	mTiles[row][col] = Tile{sf::Color::Transparent, sf::Color::Transparent, true}; // Reset tile to default state (empty and transparent)
+	mTiles[IndexTiles(row, col)] = Tile{sf::Color::Transparent, sf::Color::Transparent, true}; // Reset tile to default state (empty and transparent)
 }
 
 void TileMap::DeleteTile(sf::Vector2i gridPosition)
@@ -216,7 +209,7 @@ void TileMap::CheckAndClearFullLines()
 		int rowCount = 0;
 		for (int col = 0; col < mWidth; col++)
 		{
-			if (!mTiles[row][col].isEmpty) rowCount++;
+			if (!mTiles[IndexTiles(row, col)].isEmpty) rowCount++;
 			else break;
 		}
 		if (rowCount == mWidth)
@@ -231,7 +224,7 @@ void TileMap::CheckAndClearFullLines()
 		int colCount = 0;
 		for (int row = 0; row < mHeight; row++)
 		{
-			if (!mTiles[row][col].isEmpty) colCount++;
+			if (!mTiles[IndexTiles(row, col)].isEmpty) colCount++;
 			else break;
 		}
 		if (colCount == mHeight)
@@ -257,9 +250,14 @@ bool TileMap::IsBlockPlaceable(const Block& block, sf::Vector2f newBlockPos) con
 		sf::Vector2i initGridPos = GetGridPosition(newBlockPos);
 		sf::Vector2i currGridPos = initGridPos + sf::Vector2i(Block::RotateSignaturePosition(localTilePos, block.GetOrientation()));
 
-		if (!IsGridPosition(currGridPos) || mTiles[currGridPos.y][currGridPos.x].isEmpty == false) return false;
+		if (!IsGridPosition(currGridPos) || mTiles[IndexTiles(currGridPos.y, currGridPos.x)].isEmpty == false) return false;
 	}
 	return true;
+}
+
+size_t TileMap::IndexTiles(size_t row, size_t col) const
+{
+	return row * mWidth + col;
 }
 
 
@@ -270,7 +268,7 @@ void TileMap::PlaceBlockOnTileMap(const Block& block)
 		sf::Vector2i initGridPos = GetGridPosition(block.GetPosition());
 		sf::Vector2i currGridPos = initGridPos + sf::Vector2i(Block::RotateSignaturePosition(localTilePos, block.GetOrientation()));
 
-		mTiles[currGridPos.y][currGridPos.x] = Tile{block.GetColor(), sf::Color::Transparent, false};
+		mTiles[IndexTiles(currGridPos.y, currGridPos.x)] = Tile{block.GetColor(), sf::Color::Transparent, false};
 	}
 }
 
@@ -283,7 +281,7 @@ void TileMap::PlaceBlockOnTileMapOverlay(const Block& block, sf::Vector2f blockP
 
 		sf::Color overlayColor = block.GetColor();
 		overlayColor.a = 128; // Set alpha to 50% for overlay
-		mTiles[currGridPos.y][currGridPos.x].overlayColor = overlayColor;
+		mTiles[IndexTiles(currGridPos.y, currGridPos.x)].overlayColor = overlayColor;
 	}
 }
 

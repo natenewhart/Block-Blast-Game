@@ -62,6 +62,8 @@ private:
 	bool IsGridPosition  (sf::Vector2i gridPosition) const; // Checks if grid position is within bounds of tilemap
 	bool IsBlockPlaceable(const Block& block, sf::Vector2f newBlockPos) const; // Overload doesn't require block object
 	
+	size_t IndexTiles(size_t row, size_t col) const; // Converts 2D grid position to 1D index in mTiles vector
+
 	//void PlaceBlockOnTileMap(const Block& block);        // Places block on tilemap at given grid position by setting tiles at block tile positions to occupied and block color. Returns true if block was placed successfully, false if any tile positions of block were occupied on tilemap
 	//void PlaceBlockOverlayOnTileMap(const Block& block); // Places block overlay on tilemap at given grid position by setting tiles at block tile positions to occupied and block color with transparency. Used for block placement preview when player is moving block around tilemap. Returns true if block overlay was placed successfully, false if any tile positions of block were occupied on tilemap
 
@@ -72,7 +74,7 @@ private:
 	int mWidth;  // Number of tiles in horizontal direction
 	int mHeight; // Number of tiles in vertical direction
 
-	std::vector<std::vector<Tile>> mTiles; // Stores tile data in a 2D vector (rows of columns). Important: declared
+	std::vector<Tile> mTiles; // Stores tile data in a 2D vector (rows of columns). Important: declared
 
 	sf::Vector2f mPosition;        // Top left corner of tilemap
 
