@@ -204,32 +204,30 @@ void TileMap::ClearColumn(int col)
 void TileMap::CheckAndClearFullLines()
 {
 	// Check for full rows
-	for (int row = 0; row < mHeight; row++)
+	for (int i = 0; i < mWidth * mHeight; i += mWidth)
 	{
-		int rowCount = 0;
-		for (int col = 0; col < mWidth; col++)
+		for (int j = i; j < i + mWidth; j++)
 		{
-			if (!mTiles[IndexTiles(row, col)].isEmpty) rowCount++;
-			else break;
-		}
-		if (rowCount == mWidth)
-		{
-			ClearRow(row);
+			if (mTiles[j].isEmpty) break;
+
+			if (j == i + mWidth - 1)
+			{
+				ClearRow(j / mWidth);
+			}
 		}
 	}
 
 	// Check for full columns
-	for (int col = 0; col < mWidth; col++)
+	for (int i = 0; i < mWidth; i++)
 	{
-		int colCount = 0;
-		for (int row = 0; row < mHeight; row++)
+		for (int j = i; j < i + mWidth * mHeight; j += mWidth)
 		{
-			if (!mTiles[IndexTiles(row, col)].isEmpty) colCount++;
-			else break;
-		}
-		if (colCount == mHeight)
-		{
-			ClearColumn(col);
+			if (mTiles[j].isEmpty) break;
+
+			if (j == i + mWidth * (mHeight - 1))
+			{
+				ClearColumn(j % mWidth);
+			}
 		}
 	}
 }
