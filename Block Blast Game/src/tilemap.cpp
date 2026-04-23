@@ -10,7 +10,7 @@ TileMap::TileMap()
 	, mWidth (8)
 	, mHeight(8)
 	, mTiles(mHeight, std::vector<Tile>(mWidth))
-	, mTileOverlayColors(mHeight, std::vector<sf::Color>(mWidth, sf::Color::Transparent))
+	//, mTileOverlayColors(mHeight, std::vector<sf::Color>(mWidth, sf::Color::Transparent))
 	, mPosition(100, 100)
 	, mcBlockSearchAreaSize(2)
 	, mcSearchAreaWidth(InitSearchAreaWidth(mcBlockSearchAreaSize))
@@ -24,7 +24,7 @@ TileMap::TileMap(sf::Vector2f position)
 	, mWidth(8)
 	, mHeight(8)
 	, mTiles(mHeight, std::vector<Tile>(mWidth))
-	, mTileOverlayColors(mHeight, std::vector<sf::Color>(mWidth, sf::Color::Transparent))
+	//, mTileOverlayColors(mHeight, std::vector<sf::Color>(mWidth, sf::Color::Transparent))
 	, mPosition(position)
 	, mcBlockSearchAreaSize(2)
 	, mcSearchAreaWidth(InitSearchAreaWidth(mcBlockSearchAreaSize))
@@ -66,11 +66,11 @@ void TileMap::Update()
 {
 	CheckAndClearFullLines();
 
-	for (auto& tileOverlay : mTileOverlayColors) // Reset tile overlay colors after each update
+	for (auto& tileRow : mTiles) // Reset tile overlay colors after each update
 	{
-		for (auto& color : tileOverlay)
+		for (auto& tile : tileRow)
 		{
-			color = sf::Color::Transparent;
+			tile.overlayColor = sf::Color::Transparent;
 		}
 	}
 }
@@ -170,11 +170,11 @@ void TileMap::DrawTiles(sf::RenderWindow& window)
 			{
 				mTileRect.setFillColor(tile.color);
 			}
-			if (mTileOverlayColors[row][col] != sf::Color::Transparent)
+			if (mTiles[row][col].overlayColor != sf::Color::Transparent)
 			{
-				mTileRect.setFillColor(mTileOverlayColors[row][col]);
+				mTileRect.setFillColor(mTiles[row][col].overlayColor);
 			}
-			if (!tile.isEmpty || mTileOverlayColors[row][col] != sf::Color::Transparent)
+			if (!tile.isEmpty || mTiles[row][col].overlayColor != sf::Color::Transparent)
 			{
 				window.draw(mTileRect);
 			}
@@ -283,7 +283,7 @@ void TileMap::PlaceBlockOnTileMapOverlay(const Block& block, sf::Vector2f blockP
 
 		sf::Color overlayColor = block.GetColor();
 		overlayColor.a = 128; // Set alpha to 50% for overlay
-		mTileOverlayColors[currGridPos.y][currGridPos.x] = overlayColor;
+		mTiles[currGridPos.y][currGridPos.x].overlayColor = overlayColor;
 	}
 }
 
