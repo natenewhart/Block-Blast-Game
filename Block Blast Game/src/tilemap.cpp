@@ -104,25 +104,58 @@ void TileMap::CheckAndClearFullLines()
 			if (j == i + mWidth * (mHeight - 1))
 			{
 				// Clear Column
-				for (int j = i; j < i + mWidth * mHeight; j += mWidth)
+				for (int k = i; k < i + mWidth * mHeight; k += mWidth)
 				{
-					DeleteTile(j);
+					DeleteTile(k);
 				}
 			}
 		}
 	}
 }
 
-// ------------------- Block Placement Functions -------------------
-
-bool TileMap::IsBlockNearPlaceable(sf::Vector2f blockPosition) const
+void TileMap::CheckAndHighlightFullLines(const std::vector<int>& blockTileGridPositions, sf::Color blockColor)
 {
-	float extraTiles = mcBlockSearchAreaSize - 1; // Number of tiles in search area around block position
-	sf::Vector2f newPos = mPosition - extraTiles * GameSettings::Get().tile.size; // Top left corner of search area around block position
-	sf::Vector2f tileMapScale = sf::Vector2f(mWidth * GameSettings::Get().tile.size.x, mHeight * GameSettings::Get().tile.size.y) + (extraTiles * 2) * GameSettings::Get().tile.size; // Size of tilemap plus search area around block position
+	blockColor.a = 128; // Set alpha to 50% for highlighting
 
-	return isWithinRect(newPos, tileMapScale, blockPosition);
+	for (int index : blockTileGridPositions)
+	{
+		int row = index / mWidth;
+		int col = index % mWidth;
+
+		for (int j = index - col; j < index - col + mWidth; j++) // Iterate across current row
+		{
+			if (mTiles[j].isEmpty && mTiles[j].overlayColor == sf::Color::Transparent) break;
+
+			if (j == index - col + mWidth - 1)
+			{
+				std::println("found row");
+				// Clear Row
+				for (int k = index - col; k < index - col + mWidth; k++)
+				{
+					mTiles[k].overlayColor = blockColor; // Highlight full row
+				}
+			}
+		}
+
+		for (int j = index; j < mWidth * mHeight - col; j += mWidth) // Iterate across current col
+		{
+			if (mTiles[j].isEmpty && mTiles[j].overlayColor == sf::Color::Transparent) break;
+
+			if (j == mWidth * mHeight - col - 1)
+			{
+				std::println("found col");
+				// Clear Column
+				for (int k = index; k < mWidth * mHeight - col; k += mWidth)
+				{
+					mTiles[k].overlayColor = blockColor; // Highlight full column
+				}
+			}
+		}
+	}
+
 }
+
+// ------------------- Block Placement Functions -------------------
 
 sf::Vector2f TileMap::ClosestOpenBlockPosition(const Block& block) const
 {
@@ -159,6 +192,23 @@ sf::Vector2f TileMap::ClosestOpenBlockPosition(const Block& block) const
 	return sf::Vector2f(-1, -1);
 }
 
+std::vector<int> TileMap::GetBlockTilePositions(const Block& block, sf::Vector2f blockPos) const
+{
+	const auto& signature = block.GetSignature();
+	std::vector<int> output;
+	output.reserve(signature.size());
+
+	sf::Vector2i initGridPos = GetGridPosition(blockPos);
+
+	for (sf::Vector2f localTilePos : signature)
+	{
+		sf::Vector2i currGridPos = initGridPos + sf::Vector2i(Block::RotateSignaturePosition(localTilePos, block.GetOrientation()));
+		output.emplace_back(IndexTiles(currGridPos.y, currGridPos.x));
+	}
+	return output;
+}
+
+
 bool TileMap::IsBlockPlaceable(const Block& block, sf::Vector2f newBlockPos) const
 {
 	for (sf::Vector2f localTilePos : block.GetSignature())
@@ -171,31 +221,33 @@ bool TileMap::IsBlockPlaceable(const Block& block, sf::Vector2f newBlockPos) con
 	return true;
 }
 
-void TileMap::PlaceBlockOnTileMap(const Block& block)
+void TileMap::PlaceBlockOnTileMap(const std::vector<int>& blockTileGridPositions, sf::Color blockColor)
 {
-	for (sf::Vector2f localTilePos : block.GetSignature())
+	for (int index : blockTileGridPositions)
 	{
-		sf::Vector2i initGridPos = GetGridPosition(block.GetPosition());
-		sf::Vector2i currGridPos = initGridPos + sf::Vector2i(Block::RotateSignaturePosition(localTilePos, block.GetOrientation()));
-
-		mTiles[IndexTiles(currGridPos.y, currGridPos.x)] = Tile{ block.GetColor(), sf::Color::Transparent, false };
+		mTiles[index] = Tile{ blockColor, sf::Color::Transparent, false };
 	}
 }
 
-void TileMap::PlaceBlockOnTileMapOverlay(const Block& block, sf::Vector2f blockPos)
+void TileMap::PlaceBlockOnTileMapOverlay(const std::vector<int>& blockTileGridPositions, sf::Color blockColor)
 {
-	for (sf::Vector2f localTilePos : block.GetSignature())
+	for (int index : blockTileGridPositions)
 	{
-		sf::Vector2i initGridPos = GetGridPosition(blockPos);
-		sf::Vector2i currGridPos = initGridPos + sf::Vector2i(Block::RotateSignaturePosition(localTilePos, block.GetOrientation()));
-
-		sf::Color overlayColor = block.GetColor();
-		overlayColor.a = 128; // Set alpha to 50% for overlay
-		mTiles[IndexTiles(currGridPos.y, currGridPos.x)].overlayColor = overlayColor;
+		blockColor.a = 128; // Set alpha to 50% for overlay
+		mTiles[index].overlayColor = blockColor;
 	}
 }
 
 // ------------------- Private Helper Functions -------------------
+
+bool TileMap::IsBlockNearPlaceable(sf::Vector2f blockPosition) const
+{
+	float extraTiles = mcBlockSearchAreaSize - 1; // Number of tiles in search area around block position
+	sf::Vector2f newPos = mPosition - extraTiles * GameSettings::Get().tile.size; // Top left corner of search area around block position
+	sf::Vector2f tileMapScale = sf::Vector2f(mWidth * GameSettings::Get().tile.size.x, mHeight * GameSettings::Get().tile.size.y) + (extraTiles * 2) * GameSettings::Get().tile.size; // Size of tilemap plus search area around block position
+
+	return isWithinRect(newPos, tileMapScale, blockPosition);
+}
 
 sf::Vector2f TileMap::SnapToTile(sf::Vector2f position) const
 {

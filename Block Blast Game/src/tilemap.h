@@ -28,15 +28,19 @@ public:
 	void Clear(); // All tiles set to empty and transparent color
 
 	void Update(); // Update tilemap state, check for completed rows and columns and delete tiles in those rows and columns
+	void CheckAndHighlightFullLines(const std::vector<int>& blockTileGridPositions, sf::Color blockColor); // Check for full rows and columns created by highlighted overlay and highlight them the color of active block, used for block placement preview when player is moving block around tilemap.
+	
 	void Draw(sf::RenderWindow& window); // Draws grid lines and tiles
+
+	std::vector<int> GetBlockTilePositions(const Block& block, sf::Vector2f blockPos) const; // Returns vector of grid positions of tiles that a block would occupy if placed at a given position, used for checking if block placement is valid and for highlighting tiles when player is moving block around tilemap
 
 	bool IsBlockNearPlaceable(sf::Vector2f blockPosition) const; // Is block close enough to tilemap to warrant a placeability check
 	sf::Vector2f ClosestOpenBlockPosition(const Block& block) const; // Returns the position of the closest open tile to the block position. Used for finding the closest placeable position for a block when the initial position is not placeable. Returns (-1, -1) if no placeable position is found. TODO: optimize this function by only checking tiles within a certain radius of the block position and then expanding the radius until a placeable position is found or all tiles have been checked.
 	
 	sf::Vector2f SnapToTile(sf::Vector2f position) const;  // Take pixel pos and return position of current tile (top left)
 
-	void PlaceBlockOnTileMap(const Block& block);        // Places block on tilemap at given grid position by setting tiles at block tile positions to occupied and block color. Returns true if block was placed successfully, false if any tile positions of block were occupied on tilemap
-	void PlaceBlockOnTileMapOverlay(const Block& block, sf::Vector2f blockPos); // Places block overlay on tilemap at given grid position by setting tiles at block tile positions to occupied and block color with transparency. Used for block placement preview when player is moving block around tilemap. Returns true if block overlay was placed successfully, false if any tile positions of block were occupied on tilemap
+	void PlaceBlockOnTileMap(const std::vector<int>& blockTileGridPositions, sf::Color blockColor);        // Places block on tilemap at given grid position by setting tiles at block tile positions to occupied and block color. Returns true if block was placed successfully, false if any tile positions of block were occupied on tilemap
+	void PlaceBlockOnTileMapOverlay(const std::vector<int>& blockTileGridPositions, sf::Color blockColor); // Places block overlay on tilemap at given grid position by setting tiles at block tile positions to occupied and block color with transparency. Used for block placement preview when player is moving block around tilemap. Returns true if block overlay was placed successfully, false if any tile positions of block were occupied on tilemap
 
 private:
 	void Init(); // Initializes tilemap data and grid vertices
@@ -65,6 +69,7 @@ private:
 	int mHeight; // Number of tiles in vertical direction
 
 	std::vector<Tile> mTiles; // Stores tile data in a 2D vector (rows of columns). Important: declared
+	std::vector<sf::Vector2i> mBlockPlacementPositions; // Stores grid positions of tiles that a block would occupy if placed at a given position, used for checking if block placement is valid and for highlighting tiles when player is moving block around tilemap
 
 	sf::Vector2f mPosition;        // Top left corner of tilemap
 

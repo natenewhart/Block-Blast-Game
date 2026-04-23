@@ -50,7 +50,7 @@ private:
 
 	// Block Handling Functions
 	void HandleBlockEvents();
-	void UpdateBlocks();
+	void UpdateBlocksAndTileMap();
 	void DrawBlocks();
 	
 	// Block Helper Functions
