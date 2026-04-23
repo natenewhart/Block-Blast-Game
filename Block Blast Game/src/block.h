@@ -42,6 +42,8 @@ public:
 	sf::Vector2f GetBlockOriginCenter() const;   // Return center position of origin block (0, 0) in pixel frame
 	sf::Vector2f GetBlockCenterPosition() const; // Calculate center position of block by averaging the tile positions in pixel reference frame
 
+	sf::Transform& GetRotationAndScaleTransform(); // Get block transform which is used for drawing block and converting between world and block local positions
+
 	sf::Vector2f ConvertSignatureToWorldPosition(sf::Vector2f signaturePos) const; // Convert block signature position to world position by applying block transform to signature position
 
 	void SetPosition(sf::Vector2f position);       // Set position of origin tile in block

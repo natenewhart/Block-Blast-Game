@@ -83,6 +83,11 @@ sf::Vector2f Block::GetBlockCenterPosition() const
 	return mTransform.transformPoint(max / 2.f + sf::Vector2f(0.5f, 0.5f));
 }
 
+sf::Transform& Block::GetRotationAndScaleTransform()
+{
+	return mRotationScaleTransform;
+}
+
 void Block::SetPosition(sf::Vector2f position)
 {
 	mPosition  = position;
