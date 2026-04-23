@@ -23,13 +23,6 @@
 // There should be a set position function that edits the transform
 // A draw function that uses the transfrom which passes to the gpu
 
-/*
-get shape
-GetRotationAndScaleTransform
-ConvertSignatureToWorldPosition
-SetColor
-*/
-
 class Block
 {
 public:

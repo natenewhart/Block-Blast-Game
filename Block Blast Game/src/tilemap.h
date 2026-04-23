@@ -41,7 +41,7 @@ public:
 
 private:
 	void Init(); // Initializes tilemap data and grid vertices
-	int InitSearchAreaWidth(int blockSearchAreaSize) const; // Initialize search area width constant variable
+	int  InitSearchAreaWidth(int blockSearchAreaSize) const; // Initialize search area width constant variable
 
 	// Draw Private Functions
 	void DrawGridLines(sf::RenderWindow& window); // Draws grid lines with top left corner at mPosition
@@ -57,9 +57,6 @@ private:
 	bool IsBlockPlaceable(const Block& block, sf::Vector2f newBlockPos) const; // Overload doesn't require block object
 	
 	size_t IndexTiles(size_t row, size_t col) const; // Converts 2D grid position to 1D index in mTiles vector
-
-	//void PlaceBlockOnTileMap(const Block& block);        // Places block on tilemap at given grid position by setting tiles at block tile positions to occupied and block color. Returns true if block was placed successfully, false if any tile positions of block were occupied on tilemap
-	//void PlaceBlockOverlayOnTileMap(const Block& block); // Places block overlay on tilemap at given grid position by setting tiles at block tile positions to occupied and block color with transparency. Used for block placement preview when player is moving block around tilemap. Returns true if block overlay was placed successfully, false if any tile positions of block were occupied on tilemap
 
 private:
 	sf::RectangleShape mTileRect;        // Rectangle shape used for drawing tiles. We can reuse the same shape and just change its position and color for each tile.
