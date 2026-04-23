@@ -67,6 +67,7 @@ private:
 	static const tBlockSignature  scBlockSignatures[scNumberOfBlockTypes]; // Array of block signatures which contain vectors of tile positions in relation to an origin tile at 0,0. Each block type has a different signature which is used to determine the shape of the block.
 
 	sf::Transform   mTransform; // Final transform applied to block which updates based on block position
+	sf::Transform   mRotationScaleTransform;
 	sf::VertexArray mMesh;      // Vertex array used for drawing block, each tile is a quad which is 4 vertices
 	
 	sf::Vector2f mPosition;     // Top left corner of tile in block at (0, 0) given by BLOCK_SIGNATURES 

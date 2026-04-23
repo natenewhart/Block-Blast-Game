@@ -27,6 +27,9 @@ const Block::tBlockSignature& Block::GetSignature() const
 
 void Block::Init()
 {
+	mRotationScaleTransform.rotate(mOrientation * 90.f);
+	mRotationScaleTransform.scale(TileSettings::Get().size);
+
 	SetPosition(mPosition);
 	SetBlockCenterPosition(mPosition);
 
@@ -86,8 +89,7 @@ void Block::SetPosition(sf::Vector2f position)
 
 	mTransform = sf::Transform::Identity;
 	mTransform.translate(mPosition);
-	mTransform.rotate   (mOrientation * 90.f);
-	mTransform.scale    (TileSettings::Get().size);
+	mTransform.combine(mRotationScaleTransform);
 }
 
 void Block::SetBlockCenterPosition(sf::Vector2f centerPosition)
