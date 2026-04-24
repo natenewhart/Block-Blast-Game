@@ -89,49 +89,19 @@ void Game::Update()
 	UpdateBlocksAndTileMap();
 }
 
-// NEW LAYOUT FOR ALGORITHM
-/*
-* Have a tilemap function ClosestOpenBlockPosition which gets the blocks closest open position
-* Have a second function which takes the block and this position and returns the array of all the blocks grid positions in integers (row * width + col)
-* Then when you place the block on the tilemap it just takes an array of tile positions as the input and it iterates over it for you and does all the placing
-* For every function, the clear rows, place block highlight, place block, they just take in the grid array as an input
-*/
-
 void Game::UpdateBlocksAndTileMap()
 {
 	if (mActiveBlock)
 	{
 		mActiveBlock->SetBlockCenterPosition(mState.mousePosition);
-		
-		// Boolean checks
-		//bool nearPlaceable = mTileMap.IsBlockNearPlaceable(mActiveBlock->GetBlockCenterPosition()); // If block close enough to tilemap to be placed
-		//sf::Vector2f closestOpenBlockPosition(-1, -1);
-		//bool isPlaceable = false;
-		//std::vector<int> blockTileGridPositions; // Grid positions of tiles that a block would occupy if placed at a given position, used for checking if block placement is valid and for highlighting tiles when player is moving block around tilemap
 
-		//if (nearPlaceable)
-		//{
-		//	closestOpenBlockPosition = mTileMap.ClosestOpenBlockPosition(*mActiveBlock); // Get closest placeable tile position to block position, returns (-1, -1) if no placeable position is found
-
-		//	if (closestOpenBlockPosition.x != -1 && closestOpenBlockPosition.y != -1)
-		//	{
-		//		isPlaceable = true;
-		//		blockTileGridPositions = mTileMap.GetBlockTilePositions(*mActiveBlock, closestOpenBlockPosition); // Get grid positions of tiles that a block would occupy if placed at a given position, used for checking if block placement is valid and for highlighting tiles when player is moving block around tilemap
-		//		
-		//		mTileMap.PlaceBlockOnTileMapOverlay(blockTileGridPositions, mActiveBlock->GetColor()); // Place block overlay on tilemap for block placement preview, returns true if block is placeable and overlay was placed successfully, false if block is not placeable and overlay was not placed
-		//		mTileMap.CheckAndHighlightFullLines(blockTileGridPositions, mActiveBlock->GetColor());
-		//	}
-		//}
 		bool isPlaceable = mTileMap.SubmitBlock(*mActiveBlock);
 			
 		if (mState.mouseLeftButtonReleased)
 		{
 			if (isPlaceable)
 			{
-				//mTileMap.PlaceBlockOnTileMap(blockTileGridPositions, mActiveBlock->GetColor()); // Try to place block on tilemap, if block is placeable then place block and hide block in block hand, otherwise reset block position to original position
-				//mTileMap.CheckAndClearFullLines(blockTileGridPositions, mActiveBlock->GetColor());
 				mTileMap.PlaceBlock();
-
 				HideActiveBlock();
 			}
 			else

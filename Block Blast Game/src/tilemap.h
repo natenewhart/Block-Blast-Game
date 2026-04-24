@@ -27,8 +27,8 @@ public:
 
 	void Clear(); // All tiles set to empty and transparent color
 
-	bool SubmitBlock(const Block& block); // Submit block to 
-	void PlaceBlock();
+	bool SubmitBlock(const Block& block); // Submits block and caches its to be position and updates block highlights
+	void PlaceBlock();                    // Places cached block to screen and handles deletion updates
 
 	void Draw(sf::RenderWindow& window); // Draws grid lines and tiles
 
