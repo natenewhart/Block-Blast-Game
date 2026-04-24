@@ -86,48 +86,47 @@ void Game::Update()
 	mText.setPosition(mScreenWidth - mText.getLocalBounds().width - 9, 0);
 
 	// Game updates
-	UpdateBlocksAndTileMap();
+	UpdateBlockPlacement();
 }
 
-void Game::UpdateBlocksAndTileMap()
-{
-	if (mActiveBlock)
-	{
-		mActiveBlock->SetBlockCenterPosition(mState.mousePosition);
-
-		bool isPlaceable = mTileMap.SubmitBlock(*mActiveBlock);
-			
-		if (mState.mouseLeftButtonReleased)
-		{
-			if (isPlaceable)
-			{
-				mTileMap.PlaceBlock();
-				HideActiveBlock();
-			}
-			else
-			{
-				ResetActiveBlock();
-			}
-		}	
-	}
-	else if (mState.mouseLeftButtonPressed)
-	{
-		for (auto& block : mBlockHand)
-		{
-			if (block.IsTouching(mState.mousePosition)) // Check if mouse is touching block
-			{
-				SetActiveBlock(&block); // Set active block to block being touched by mouse and set isActiveBlock to true
-				break;
-			}
-		}
-	}
-}
-
-void Game::UpdateBlocks()
+void Game::UpdateBlockPlacement()
 {
 	if (!mActiveBlock)
 	{
-		ResetActiveBlock();
+		if (mState.mouseLeftButtonPressed)
+		{
+			for (auto& block : mBlockHand)
+			{
+				if (block.IsTouching(mState.mousePosition)) // Check if mouse is touching block
+				{
+					SetActiveBlock(&block); // Set active block to block being touched by mouse and set isActiveBlock to true
+					break;
+				}
+			}
+		}
+		return;
+	}
+
+	mActiveBlock->SetBlockCenterPosition(mState.mousePosition);
+	bool isPlaceable = mTileMap.SubmitBlock(*mActiveBlock);
+
+	if (!isPlaceable)
+	{
+		if (mState.mouseLeftButtonReleased)
+		{
+			ResetActiveBlock();
+		}
+		return;
+	}
+
+	if (!mState.mouseLeftButtonReleased)
+	{
+		mTileMap.PlaceBlockOverlay();
+	}
+	else
+	{
+		mTileMap.PlaceBlock();
+		HideActiveBlock();
 	}
 }
 

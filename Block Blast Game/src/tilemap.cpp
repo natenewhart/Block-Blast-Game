@@ -79,12 +79,8 @@ bool TileMap::SubmitBlock(const Block& block)
 	mActiveBlockColor    = block.GetColor();
 
 	if (isValidBlockPos)
-	{
 		CheckFullLines();
-
-		PlaceBlockOnTileMapOverlay(); // Place block overlay on tilemap for block placement preview, returns true if block is placeable and overlay was placed successfully, false if block is not placeable and overlay was not placed
-		HighlightFullLines();
-	}
+	
 	return isValidBlockPos;
 }
 
@@ -113,6 +109,12 @@ void TileMap::CheckFullLines()
 	}
 }
 
+
+void TileMap::PlaceBlockOverlay()
+{
+	PlaceBlockOnTileMapOverlay(); // Place block overlay on tilemap for block placement preview, returns true if block is placeable and overlay was placed successfully, false if block is not placeable and overlay was not placed
+	HighlightFullLines();
+}
 
 void TileMap::PlaceBlock()
 {
