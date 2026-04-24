@@ -64,6 +64,8 @@ void TileMap::Clear()
 		tile.color   = sf::Color::Transparent; // Placeholder color for empty tile
 		tile.overlayColor = sf::Color::Transparent; // Placeholder color for empty tile overlay
 	}
+	
+	ClearBlockCache();
 }
 
 // ------------------- Update Functions -------------------
@@ -71,7 +73,7 @@ void TileMap::Clear()
 
 bool TileMap::SubmitBlock(const Block& block)
 {
-	ClearCache();
+	ClearBlockCache();
 
 	bool isValidBlockPos = SetClosestOpenBlockPosition(block);
 	mActiveBlockColor    = block.GetColor();
@@ -279,7 +281,7 @@ size_t TileMap::IndexTiles(sf::Vector2i tilePos) const
 	return tilePos.y * mWidth + tilePos.x;
 }
 
-void TileMap::ClearCache()
+void TileMap::ClearBlockCache()
 {
 	for (auto& tile : mTiles) // Reset tile overlay colors after each update
 	{

@@ -25,7 +25,6 @@ public:
 	TileMap();
 	TileMap(sf::Vector2f position);
 
-	// UNUSED
 	void Clear(); // All tiles set to empty and transparent color
 
 	bool SubmitBlock(const Block& block); // Submit block to 
@@ -66,7 +65,7 @@ private:
 	size_t IndexTiles(size_t row, size_t col) const; // Converts 2D grid position to 1D index in mTiles vector
 	size_t IndexTiles(sf::Vector2i tilePos) const;
 
-	void ClearCache();
+	void ClearBlockCache(); // Clear all block cache 
 
 private:
 	sf::RectangleShape mTileRect;        // Rectangle shape used for drawing tiles. We can reuse the same shape and just change its position and color for each tile.
