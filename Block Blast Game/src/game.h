@@ -11,20 +11,19 @@
 class Game
 {
 // ----------------- Member Types -----------------
-private:
-	// Define GameState and State before they are used as member variables
-	enum GameState
+public:
+	enum Mode
 	{ 
 		Play,
 		Pause
 	};
-
 	struct State 
 	{
 		sf::Vector2f mousePosition;
+		sf::Vector2f activeBlockInitPosition; // Initial position of active block when picked up, used for resetting block position after placing on tilemap
 
-		GameState gameState;
-
+		Mode gameMode;
+		
 		bool mouseLeftButtonPressed;
 		bool mouseLeftButtonReleased;
 	};
@@ -51,11 +50,16 @@ private:
 	// Block Handling Functions
 	void HandleBlockEvents();
 	void UpdateBlocksAndTileMap();
+	void UpdateBlocks(); // Update block hand with new blocks if all blocks in block hand have been placed on tilemap
 	void DrawBlocks();
 	
 	// Block Helper Functions
 	// TODO: should IsActiveBlockTouchingTileMap be inline?
 	void CreateNewBlockHand(); // Updates blockHand with three new blocks based on current tile map state. Implements block spawning algorithm
+
+	void SetActiveBlock(Block* block); // Set active block to given block pointer, set isActiveBlock to true if block pointer is not nullptr, false if block pointer is nullptr
+	void ResetActiveBlock(); // Resets active block position to initial position when picked up, used for resetting block position after placing on tilemap
+	void HideActiveBlock();  // Move active block to off screen position, used for hiding block when it is placed on tilemap
 
 // ----------------- Member Variables -----------------
 private:
@@ -78,9 +82,6 @@ private:
 	// Block Management Variables
     Block* mActiveBlock; // Pointer to block currently being moved by mouse, nullptr if no block is being moved
 	Block  mBlockHand[3]; // Block queue which stores 3 blocks to be placed at each turn
-	sf::Vector2f mActiveBlockInitPosition; // Initial position of active block when picked up, used for resetting block position after placing on tilemap
-	sf::Vector2f mBlockOffset; // Offset between block position and mouse position to maintain relative position while dragging
-	sf::Vector2f mLastActiveBlockPosition; // Last position of active block, used for checking if block is being moved and for resetting block position after placing on tilemap
 
 	// Display Variables
     sf::Text mText; // Temporary text variable for testing

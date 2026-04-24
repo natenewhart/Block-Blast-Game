@@ -4,6 +4,8 @@
 
 #include <print>
 
+class Game;
+
 TileMap::TileMap()
 	: mTileRect(GameSettings::Get().tile.size)
 	, mGridVertices{ sf::Vertex(), sf::Vertex(), sf::Vertex(), sf::Vertex() }
@@ -20,12 +22,14 @@ TileMap::TileMap()
 TileMap::TileMap(sf::Vector2f position)
 	: mTileRect(GameSettings::Get().tile.size)
 	, mGridVertices{ sf::Vertex(), sf::Vertex(), sf::Vertex(), sf::Vertex() }
-	, mWidth (GameSettings::Get().tileMap.width)
+	, mWidth(GameSettings::Get().tileMap.width)
 	, mHeight(GameSettings::Get().tileMap.height)
-	, mTiles(mHeight * mWidth, Tile{sf::Color::Transparent, sf::Color::Transparent, true})
+	, mTiles(mHeight * mWidth, Tile{ sf::Color::Transparent, sf::Color::Transparent, true })
 	, mPosition(position)
 	, mcBlockSearchAreaSize(2)
 	, mcSearchAreaWidth(InitSearchAreaWidth(mcBlockSearchAreaSize))
+	, mFullRows(mWidth, false)
+	, mFullCols(mHeight, false)
 {
 	Init();
 }
@@ -70,92 +74,163 @@ void TileMap::Update()
 	{
 		tile.overlayColor = sf::Color::Transparent;
 	}
+	mBlockPlacementBuffer.clear();
+
+	//for (bool& row : mFullRows)
+	//{
+	//	row = false;
+	//}
+	//for (bool& col : mFullCols)
+	//{
+	//	col = false;
+	//}
+
+	std::fill(mFullRows.begin(), mFullRows.end(), false);
+	std::fill(mFullCols.begin(), mFullCols.end(), false);
 }
 
-
-void TileMap::CheckAndClearFullLines(const std::vector<int>& blockTileGridPositions, sf::Color blockColor)
+bool TileMap::SubmitBlock(const Block& block)
 {
-	for (int index : blockTileGridPositions)
+	//mBlockPlacementBuffer.clear();
+
+	sf::Vector2f closestOpenBlockPosition = ClosestOpenBlockPosition(block);
+	mActiveBlockColor = block.GetColor();
+
+	if (closestOpenBlockPosition.x != -1 && closestOpenBlockPosition.y != -1)
 	{
-		int row = index / mWidth;
-		int col = index % mWidth;
+		PlaceBlockOnTileMapOverlay(); // Place block overlay on tilemap for block placement preview, returns true if block is placeable and overlay was placed successfully, false if block is not placeable and overlay was not placed
+		CheckFullLines();
+		HighlightFullLines();
+		return true;
+	}
+	return false;
+}
+
+//void TileMap::CheckFullLines()
+//{
+//	for (int index : mBlockPlacementBuffer)
+//	{
+//		//std::println("ndex {}", index);
+//		int row = index / mWidth;
+//		int col = index % mWidth;
+//		int rowStart = row * mWidth;
+//		int colStart = col;
+//		int colEnd = (mHeight - 1) * mWidth + col;
+//
+//		//std::println("checking index {} row {} col {}", index, row, col);
+//
+//		// Check row
+//		for (int j = rowStart; j < rowStart + mWidth; j++)
+//		{
+//			for (int j = colStart; j <= colEnd; j += mWidth)
+//			{
+//				std::println("col tile {} isEmpty={} overlay={}", j, mTiles[j].isEmpty, mTiles[j].overlayColor == sf::Color::Transparent);
+//				if (mTiles[j].isEmpty && mTiles[j].overlayColor == sf::Color::Transparent) break;
+//				if (j == colEnd)
+//				{
+//					std::println("marking col {} as full", col);
+//					mFullCols[col] = true;
+//				}
+//			}
+//		}
+//
+//		// Check column
+//		for (int j = colStart; j <= colEnd; j += mWidth)
+//		{
+//			if (mTiles[j].isEmpty && mTiles[j].overlayColor != sf::Color::Transparent) break;
+//
+//			if (j == colEnd)
+//			{
+//				std::println("marking col {} as full", col);
+//				mFullCols[col] = true;
+//				//for (int k = colStart; k <= colEnd; k += mWidth)
+//				//	DeleteTile(k);
+//			}
+//		}
+//	}
+//}
+void TileMap::CheckFullLines()
+{
+	for (sf::Vector2i tilePos : mBlockPlacementBuffer)
+	{
+		//int row = index / mWidth;
+		//int col = index % mWidth;
+		int row = tilePos.y;
+		int col = tilePos.x;
 		int rowStart = row * mWidth;
-		int colStart = col;
 		int colEnd = (mHeight - 1) * mWidth + col;
 
 		// Check row
 		for (int j = rowStart; j < rowStart + mWidth; j++)
 		{
-			if (mTiles[j].isEmpty) break;
-
+			if (mTiles[j].isEmpty && mTiles[j].overlayColor == sf::Color::Transparent) break;
 			if (j == rowStart + mWidth - 1)
-			{
-				for (int k = rowStart; k < rowStart + mWidth; k++)
-					DeleteTile(k);
-			}
+				mFullRows[row] = true;
 		}
 
-		// Check column
-		for (int j = colStart; j <= colEnd; j += mWidth)
+		// Check column - start from col, not colStart
+		for (int j = col; j <= colEnd; j += mWidth)
 		{
-			if (mTiles[j].isEmpty) break;
-
+			if (mTiles[j].isEmpty && mTiles[j].overlayColor == sf::Color::Transparent) break;
 			if (j == colEnd)
-			{
-				for (int k = colStart; k <= colEnd; k += mWidth)
-					DeleteTile(k);
-			}
+				mFullCols[col] = true;
 		}
 	}
 }
 
-void TileMap::CheckAndHighlightFullLines(const std::vector<int>& blockTileGridPositions, sf::Color blockColor)
+void TileMap::PlaceBlock()
 {
-	blockColor.a = 128;
+	PlaceBlockOnTileMap();
+	ClearFullLines();
+}
 
-	for (int index : blockTileGridPositions)
+
+void TileMap::ClearFullLines()
+{
+	std::println("clearing");
+	for (int row = 0; row < mHeight; row++)
 	{
-		int row = index / mWidth;
-		int col = index % mWidth;
-		int rowStart = row * mWidth;
-		int colStart = col;
-		int colEnd = (mHeight - 1) * mWidth + col;
+		if (!mFullRows[row]) continue;
+		for (int col = 0; col < mWidth; col++)
+			DeleteTile(IndexTiles(row, col));
+	}
+	for (int col = 0; col < mWidth; col++)
+	{
+		if (!mFullCols[col]) continue;
+		for (int row = 0; row < mHeight; row++)
+			DeleteTile(IndexTiles(row, col));
+	}
+}
 
-		// Check row
-		for (int j = rowStart; j < rowStart + mWidth; j++)
-		{
-			if (mTiles[j].isEmpty && mTiles[j].overlayColor == sf::Color::Transparent) break;
+void TileMap::HighlightFullLines()
+{
+	sf::Color blockColor = mActiveBlockColor;
+	blockColor.a = 128; // Set alpha to 50% for overlay
 
-			if (j == rowStart + mWidth - 1)
-			{
-				for (int k = rowStart; k < rowStart + mWidth; k++)
-					mTiles[k].overlayColor = blockColor;
-			}
-		}
-
-		// Check column
-		for (int j = colStart; j <= colEnd; j += mWidth)
-		{
-			if (mTiles[j].isEmpty && mTiles[j].overlayColor == sf::Color::Transparent) break;
-
-			if (j == colEnd)
-			{
-				for (int k = colStart; k <= colEnd; k += mWidth)
-					mTiles[k].overlayColor = blockColor;
-			}
-		}
+	for (int row = 0; row < mHeight; row++)
+	{
+		if (!mFullRows[row]) continue;
+		for (int col = 0; col < mWidth; col++)
+			mTiles[IndexTiles(row, col)].overlayColor = blockColor;
+	}
+	for (int col = 0; col < mWidth; col++)
+	{
+		if (!mFullCols[col]) continue;
+		for (int row = 0; row < mHeight; row++)
+			mTiles[IndexTiles(row, col)].overlayColor = blockColor;
 	}
 }
 
 // ------------------- Block Placement Functions -------------------
 
-sf::Vector2f TileMap::ClosestOpenBlockPosition(const Block& block) const
+sf::Vector2f TileMap::ClosestOpenBlockPosition(const Block& block)
 {
 	float minDistance = std::numeric_limits<float>::max();
 	sf::Vector2f closestTilePos;
 
 	sf::Vector2f originTilePos = SnapToTile(block.GetBlockOriginCenter()); // Top left corner of tile that block origin center is inside of
-	
+	std::vector<sf::Vector2i> blockTilePositions;
+
 	for (int i = 0; i < mcSearchAreaWidth * mcSearchAreaWidth; i++)
 	{
 		int col = (i % mcSearchAreaWidth) - mcBlockSearchAreaSize; // Column offset from block position (-mcBlockSearchAreaSize / 2, ..., 0, ..., mcBlockSearchAreaSize / 2)
@@ -163,8 +238,9 @@ sf::Vector2f TileMap::ClosestOpenBlockPosition(const Block& block) const
 
 		// Top left corner of each tile in search area around block position
 		sf::Vector2f currTilePos = originTilePos + sf::Vector2f(col * GameSettings::Get().tile.size.x, row * GameSettings::Get().tile.size.y);
-		
-		if (IsBlockPlaceable(block, currTilePos))
+		blockTilePositions = GetBlockTilePositions(block, currTilePos);
+
+		if (IsBlockPlaceable(blockTilePositions))
 		{
 			// Get distance between block origin center and current tile center
 			float currDistance = distanceSquared(currTilePos + 0.5f * GameSettings::Get().tile.size, block.GetBlockOriginCenter());
@@ -173,6 +249,8 @@ sf::Vector2f TileMap::ClosestOpenBlockPosition(const Block& block) const
 			{
 				minDistance    = currDistance;
 				closestTilePos = currTilePos;
+
+				mBlockPlacementBuffer = std::move(blockTilePositions);
 			}
 		}
 	}
@@ -184,10 +262,10 @@ sf::Vector2f TileMap::ClosestOpenBlockPosition(const Block& block) const
 	return sf::Vector2f(-1, -1);
 }
 
-std::vector<int> TileMap::GetBlockTilePositions(const Block& block, sf::Vector2f blockPos) const
+std::vector<sf::Vector2i> TileMap::GetBlockTilePositions(const Block& block, sf::Vector2f blockPos) const
 {
 	const auto& signature = block.GetSignature();
-	std::vector<int> output;
+	std::vector<sf::Vector2i> output;
 	output.reserve(signature.size());
 
 	sf::Vector2i initGridPos = GetGridPosition(blockPos);
@@ -195,38 +273,42 @@ std::vector<int> TileMap::GetBlockTilePositions(const Block& block, sf::Vector2f
 	for (sf::Vector2f localTilePos : signature)
 	{
 		sf::Vector2i currGridPos = initGridPos + sf::Vector2i(Block::RotateSignaturePosition(localTilePos, block.GetOrientation()));
-		output.emplace_back(IndexTiles(currGridPos.y, currGridPos.x));
+
+		output.emplace_back(currGridPos.x, currGridPos.y);
 	}
 	return output;
 }
 
 
-bool TileMap::IsBlockPlaceable(const Block& block, sf::Vector2f newBlockPos) const
+bool TileMap::IsBlockPlaceable(const std::vector<sf::Vector2i>& blockTilePositions) const
 {
-	for (sf::Vector2f localTilePos : block.GetSignature())
+	for (sf::Vector2i tilePos : blockTilePositions)
 	{
-		sf::Vector2i initGridPos = GetGridPosition(newBlockPos);
-		sf::Vector2i currGridPos = initGridPos + sf::Vector2i(Block::RotateSignaturePosition(localTilePos, block.GetOrientation()));
-
-		if (!IsGridPosition(currGridPos) || mTiles[IndexTiles(currGridPos.y, currGridPos.x)].isEmpty == false) return false;
+		if (!IsGridPosition(tilePos) ||mTiles[IndexTiles(tilePos)].isEmpty == false) return false;
+		//std::println("row: {}, col {}", tileIndex / mWidth, tileIndex % mWidth);
+		//if (tileIndex > mWidth * mHeight)
+		//{
+		//std::println("{}",tileIndex);
+		//}
 	}
 	return true;
 }
 
-void TileMap::PlaceBlockOnTileMap(const std::vector<int>& blockTileGridPositions, sf::Color blockColor)
+void TileMap::PlaceBlockOnTileMap()
 {
-	for (int index : blockTileGridPositions)
+	for (sf::Vector2i tilePos : mBlockPlacementBuffer)
 	{
-		mTiles[index] = Tile{ blockColor, sf::Color::Transparent, false };
+		mTiles[IndexTiles(tilePos)] = Tile{mActiveBlockColor, sf::Color::Transparent, false};
 	}
 }
 
-void TileMap::PlaceBlockOnTileMapOverlay(const std::vector<int>& blockTileGridPositions, sf::Color blockColor)
+void TileMap::PlaceBlockOnTileMapOverlay()
 {
-	for (int index : blockTileGridPositions)
+	for (sf::Vector2i tilePos : mBlockPlacementBuffer)
 	{
+		sf::Color blockColor = mActiveBlockColor;
 		blockColor.a = 128; // Set alpha to 50% for overlay
-		mTiles[index].overlayColor = blockColor;
+		mTiles[IndexTiles(tilePos)].overlayColor = blockColor;
 	}
 }
 
@@ -268,9 +350,20 @@ size_t TileMap::IndexTiles(size_t row, size_t col) const
 	return row * mWidth + col;
 }
 
+size_t TileMap::IndexTiles(sf::Vector2i tilePos) const
+{
+	return tilePos.y * mWidth + tilePos.x;
+}
+
+bool TileMap::IsGridPosition(int index) const
+{
+	return index >= 0 && index < mWidth * mHeight;
+}
+
 bool TileMap::IsGridPosition(sf::Vector2i gridPosition) const
 {
-	return gridPosition.y >= 0 && gridPosition.y < mHeight && gridPosition.x >= 0 && gridPosition.x < mWidth;
+	return gridPosition.x >= 0 && gridPosition.x < mWidth &&
+		gridPosition.y >= 0 && gridPosition.y < mHeight;
 }
 
 // ------------------- Render Functions -------------------

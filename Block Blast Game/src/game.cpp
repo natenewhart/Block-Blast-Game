@@ -78,11 +78,14 @@ void Game::HandleBlockEvents()
 
 void Game::Update()
 {
+	// State Updates:
     mState.mousePosition = sf::Vector2f(sf::Mouse::getPosition(mWindow));
 
+	// On Screen FPS Updates
 	mText.setString(std::to_string(static_cast<int>(1.f / mDeltaTime + 0.5f)));
 	mText.setPosition(mScreenWidth - mText.getLocalBounds().width - 9, 0);
 
+	// Game updates
 	UpdateBlocksAndTileMap();
 }
 
@@ -103,40 +106,39 @@ void Game::UpdateBlocksAndTileMap()
 		mActiveBlock->SetBlockCenterPosition(mState.mousePosition);
 		
 		// Boolean checks
-		bool nearPlaceable = mTileMap.IsBlockNearPlaceable(mActiveBlock->GetBlockCenterPosition()); // If block close enough to tilemap to be placed
-		sf::Vector2f closestOpenBlockPosition(-1, -1);
-		bool isPlaceable = false;
-		std::vector<int> blockTileGridPositions; // Grid positions of tiles that a block would occupy if placed at a given position, used for checking if block placement is valid and for highlighting tiles when player is moving block around tilemap
+		//bool nearPlaceable = mTileMap.IsBlockNearPlaceable(mActiveBlock->GetBlockCenterPosition()); // If block close enough to tilemap to be placed
+		//sf::Vector2f closestOpenBlockPosition(-1, -1);
+		//bool isPlaceable = false;
+		//std::vector<int> blockTileGridPositions; // Grid positions of tiles that a block would occupy if placed at a given position, used for checking if block placement is valid and for highlighting tiles when player is moving block around tilemap
 
-		if (nearPlaceable)
-		{
-			closestOpenBlockPosition = mTileMap.ClosestOpenBlockPosition(*mActiveBlock); // Get closest placeable tile position to block position, returns (-1, -1) if no placeable position is found
+		//if (nearPlaceable)
+		//{
+		//	closestOpenBlockPosition = mTileMap.ClosestOpenBlockPosition(*mActiveBlock); // Get closest placeable tile position to block position, returns (-1, -1) if no placeable position is found
 
-			if (closestOpenBlockPosition.x != -1 && closestOpenBlockPosition.y != -1)
-			{
-				isPlaceable = true;
-				blockTileGridPositions = mTileMap.GetBlockTilePositions(*mActiveBlock, closestOpenBlockPosition); // Get grid positions of tiles that a block would occupy if placed at a given position, used for checking if block placement is valid and for highlighting tiles when player is moving block around tilemap
-				
-				mTileMap.PlaceBlockOnTileMapOverlay(blockTileGridPositions, mActiveBlock->GetColor()); // Place block overlay on tilemap for block placement preview, returns true if block is placeable and overlay was placed successfully, false if block is not placeable and overlay was not placed
-				mTileMap.CheckAndHighlightFullLines(blockTileGridPositions, mActiveBlock->GetColor());
-			}
-		}
+		//	if (closestOpenBlockPosition.x != -1 && closestOpenBlockPosition.y != -1)
+		//	{
+		//		isPlaceable = true;
+		//		blockTileGridPositions = mTileMap.GetBlockTilePositions(*mActiveBlock, closestOpenBlockPosition); // Get grid positions of tiles that a block would occupy if placed at a given position, used for checking if block placement is valid and for highlighting tiles when player is moving block around tilemap
+		//		
+		//		mTileMap.PlaceBlockOnTileMapOverlay(blockTileGridPositions, mActiveBlock->GetColor()); // Place block overlay on tilemap for block placement preview, returns true if block is placeable and overlay was placed successfully, false if block is not placeable and overlay was not placed
+		//		mTileMap.CheckAndHighlightFullLines(blockTileGridPositions, mActiveBlock->GetColor());
+		//	}
+		//}
+		bool isPlaceable = mTileMap.SubmitBlock(*mActiveBlock);
 			
 		if (mState.mouseLeftButtonReleased)
 		{
 			if (isPlaceable)
 			{
-				mTileMap.PlaceBlockOnTileMap(blockTileGridPositions, mActiveBlock->GetColor()); // Try to place block on tilemap, if block is placeable then place block and hide block in block hand, otherwise reset block position to original position
-				mTileMap.CheckAndClearFullLines(blockTileGridPositions, mActiveBlock->GetColor());
+				//mTileMap.PlaceBlockOnTileMap(blockTileGridPositions, mActiveBlock->GetColor()); // Try to place block on tilemap, if block is placeable then place block and hide block in block hand, otherwise reset block position to original position
+				//mTileMap.CheckAndClearFullLines(blockTileGridPositions, mActiveBlock->GetColor());
+				mTileMap.PlaceBlock();
 
-				mActiveBlock->Hide(); // Hide block after placing on tilemap
-				mActiveBlock = nullptr;
+				HideActiveBlock();
 			}
 			else
 			{
-				// return to original position
-				mActiveBlock->SetBlockCenterPosition(mActiveBlockInitPosition); // Reset block position to original position
-				mActiveBlock = nullptr;
+				ResetActiveBlock();
 			}
 		}	
 	}
@@ -146,16 +148,19 @@ void Game::UpdateBlocksAndTileMap()
 		{
 			if (block.IsTouching(mState.mousePosition)) // Check if mouse is touching block
 			{
-				// Set active block
-				mActiveBlock = &block;
-				mActiveBlockInitPosition = block.GetBlockCenterPosition(); // Active block initial position is used for resetting block position after placing on tilemap
-				mActiveBlock->SetBlockCenterPosition(mState.mousePosition);
-
+				SetActiveBlock(&block); // Set active block to block being touched by mouse and set isActiveBlock to true
 				break;
 			}
 		}
 	}
+}
 
+void Game::UpdateBlocks()
+{
+	if (!mActiveBlock)
+	{
+		ResetActiveBlock();
+	}
 }
 
 // ------------------- Update Helper Functions -------------------
@@ -163,6 +168,24 @@ void Game::UpdateBlocksAndTileMap()
 void Game::CreateNewBlockHand()
 {
 
+}
+
+void Game::SetActiveBlock(Block* block)
+{
+	mState.activeBlockInitPosition = block->GetBlockCenterPosition();
+	mActiveBlock = block;
+}
+
+void Game::ResetActiveBlock()
+{
+	mActiveBlock->SetBlockCenterPosition(mState.activeBlockInitPosition);
+	mActiveBlock = nullptr;
+}
+
+void Game::HideActiveBlock()
+{
+	mActiveBlock->Hide();
+	mActiveBlock = nullptr;
 }
 
 // ------------------- Draw Methods -------------------
