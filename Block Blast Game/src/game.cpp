@@ -99,8 +99,6 @@ void Game::Update()
 
 void Game::UpdateBlocksAndTileMap()
 {
-	mTileMap.Update();
-	
 	if (mActiveBlock)
 	{
 		mActiveBlock->SetBlockCenterPosition(mState.mousePosition);
