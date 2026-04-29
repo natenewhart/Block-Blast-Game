@@ -296,11 +296,6 @@ void TileMap::ClearBlockCache()
 	std::fill(mFullCols.begin(), mFullCols.end(), false);
 }
 
-bool TileMap::IsGridPosition(int index) const
-{
-	return index >= 0 && index < mWidth * mHeight;
-}
-
 bool TileMap::IsGridPosition(sf::Vector2i gridPosition) const
 {
 	return gridPosition.x >= 0 && gridPosition.x < mWidth &&

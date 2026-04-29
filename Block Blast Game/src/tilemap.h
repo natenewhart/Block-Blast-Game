@@ -59,7 +59,6 @@ private:
 	void ClearFullLines();
 	void HighlightFullLines(); // Check for full rows and columns created by highlighted overlay and highlight them the color of active block, used for block placement preview when player is moving block around tilemap.
 
-	bool IsGridPosition(int gridPosition) const; // Checks if grid position is within bounds of tilemap
 	bool IsGridPosition(sf::Vector2i gridPosition) const;
 	bool IsBlockPlaceable(const std::vector<sf::Vector2i>& blockTilePositions) const; // Overload doesn't require block object
 	bool IsInPlacementBuffer(int row, int col) const;
