@@ -49,6 +49,8 @@ private:
 
 	// Block Helper Functions
 	void CreateNewBlockHand(); // Updates blockHand with three new blocks based on current tile map state. Implements block spawning algorithm
+	
+	// Active block methods
 	void SetActiveBlock(Block* block); // Set active block to given block pointer, set isActiveBlock to true if block pointer is not nullptr, false if block pointer is nullptr
 	void ResetActiveBlock(); // Resets active block position to initial position when picked up, used for resetting block position after placing on tilemap
 	void HideActiveBlock();  // Move active block to off screen position, used for hiding block when it is placed on tilemap

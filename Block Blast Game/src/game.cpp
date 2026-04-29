@@ -93,21 +93,21 @@ void Game::UpdateBlockPlacement()
 {
 	if (!mActiveBlock)
 	{
-		if (mState.mouseLeftButtonPressed)
+		if (mState.mouseLeftButtonPressed) // Check mouse button press
 		{
 			for (auto& block : mBlockHand)
 			{
 				if (block.IsTouching(mState.mousePosition)) // Check if mouse is touching block
 				{
 					SetActiveBlock(&block); // Set active block to block being touched by mouse and set isActiveBlock to true
-					break;
+					return;
 				}
 			}
 		}
 		return;
 	}
 
-	mActiveBlock->SetBlockCenterPosition(mState.mousePosition);
+	mActiveBlock->SetBlockCenterPosition(mState.mousePosition); // Update active block position with mouse
 	bool isPlaceable = mTileMap.SubmitBlock(*mActiveBlock);
 
 	if (!isPlaceable)
