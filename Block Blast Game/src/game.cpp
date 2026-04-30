@@ -6,7 +6,7 @@
 Game::Game()
 	: mScreenWidth(1280), mScreenHeight(720)
 	, mFrameRateLimit(0)
-	, mDeltaTime(1.f / mFrameRateLimit)
+	, mDeltaTime(1.f / 60.f)
 	, mTileMap(GameSettings::Get().tileMap.initialPosition)
 	, mActiveBlock(nullptr)
 {

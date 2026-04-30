@@ -40,6 +40,7 @@ private:
 	// Game Loop Private Functions
 	void HandleEvents(); // Retreive event queue and handle all events
 	void HandleBlockEvents();
+	void ResetGameState(); // Reset values for game state every frame
 	
 	void Update();       // All non-render & non-event updates
 	void UpdateBlockPlacement();

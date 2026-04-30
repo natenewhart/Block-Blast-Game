@@ -15,8 +15,8 @@ TileMap::TileMap(sf::Vector2f position)
 	, mPosition(position)
 	, mcBlockSearchAreaSize(2)
 	, mcSearchAreaWidth(InitSearchAreaWidth(mcBlockSearchAreaSize))
-	, mFullRows(mWidth, false)
-	, mFullCols(mHeight, false)
+	, mFullRows(mHeight, false)
+	, mFullCols(mWidth, false)
 {
 	Init();
 }
@@ -52,7 +52,7 @@ void TileMap::Clear()
 		tile.overlayColor = sf::Color::Transparent; // Placeholder color for empty tile overlay
 	}
 	
-	ClearBlockCache();
+	ClearSubmittedBlockCache();
 }
 
 // ------------------- Update Functions -------------------
@@ -60,7 +60,7 @@ void TileMap::Clear()
 
 bool TileMap::SubmitBlock(const Block& block)
 {
-	ClearBlockCache();
+	ClearSubmittedBlockCache();
 
 	bool isValidBlockPos = SetClosestOpenBlockPositions(block);
 	mActiveBlockColor    = block.GetColor();
@@ -270,7 +270,7 @@ int TileMap::IndexTiles(sf::Vector2i tilePos) const
 	return tilePos.y * mWidth + tilePos.x;
 }
 
-void TileMap::ClearBlockCache()
+void TileMap::ClearSubmittedBlockCache()
 {
 	for (auto& tile : mTiles) // Reset tile overlay colors after each update
 	{

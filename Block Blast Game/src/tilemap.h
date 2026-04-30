@@ -65,7 +65,7 @@ private:
 	int IndexTiles(int row, int col) const; // Converts 2D grid position to 1D index in mTiles vector
 	int IndexTiles(sf::Vector2i tilePos) const;
 
-	void ClearBlockCache(); // Clear all block cache 
+	void ClearSubmittedBlockCache();
 
 private:
 	sf::RectangleShape mTileRect;        // Rectangle shape used for drawing tiles. We can reuse the same shape and just change its position and color for each tile.
