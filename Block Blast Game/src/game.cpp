@@ -9,6 +9,7 @@ Game::Game()
 	, mDeltaTime(1.f / 60.f)
 	, mTileMap(GameSettings::Get().tileMap.initialPosition)
 	, mActiveBlock(nullptr)
+	, mBlockHandCount(3)
 {
 	mWindow.create(sf::VideoMode(mScreenWidth, mScreenHeight), "Block Blast");
 	mWindow.setFramerateLimit(mFrameRateLimit);
@@ -24,7 +25,7 @@ Game::Game()
 
 	mBlockHand[0] = Block(Block::Shape::ThreeByThree, sf::Vector2f(800, 100), 0, sf::Color::Cyan);
 	mBlockHand[1] = Block(Block::Shape::FiveByOne,    sf::Vector2f(800, 300), 2, sf::Color::Green);
-	mBlockHand[2] = Block(Block::Shape::FiveByOne,    sf::Vector2f(800, 500), 1, sf::Color::Blue);
+	mBlockHand[2] = Block(Block::Shape::ThreeDiagonal,    sf::Vector2f(800, 500), 1, sf::Color::Blue);
 }
 
 void Game::Init() {}
@@ -161,6 +162,7 @@ void Game::HideActiveBlock()
 {
 	mActiveBlock->Hide();
 	mActiveBlock = nullptr;
+	mBlockHandCount--;
 }
 
 // ------------------- Draw Methods -------------------

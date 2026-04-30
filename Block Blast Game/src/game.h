@@ -75,8 +75,9 @@ private:
 	TileMap mTileMap;
 
 	// Block Management Variables
-    Block* mActiveBlock; // Pointer to block currently being moved by mouse, nullptr if no block is being moved
+    Block* mActiveBlock;  // Pointer to block currently being moved by mouse, nullptr if no block is being moved
 	Block  mBlockHand[3]; // Block queue which stores 3 blocks to be placed at each turn
+	int mBlockHandCount;  // Number of blocks in hand (number of unplaced blocks)
 
 	// Display Variables
     sf::Text mText; // Temporary text variable for testing

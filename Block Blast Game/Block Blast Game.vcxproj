@@ -165,6 +165,7 @@
     <ClCompile Include="src\GameSettings.cpp" />
     <ClCompile Include="src\Library.cpp" />
     <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="src\Random.cpp" />
     <ClCompile Include="src\Tilemap.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -173,6 +174,7 @@
     <ClInclude Include="src\Game.h" />
     <ClInclude Include="src\GameSettings.h" />
     <ClInclude Include="src\Library.h" />
+    <ClInclude Include="src\Random.h" />
     <ClInclude Include="src\Tilemap.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
