@@ -159,6 +159,7 @@
     <Font Include="res\couri.ttf" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\BlockData.cpp" />
     <ClCompile Include="src\Block.cpp" />
     <ClCompile Include="src\Deltatime.cpp" />
     <ClCompile Include="src\Game.cpp" />
@@ -169,6 +170,7 @@
     <ClCompile Include="src\Tilemap.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\BlockData.h" />
     <ClInclude Include="src\Block.h" />
     <ClInclude Include="src\Deltatime.h" />
     <ClInclude Include="src\Game.h" />

@@ -5,6 +5,7 @@
 
 #include<vector>
 #include "SFML/Graphics.hpp"
+#include "BlockData.h"
 
 /*
 * Blocks are stored using block signatures which contain vectors of tile positions in relation to an origin tile at 0,0.
@@ -25,14 +26,13 @@
 class Block
 {
 public:
-	using tBlockSignature = std::vector<sf::Vector2f>; // Block signature stores all block tile positions in relation to origin tile in block space
 	enum Shape; // Each represents index of block signature in BLOCK_SIGNATURES array, all different shapes
 
 public:
 	Block();
 	Block(Shape shape, sf::Vector2f position, int orientation, sf::Color color);
 
-	const tBlockSignature& GetSignature() const; // Get block signature by calculating index of block shape in BLOCK_SIGNATURES array
+	const BlockData::tSignature& GetSignature() const; // Get block signature by calculating index of block shape in BLOCK_SIGNATURES array
 	sf::Color    GetColor() const;
 	sf::Vector2f GetOriginTilePosition() const; // Return top left corner of tile in block at (0, 0) given by BLOCK_SIGNATURES
 	sf::Vector2f GetOriginTileCenterPosition() const;   // Return center position of origin block (0, 0) in pixel frame
@@ -56,9 +56,6 @@ private:
 	sf::Vector2f ConvertToBlockLocalPosition(sf::Vector2f worldPosition) const; // Convert world position to block local position by applying inverse transform
 
 private:
-	static constexpr unsigned int scNumberOfBlockTypes = 16; // Number of block types, used for defining size of block signature array
-	static const tBlockSignature  scBlockSignatures[scNumberOfBlockTypes]; // Array of block signatures which contain vectors of tile positions in relation to an origin tile at 0,0. Each block type has a different signature which is used to determine the shape of the block.
-
 	sf::Transform   mTransform; // Final transform applied to block which updates based on block position
 	sf::Transform   mRotationScaleTransform;
 	sf::VertexArray mMesh;      // Vertex array used for drawing block, each tile is a quad which is 4 vertices
@@ -71,7 +68,7 @@ private:
 public:
 	enum Shape
 	{
-		Empty,        // No tiles, used for empty block hand slots
+		Empty, // No tiles, used for empty block hand slots
 
 		OneByOne,
 		TwoByOne,

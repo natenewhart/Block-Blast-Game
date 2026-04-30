@@ -1,6 +1,7 @@
 #include "Block.h"
 #include "GameSettings.h"
 #include "Library.h"
+#include "BlockData.h"
 #include <iostream>
 
 Block::Block()
@@ -21,9 +22,9 @@ Block::Block(Shape shape, sf::Vector2f position, int orientation, sf::Color colo
 	Init();
 }
 
-const Block::tBlockSignature& Block::GetSignature() const
+const BlockData::tSignature& Block::GetSignature() const
 {
-	return scBlockSignatures[mShape];
+	return BlockData::cSignatures[mShape];
 }
 
 void Block::Init()
@@ -130,71 +131,3 @@ void Block::Draw(sf::RenderWindow& window)
 	if (mShape == Shape::Empty) return; // Don't draw if block shape is empty
 	window.draw(mMesh, mTransform);
 }
-
-const Block::tBlockSignature Block::scBlockSignatures[scNumberOfBlockTypes] =
-{
-	{}, // Empty
-
-	{ //OneByOne
-		{0, 0}
-	},
-	{ //TwoByOne
-		{0, 0},{1, 0}
-	},
-	{ //ThreeByOne
-		{0, 0}, {1, 0}, {2, 0}
-	},
-	{ //FourByOne
-		{0, 0}, {1, 0}, {2, 0}, {3, 0}
-	},
-	{ //FiveByOne
-		{0, 0}, {1, 0}, {2, 0}, {3, 0}, {4, 0}
-	},
-
-	{ //TwoByTwo
-		{0, 1}, {1, 1},
-		{0, 0}, {1, 0}
-	},
-	{ //TwoByThree
-		{0, 2}, {1, 2},
-		{0, 1}, {1, 1},
-		{0, 0}, {1, 0}
-	},
-	{ //ThreeByThree
-		{0, 2}, {1, 2}, {2, 2},
-		{0, 1}, {1, 1}, {2, 1},
-		{0, 0}, {1, 0}, {2, 0}
-	},
-
-	{ //LShapeLarge
-		{0, 2},
-		{0, 1},
-		{0, 0}, {1, 0}, {2, 0}
-	},
-	{ //LShapeMedium
-		{0, 2},
-		{0, 1},
-		{0, 0}, {1, 0}
-	},
-	{ //LShapeSmall
-		{0, 1},
-		{0, 0}, {1, 0}
-	},
-	{ //TShape
-				{1, 1},
-		{0, 0}, {1, 0}, {2, 0},
-	},
-	{ //SShape
-				{1, 1}, {2, 1},
-		{0, 0}, {1, 0}
-	},
-	{ //TwoDiagonal
-				{1, 1},
-		{0, 0}
-	},
-	{ //ThreeDiagonal
-						{2, 2},
-				{1, 1},
-		{0, 0}
-	},
-};
