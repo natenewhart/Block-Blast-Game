@@ -22,7 +22,7 @@ private:
 		bool isEmpty;
 	};
 public:
-	TileMap(sf::Vector2f position);
+	TileMap(sf::Vector2f position); // Position constructor
 
 	void Clear(); // All tiles set to empty and transparent color
 
