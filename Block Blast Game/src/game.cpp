@@ -45,6 +45,8 @@ void Game::MainLoop()
 
 void Game::HandleEvents()
 {
+	ResetGameState();
+
     while (mWindow.pollEvent(mEvent))
 	{
 		if (mEvent.type == sf::Event::Closed)
@@ -72,6 +74,12 @@ void Game::HandleBlockEvents()
 		mState.mouseLeftButtonPressed  = true;
 		mState.mouseLeftButtonReleased = false;
 	}
+}
+
+void Game::ResetGameState()
+{
+	mState.mouseLeftButtonPressed  = false;
+	mState.mouseLeftButtonReleased = false;
 }
 
 // ------------------- Update Methods -------------------
