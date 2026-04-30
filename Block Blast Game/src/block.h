@@ -33,14 +33,13 @@ public:
 	Block(Shape shape, sf::Vector2f position, int orientation, sf::Color color);
 
 	const tBlockSignature& GetSignature() const; // Get block signature by calculating index of block shape in BLOCK_SIGNATURES array
-
 	sf::Color    GetColor() const;
-	sf::Vector2f GetPosition() const; // Return top left corner of tile in block at (0, 0) given by BLOCK_SIGNATURES
-	sf::Vector2f GetBlockOriginCenter() const;   // Return center position of origin block (0, 0) in pixel frame
+	sf::Vector2f GetOriginTilePosition() const; // Return top left corner of tile in block at (0, 0) given by BLOCK_SIGNATURES
+	sf::Vector2f GetOriginTileCenterPosition() const;   // Return center position of origin block (0, 0) in pixel frame
 	sf::Vector2f GetBlockCenterPosition() const; // Calculate center position of block by averaging the tile positions in pixel reference frame
 	int GetOrientation() const;       // Return block orientation which is 0, 1, 2, or 3 for 0, 90, 180, or 270 degree rotation
 
-	static sf::Vector2f RotateSignaturePosition(sf::Vector2f signaturePos, int orientation); 
+	sf::Vector2f RotateSignaturePosition(sf::Vector2f signaturePos) const; // Rotate block signature coordiant given block current orientation
 
 	void SetPosition(sf::Vector2f position);       // Set position of origin tile in block
 	void SetBlockCenterPosition(sf::Vector2f centerPosition); // Set block position given the center of the entire block

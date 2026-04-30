@@ -22,7 +22,6 @@ private:
 		bool isEmpty;
 	};
 public:
-	TileMap();
 	TileMap(sf::Vector2f position);
 
 	void Clear(); // All tiles set to empty and transparent color
@@ -51,7 +50,7 @@ private:
 	sf::Vector2i GetGridPosition(sf::Vector2f screenPosition) const ; // Converts position in screen space to the col, row of tilemap which is the tile that position is inside of, returns (-1, -1) if position is outside of tilemap bounds
 	
 	std::vector<sf::Vector2i> GetBlockTilePositions(const Block& block, sf::Vector2f blockPos) const; // Returns vector of grid positions of tiles that a block would occupy if placed at a given position, used for checking if block placement is valid and for highlighting tiles when player is moving block around tilemap
-	bool SetClosestOpenBlockPosition(const Block& block); // Returns the position of the closest open tile to the block position. Used for finding the closest placeable position for a block when the initial position is not placeable. Returns (-1, -1) if no placeable position is found. TODO: optimize this function by only checking tiles within a certain radius of the block position and then expanding the radius until a placeable position is found or all tiles have been checked.
+	bool SetClosestOpenBlockPositions(const Block& block); // Find closest tileMap grid positions for block on grid. Store indices in mBlockPlacementBuffer and return true if block is placeable, and false otherwise
 	void PlaceBlockOnTileMap();        // Places block on tilemap at given grid position by setting tiles at block tile positions to occupied and block color. Returns true if block was placed successfully, false if any tile positions of block were occupied on tilemap
 	void PlaceBlockOnTileMapOverlay(); // Places block overlay on tilemap at given grid position by setting tiles at block tile positions to occupied and block color with transparency. Used for block placement preview when player is moving block around tilemap. Returns true if block overlay was placed successfully, false if any tile positions of block were occupied on tilemap
 
@@ -63,8 +62,8 @@ private:
 	bool IsBlockPlaceable(const std::vector<sf::Vector2i>& blockTilePositions) const; // Overload doesn't require block object
 	bool IsInPlacementBuffer(int row, int col) const;
 
-	size_t IndexTiles(size_t row, size_t col) const; // Converts 2D grid position to 1D index in mTiles vector
-	size_t IndexTiles(sf::Vector2i tilePos) const;
+	int IndexTiles(int row, int col) const; // Converts 2D grid position to 1D index in mTiles vector
+	int IndexTiles(sf::Vector2i tilePos) const;
 
 	void ClearBlockCache(); // Clear all block cache 
 
@@ -84,7 +83,6 @@ private:
 	sf::Color mActiveBlockColor;
 
 	sf::Vector2f mPosition;        // Top left corner of tilemap
-
-	const unsigned int mcBlockSearchAreaSize; // Area of searching for finding open blocks for block placement if value is 1 then search 1x1 area around block. If value is 2 then search 3x3 area around block, etc.
-	const unsigned int mcSearchAreaWidth;     // Width of search area for finding open blocks for block placement, calculated from cBlockSearchAreaSize
+	const int mcBlockSearchAreaSize; // Area of searching for finding open blocks for block placement if value is 1 then search 1x1 area around block. If value is 2 then search 3x3 area around block, etc.
+	const int mcSearchAreaWidth;     // Width of search area for finding open blocks for block placement, calculated from cBlockSearchAreaSize
 };

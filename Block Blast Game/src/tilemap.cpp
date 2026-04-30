@@ -6,19 +6,6 @@
 
 class Game;
 
-TileMap::TileMap()
-	: mTileRect(GameSettings::Get().tile.size)
-	, mGridVertices{ sf::Vertex(), sf::Vertex(), sf::Vertex(), sf::Vertex() }
-	, mWidth (GameSettings::Get().tileMap.width)
-	, mHeight(GameSettings::Get().tileMap.height)
-	, mTiles(mHeight * mWidth, Tile{sf::Color::Transparent, sf::Color::Transparent, true})
-	, mPosition(GameSettings::Get().tileMap.initialPosition)
-	, mcBlockSearchAreaSize(2)
-	, mcSearchAreaWidth(InitSearchAreaWidth(mcBlockSearchAreaSize))
-{
-	Init();
-}
-
 TileMap::TileMap(sf::Vector2f position)
 	: mTileRect(GameSettings::Get().tile.size)
 	, mGridVertices{ sf::Vertex(), sf::Vertex(), sf::Vertex(), sf::Vertex() }
@@ -75,7 +62,7 @@ bool TileMap::SubmitBlock(const Block& block)
 {
 	ClearBlockCache();
 
-	bool isValidBlockPos = SetClosestOpenBlockPosition(block);
+	bool isValidBlockPos = SetClosestOpenBlockPositions(block);
 	mActiveBlockColor    = block.GetColor();
 
 	if (isValidBlockPos)
@@ -159,12 +146,12 @@ void TileMap::HighlightFullLines()
 
 // ------------------- Block Placement Functions -------------------
 
-bool TileMap::SetClosestOpenBlockPosition(const Block& block)
+bool TileMap::SetClosestOpenBlockPositions(const Block& block)
 {
 	float minDistance = std::numeric_limits<float>::max();
 	sf::Vector2f closestTilePos;
 
-	sf::Vector2f originTilePos = SnapToTile(block.GetBlockOriginCenter()); // Top left corner of tile that block origin center is inside of
+	sf::Vector2f originTilePos = SnapToTile(block.GetOriginTileCenterPosition()); // Top left corner of tile that block's origin tile's center is within
 	std::vector<sf::Vector2i> blockTilePositions;
 
 	for (int i = 0; i < mcSearchAreaWidth * mcSearchAreaWidth; i++)
@@ -179,7 +166,7 @@ bool TileMap::SetClosestOpenBlockPosition(const Block& block)
 		if (IsBlockPlaceable(blockTilePositions))
 		{
 			// Get distance between block origin center and current tile center
-			float currDistance = distanceSquared(currTilePos + 0.5f * GameSettings::Get().tile.size, block.GetBlockOriginCenter());
+			float currDistance = distanceSquared(currTilePos + 0.5f * GameSettings::Get().tile.size, block.GetOriginTileCenterPosition());
 
 			if (currDistance < minDistance)
 			{
@@ -205,7 +192,7 @@ std::vector<sf::Vector2i> TileMap::GetBlockTilePositions(const Block& block, sf:
 
 	for (sf::Vector2f localTilePos : signature)
 	{
-		sf::Vector2i currGridPos = initGridPos + sf::Vector2i(Block::RotateSignaturePosition(localTilePos, block.GetOrientation()));
+		sf::Vector2i currGridPos = initGridPos + sf::Vector2i(block.RotateSignaturePosition(localTilePos));
 
 		output.emplace_back(currGridPos.x, currGridPos.y);
 	}
@@ -244,9 +231,9 @@ void TileMap::PlaceBlockOnTileMapOverlay()
 
 bool TileMap::IsBlockNearPlaceable(sf::Vector2f blockPosition) const
 {
-	float extraTiles = mcBlockSearchAreaSize - 1; // Number of tiles in search area around block position
-	sf::Vector2f newPos = mPosition - extraTiles * GameSettings::Get().tile.size; // Top left corner of search area around block position
-	sf::Vector2f tileMapScale = sf::Vector2f(mWidth * GameSettings::Get().tile.size.x, mHeight * GameSettings::Get().tile.size.y) + (extraTiles * 2) * GameSettings::Get().tile.size; // Size of tilemap plus search area around block position
+	int extraTiles = mcBlockSearchAreaSize - 1; // Number of tiles in search area around block position
+	sf::Vector2f newPos = mPosition - (float)extraTiles * GameSettings::Get().tile.size; // Top left corner of search area around block position
+	sf::Vector2f tileMapScale = sf::Vector2f(mWidth * GameSettings::Get().tile.size.x, mHeight * GameSettings::Get().tile.size.y) + (float)extraTiles * 2.f * GameSettings::Get().tile.size; // Size of tilemap plus search area around block position
 
 	return isWithinRect(newPos, tileMapScale, blockPosition);
 }
@@ -273,12 +260,12 @@ sf::Vector2i TileMap::GetGridPosition(sf::Vector2f screenPosition) const
 	return sf::Vector2i(col, row);
 }
 
-size_t TileMap::IndexTiles(size_t row, size_t col) const
+int TileMap::IndexTiles(int row, int col) const
 {
 	return row * mWidth + col;
 }
 
-size_t TileMap::IndexTiles(sf::Vector2i tilePos) const
+int TileMap::IndexTiles(sf::Vector2i tilePos) const
 {
 	return tilePos.y * mWidth + tilePos.x;
 }

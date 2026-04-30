@@ -53,9 +53,9 @@ void Block::PopulateVertexArray()
 
 sf::Color          Block::GetColor()    const { return mColor; } 
 
-sf::Vector2f       Block::GetPosition() const { return mPosition; }
+sf::Vector2f       Block::GetOriginTilePosition() const { return mPosition; }
 
-sf::Vector2f Block::GetBlockOriginCenter() const
+sf::Vector2f Block::GetOriginTileCenterPosition() const
 {
 	return mTransform.transformPoint(sf::Vector2f(0.5f, 0.5f));
 }
@@ -82,10 +82,10 @@ int Block::GetOrientation() const
 	return mOrientation;
 }
 
-sf::Vector2f Block::RotateSignaturePosition(sf::Vector2f signaturePos, int orientation)
+sf::Vector2f Block::RotateSignaturePosition(sf::Vector2f signaturePos) const
 {
 	static const sf::Vector2f kDir[4] = { {1,0},{0,1},{-1,0},{0,-1} };
-	sf::Vector2f d = kDir[orientation];
+	sf::Vector2f d = kDir[mOrientation];
 
 	return { signaturePos.x * d.x - signaturePos.y * d.y, signaturePos.x * d.y + signaturePos.y * d.x };
 }
