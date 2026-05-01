@@ -24,7 +24,6 @@ public:
 	enum Shape; // Each represents index of block signature in BLOCK_SIGNATURES array, all different shapes
 	struct View // Block::View struct, used for viewing block data and passing to computational functions
 	{
-		View();
 		sf::Vector2f position;
 		Shape        shape;
 		int          orientation;

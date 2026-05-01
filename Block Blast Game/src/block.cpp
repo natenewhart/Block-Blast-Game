@@ -141,9 +141,3 @@ void Block::Draw(sf::RenderWindow& window)
 	if (mShape == Shape::Empty) return; // Don't draw if block shape is empty
 	window.draw(mMesh, mTransform);
 }
-
-Block::View::View()
-	: position(0.f, 0.f)
-	, shape(Empty)
-	, orientation(0)
-	{}

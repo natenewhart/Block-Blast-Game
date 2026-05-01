@@ -273,19 +273,30 @@ Block::View TileMap::CreateRandomBlock()
 			}
 		}
 	}	
-	return { {0.f, 0.f}, Block::Shape::Empty, 0 }; // Return a NULL block view when no block can be found
+	return Block::View{}; // Return a default initialized block to indicate no block 
+	// TODO: this function should know about the current block view hand. It should know its size and be able to insert itself into the array
+	// That way, this function can just return a boolean value and if it did work, we will know because the block passed wasn't a null block
 }
 
 Block::tViewHand TileMap::CreateRandomBlockHand()
 {
 	Block::tViewHand blockHand;
 
-	int n = 3;
-	for (int i = 0; i < n; n++)
+	int blockCount = 0;
+	while (blockCount < 3)
 	{
 		Block::View nextBlock = CreateRandomBlock(); // Get block
-													 // Submit block for blocks 0-2
+		if (nextBlock.shape == Block::Shape::Empty)  // Check if block is invalid and repeat if so
+			continue;
+
+		blockHand[blockCount] = nextBlock; // Append block to array
+		blockCount++;                      // Iterate block count
+		
+		if (blockCount > 2) break; // No need to submit the last block, wasted resources
+
+		// TODO: Submit block here
 	}
+	return blockHand;
 }
 
 
