@@ -6,6 +6,7 @@
 #include <queue>
 
 #include "Block.h"	
+#include "Crandom\CRandom.h"
 
 #pragma once
 
@@ -36,7 +37,7 @@ public:
 	// UNUSED FUNCTION
 	bool IsBlockNearPlaceable(sf::Vector2f blockPosition) const; // Is block close enough to tilemap to warrant a placeability check
 	
-private:
+//private: this is only for debug purpouses
 	void Init(); // Initializes tilemap data and grid vertices
 	int  InitSearchAreaWidth(int blockSearchAreaSize) const; // Initialize search area width constant variable
 
@@ -44,12 +45,14 @@ private:
 	void DrawGridLines(sf::RenderWindow& window); // Draws grid lines with top left corner at mPosition
 	void DrawTiles    (sf::RenderWindow& window); // Draws tiles
 	
-	sf::Vector2f SnapToTile(sf::Vector2f position) const;  // Take pixel pos and return position of current tile (top left)
 	void DeleteTile(int index);          // Deletes a tile at the specified row and column
+	sf::Vector2f SnapToTile(sf::Vector2f position) const;  // Take pixel pos and return position of current tile (top left)
+	sf::Vector2i GetTilePosition(sf::Vector2f screenPosition) const; // Converts position in screen space to the col, row of tilemap which is the tile that position is inside of, returns (-1, -1) if position is outside of tilemap bounds
+	sf::Vector2f TilePosToPixelPos(sf::Vector2i tilePos) const;
 
-	sf::Vector2i GetGridPosition(sf::Vector2f screenPosition) const ; // Converts position in screen space to the col, row of tilemap which is the tile that position is inside of, returns (-1, -1) if position is outside of tilemap bounds
-	
-	std::vector<sf::Vector2i> GetBlockTilePositions(const Block& block, sf::Vector2f blockPos) const; // Returns vector of grid positions of tiles that a block would occupy if placed at a given position, used for checking if block placement is valid and for highlighting tiles when player is moving block around tilemap
+	// Block Placement Members
+	std::vector<sf::Vector2i> SignatureToRotatedTilePositions(const Block::View& block) const; // Get block tile positions about origin
+	std::vector<sf::Vector2i> TranslateBlockTilePositions(const std::vector<sf::Vector2i>& blockTilePositions, sf::Vector2i tileOrigin) const;
 	bool SetClosestOpenBlockPositions(const Block& block); // Find closest tileMap grid positions for block on grid. Store indices in mBlockPlacementBuffer and return true if block is placeable, and false otherwise
 	void PlaceBlockOnTileMap();        // Places block on tilemap at given grid position by setting tiles at block tile positions to occupied and block color. Returns true if block was placed successfully, false if any tile positions of block were occupied on tilemap
 	void PlaceBlockOnTileMapOverlay(); // Places block overlay on tilemap at given grid position by setting tiles at block tile positions to occupied and block color with transparency. Used for block placement preview when player is moving block around tilemap. Returns true if block overlay was placed successfully, false if any tile positions of block were occupied on tilemap
@@ -58,16 +61,24 @@ private:
 	void ClearFullLines();
 	void HighlightFullLines(); // Check for full rows and columns created by highlighted overlay and highlight them the color of active block, used for block placement preview when player is moving block around tilemap.
 
-	bool IsGridPosition(sf::Vector2i gridPosition) const;
-	bool IsBlockPlaceable(const std::vector<sf::Vector2i>& blockTilePositions) const; // Overload doesn't require block object
+	// Block Inventory Private Members
+	Block::View      CreateRandomBlock();
+	Block::tViewHand CreateRandomBlockHand();
+	Block::tHand     CreateBlockHand();
+
+	bool IsTilePosition(sf::Vector2i tilePosition) const;
+	bool IsBlockPlaceable(const std::vector<sf::Vector2i>& blockTilePositions, sf::Vector2i tilePos) const;
 	bool IsInPlacementBuffer(int row, int col) const;
 
 	int IndexTiles(int row, int col) const; // Converts 2D grid position to 1D index in mTiles vector
 	int IndexTiles(sf::Vector2i tilePos) const;
+	sf::Vector2i IndexToTilePos(int index); // Convert index for tilemap to tile position vector
 
 	void ClearSubmittedBlockCache();
 
 private:
+	CRandom mPRNG; // Psuedo random number generator
+
 	sf::RectangleShape mTileRect;        // Rectangle shape used for drawing tiles. We can reuse the same shape and just change its position and color for each tile.
 	sf::Vertex         mGridVertices[4]; // Vertices for drawing grid lines (2 vertical and 2 horizontal)
 
@@ -77,7 +88,7 @@ private:
 	std::vector<Tile> mTiles; // Stores tile data in a 2D vector (rows of columns). Important: declared
 	
 	// Submitted block variables
-	std::vector<sf::Vector2i> mBlockPlacementBuffer; // Stores grid positions of tiles that a block would occupy if placed at a given position, used for checking if block placement is valid and for highlighting tiles when player is moving block around tilemap
+	std::vector<sf::Vector2i> mActiveBlockTilePositions; // Stores grid positions of tiles that a block would occupy if placed at a given position, used for checking if block placement is valid and for highlighting tiles when player is moving block around tilemap
 	std::vector<bool> mFullRows;
 	std::vector<bool> mFullCols;
 	sf::Color mActiveBlockColor;

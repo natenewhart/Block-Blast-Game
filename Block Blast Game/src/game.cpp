@@ -95,6 +95,7 @@ void Game::Update()
 	mText.setPosition(mScreenWidth - mText.getLocalBounds().width - 9, 0);
 
 	// Game updates
+	mTileMap.CreateRandomBlock();
 	UpdateBlockPlacement();
 }
 

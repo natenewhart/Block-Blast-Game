@@ -22,9 +22,14 @@ Block::Block(Shape shape, sf::Vector2f position, int orientation, sf::Color colo
 	Init();
 }
 
-const BlockData::tSignature& Block::GetSignature() const
+Block::View Block::GetView() const
 {
-	return BlockData::cSignatures[mShape];
+	return { mPosition, mShape, mOrientation };
+}
+
+const Blocks::tSignature& Block::GetSignature() const
+{
+	return Blocks::cSignatures[mShape];
 }
 
 void Block::Init()
@@ -85,8 +90,13 @@ int Block::GetOrientation() const
 
 sf::Vector2f Block::RotateSignaturePosition(sf::Vector2f signaturePos) const
 {
-	static const sf::Vector2f kDir[4] = { {1,0},{0,1},{-1,0},{0,-1} };
-	sf::Vector2f d = kDir[mOrientation];
+	return RotateSignaturePosition(signaturePos, mOrientation);
+}
+
+sf::Vector2f Block::RotateSignaturePosition(sf::Vector2f signaturePos, int orientation)
+{
+	static const sf::Vector2f directions[4] = { {1,0},{0,1},{-1,0},{0,-1} };
+	sf::Vector2f d = directions[orientation];
 
 	return { signaturePos.x * d.x - signaturePos.y * d.y, signaturePos.x * d.y + signaturePos.y * d.x };
 }
@@ -131,3 +141,9 @@ void Block::Draw(sf::RenderWindow& window)
 	if (mShape == Shape::Empty) return; // Don't draw if block shape is empty
 	window.draw(mMesh, mTransform);
 }
+
+Block::View::View()
+	: position(0.f, 0.f)
+	, shape(Empty)
+	, orientation(0)
+	{}

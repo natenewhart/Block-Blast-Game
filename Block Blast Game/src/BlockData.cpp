@@ -1,6 +1,6 @@
 #include "BlockData.h"
 
-const BlockData::tSignature BlockData::cSignatures[cNumberOfShapes] =
+const Blocks::tSignature Blocks::cSignatures[cNumberOfShapes] =
 {
 	{}, // Empty
 
@@ -68,7 +68,7 @@ const BlockData::tSignature BlockData::cSignatures[cNumberOfShapes] =
 	},
 };
 
-const int BlockData::cOrientationCounts[cNumberOfShapes] =
+const int Blocks::cOrientations[cNumberOfShapes] =
 {
 	0, // Empty
 
@@ -89,7 +89,7 @@ const int BlockData::cOrientationCounts[cNumberOfShapes] =
 	2  // ThreeDiagonal
 };
 
-const float BlockData::cWeights[cNumberOfShapes] =
+const float Blocks::cWeights[cNumberOfShapes] =
 {
 	0.0f, // Empty  
 

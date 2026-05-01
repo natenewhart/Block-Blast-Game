@@ -3,7 +3,8 @@
 
 #pragma once
 
-#include<vector>
+#include <vector>
+#include <array>
 #include "SFML/Graphics.hpp"
 #include "BlockData.h"
 
@@ -17,22 +18,27 @@
 * an orientation which is used to determine how the block is rotated.
 */
 
-// --------------------------- HUGE TODO -------------------------
-// Reorganize the block handling system.
-// blocks should store transforms and when the widnow is drawn the pass in the transform to sfml and then the matrix multiplication happens on the gpu
-// There should be a set position function that edits the transform
-// A draw function that uses the transfrom which passes to the gpu
-
 class Block
 {
 public:
 	enum Shape; // Each represents index of block signature in BLOCK_SIGNATURES array, all different shapes
+	struct View // Block::View struct, used for viewing block data and passing to computational functions
+	{
+		View();
+		sf::Vector2f position;
+		Shape        shape;
+		int          orientation;
+	};
+
+	using tHand     = std::array<Block, 3>; // Block hand storage type
+	using tViewHand = std::array<View , 3>; // Block hand made up of Block::Views
 
 public:
 	Block();
 	Block(Shape shape, sf::Vector2f position, int orientation, sf::Color color);
 
-	const BlockData::tSignature& GetSignature() const; // Get block signature by calculating index of block shape in BLOCK_SIGNATURES array
+	View GetView() const;
+	const Blocks::tSignature& GetSignature() const; // Get block signature by calculating index of block shape in BLOCK_SIGNATURES array
 	sf::Color    GetColor() const;
 	sf::Vector2f GetOriginTilePosition() const; // Return top left corner of tile in block at (0, 0) given by BLOCK_SIGNATURES
 	sf::Vector2f GetOriginTileCenterPosition() const;   // Return center position of origin block (0, 0) in pixel frame
@@ -40,6 +46,7 @@ public:
 	int GetOrientation() const;       // Return block orientation which is 0, 1, 2, or 3 for 0, 90, 180, or 270 degree rotation
 
 	sf::Vector2f RotateSignaturePosition(sf::Vector2f signaturePos) const; // Rotate block signature coordiant given block current orientation
+	static sf::Vector2f RotateSignaturePosition(sf::Vector2f signaturePos, int orientation); // Rotate block signature coordiant given block current orientation
 
 	void SetPosition(sf::Vector2f position);       // Set position of origin tile in block
 	void SetBlockCenterPosition(sf::Vector2f centerPosition); // Set block position given the center of the entire block
