@@ -6,7 +6,7 @@
 #include <queue>
 
 #include "Block.h"	
-#include "Crandom\CRandom.h"
+#include "CRandom\CRandom.h"
 
 #pragma once
 
@@ -61,14 +61,14 @@ public:
 	void ClearFullLines();
 	void HighlightFullLines(); // Check for full rows and columns created by highlighted overlay and highlight them the color of active block, used for block placement preview when player is moving block around tilemap.
 
-	// Block Inventory Private Members
-	Block::View      CreateRandomBlock();
+	// Block Inventory Spawner Private Members
+	Block::View      CreateRandomBlock(); // TODO: insertRandomBlock(tViewHand hand, int currPos) function should insert to the hand and return "placeability boolean"
 	Block::tViewHand CreateRandomBlockHand();
 	Block::tHand     CreateBlockHand();
 
 	bool IsTilePosition(sf::Vector2i tilePosition) const;
 	bool IsBlockPlaceable(const std::vector<sf::Vector2i>& blockTilePositions, sf::Vector2i tilePos) const;
-	bool IsInPlacementBuffer(int row, int col) const;
+	bool IsInActiveBlockTilePositions(int row, int col) const;
 
 	int IndexTiles(int row, int col) const; // Converts 2D grid position to 1D index in mTiles vector
 	int IndexTiles(sf::Vector2i tilePos) const;

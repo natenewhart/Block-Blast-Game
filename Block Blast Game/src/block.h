@@ -29,7 +29,7 @@ public:
 		int          orientation;
 	};
 
-	using tHand     = std::array<Block, 3>; // Block hand storage type
+	using tHand     = std::array<Block, GameSettings::Get().block.handSize>; // Block hand storage type
 	using tViewHand = std::array<View , 3>; // Block hand made up of Block::Views
 
 public:

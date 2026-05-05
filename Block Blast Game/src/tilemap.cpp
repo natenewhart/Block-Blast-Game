@@ -83,7 +83,7 @@ void TileMap::CheckFullLines()
 		// Check row
 		for (int c = 0; c < mWidth; c++)
 		{
-			if (mTiles[IndexTiles(row, c)].isEmpty && !IsInPlacementBuffer(row, c)) break;
+			if (mTiles[IndexTiles(row, c)].isEmpty && !IsInActiveBlockTilePositions(row, c)) break;
 			if (c == mWidth - 1)
 				mFullRows[row] = true;
 		}
@@ -91,7 +91,7 @@ void TileMap::CheckFullLines()
 		// Check column
 		for (int r = 0; r < mHeight; r++)
 		{
-			if (mTiles[IndexTiles(r, col)].isEmpty && !IsInPlacementBuffer(r, col)) break;
+			if (mTiles[IndexTiles(r, col)].isEmpty && !IsInActiveBlockTilePositions(r, col)) break;
 			if (r == mHeight - 1)
 				mFullCols[col] = true;
 		}
@@ -248,7 +248,7 @@ Block::View TileMap::CreateRandomBlock()
 	{
 		assert(i != 999);
 
-		Block::View newBlock;
+		Block::View newBlock;	
 
 		newBlock.shape = (Block::Shape)mPRNG.Int(1, Blocks::cNumberOfShapes - 1); // Get random block Shape
 		newBlock.orientation = mPRNG.Int(1, Blocks::cOrientations[newBlock.shape]); // Get random block orientation
@@ -269,6 +269,7 @@ Block::View TileMap::CreateRandomBlock()
 			if (IsBlockPlaceable(tilePositions, tileShift)) // And... 
 			{
 				newBlock.position = TilePosToPixelPos(tileShift);
+				// Cache tilePositions array that is translated to correct tile origin
 				return newBlock;
 			}
 		}
@@ -283,7 +284,7 @@ Block::tViewHand TileMap::CreateRandomBlockHand()
 	Block::tViewHand blockHand;
 
 	int blockCount = 0;
-	while (blockCount < 3)
+	while (blockCount < GameSettings::Get().block.handSize)
 	{
 		Block::View nextBlock = CreateRandomBlock(); // Get block
 		if (nextBlock.shape == Block::Shape::Empty)  // Check if block is invalid and repeat if so
@@ -297,6 +298,19 @@ Block::tViewHand TileMap::CreateRandomBlockHand()
 		// TODO: Submit block here
 	}
 	return blockHand;
+}
+
+Block::tHand TileMap::CreateBlockHand()
+{
+	std::vector<bool> currTileMap;
+
+	int numHands = 0;
+	while ()
+	{
+
+	}
+
+	return Block::tHand();
 }
 
 
@@ -374,7 +388,7 @@ bool TileMap::IsTilePosition(sf::Vector2i gridPosition) const
 		gridPosition.y >= 0 && gridPosition.y < mHeight;
 }
 
-bool TileMap::IsInPlacementBuffer(int row, int col) const
+bool TileMap::IsInActiveBlockTilePositions(int row, int col) const
 {
 	for (sf::Vector2i pos : mActiveBlockTilePositions)
 		if (pos.x == col && pos.y == row) return true;

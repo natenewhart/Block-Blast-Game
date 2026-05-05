@@ -16,14 +16,19 @@ class GameSettings
 private:
 	struct Tile
 	{
-		sf::Vector2f size;
+		sf::Vector2f size; // Width, Height of each tile in pixels
 	};
 
 	struct TileMap
 	{
 		sf::Vector2f initialPosition;
-		size_t width;
-		size_t height;
+		int width;
+		int height;
+	};
+
+	struct Block
+	{
+		const int handSize; // Number of blocks in block hand to be spawned every turn
 	};
 
 // ---------------------------- Singleton Implementation -------------------------------
@@ -35,5 +40,6 @@ public:
 public:
 	TileMap tileMap;
 	Tile tile;
+	Block block;
 };
 
