@@ -284,7 +284,7 @@ Block::tViewHand TileMap::CreateRandomBlockHand()
 	Block::tViewHand blockHand;
 
 	int blockCount = 0;
-	while (blockCount < GameSettings::Get().block.handSize)
+	while (blockCount < Blocks::cHandSize)
 	{
 		Block::View nextBlock = CreateRandomBlock(); // Get block
 		if (nextBlock.shape == Block::Shape::Empty)  // Check if block is invalid and repeat if so
@@ -305,7 +305,7 @@ Block::tHand TileMap::CreateBlockHand()
 	std::vector<bool> currTileMap;
 
 	int numHands = 0;
-	while ()
+	while (false)
 	{
 
 	}

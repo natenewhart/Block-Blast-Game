@@ -5,6 +5,7 @@
 
 #include <vector>
 #include <array>
+#include "GameSettings.h"
 #include "SFML/Graphics.hpp"
 #include "BlockData.h"
 
@@ -29,8 +30,8 @@ public:
 		int          orientation;
 	};
 
-	using tHand     = std::array<Block, GameSettings::Get().block.handSize>; // Block hand storage type
-	using tViewHand = std::array<View , 3>; // Block hand made up of Block::Views
+	using tHand     = std::array<Block, Blocks::cHandSize>; // Block hand storage type
+	using tViewHand = std::array<View,  Blocks::cHandSize>; // Block hand made up of Block::Views
 
 public:
 	Block();

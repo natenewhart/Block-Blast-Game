@@ -26,11 +26,6 @@ private:
 		int height;
 	};
 
-	struct Block
-	{
-		const int handSize; // Number of blocks in block hand to be spawned every turn
-	};
-
 // ---------------------------- Singleton Implementation -------------------------------
 public:
 	GameSettings();
@@ -40,6 +35,5 @@ public:
 public:
 	TileMap tileMap;
 	Tile tile;
-	Block block;
 };
 
