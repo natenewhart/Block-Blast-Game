@@ -61,15 +61,30 @@ public:
 	void ClearFullLines();
 	void HighlightFullLines(); // Check for full rows and columns created by highlighted overlay and highlight them the color of active block, used for block placement preview when player is moving block around tilemap.
 
-	// Block Inventory Spawner Private Members
-	Block::View      CreateRandomBlock(); // TODO: insertRandomBlock(tViewHand hand, int currPos) function should insert to the hand and return "placeability boolean"
+	// Block Inventory Spawner Private Members, three step process each function having their own helpers
+	Block::View      CreateRandomBlock();
 	Block::tViewHand CreateRandomBlockHand();
 	Block::tHand     CreateBlockHand();
 
+	// CreateRandomBlock helpers
+	Block::View GetRandomBlockView(); // Lightweight function that just does the random finding of block
+	bool TryPlaceBlockView   (const std::vector<bool>& tileMap, Block::View& outBlock); // Find position for current block view and set block position. If not placeable return false
+	bool IsBlockViewPlaceable(const std::vector<bool>& tileMap, const std::vector<sf::Vector2i>& blockTilePositions, sf::Vector2i tileOrigin) const; // Check if block view is placeable on custom tileMap parameter
+
+	// CreateRandomBlockHand helpers
+	std::vector<bool> CopyTileMapToBoolean();
+	void SubmitBlockView(std::vector<bool>& tileMap, const Block::View& block);
+
+	// CreateBlockHand helpers
+	float WeighBlockViewHand(const Block::tViewHand& blockHand);
+	Block::tHand ConvertToBlockHand(const Block::tViewHand& other);
+
+	// Boolean Helpers 
 	bool IsTilePosition(sf::Vector2i tilePosition) const;
-	bool IsBlockPlaceable(const std::vector<sf::Vector2i>& blockTilePositions, sf::Vector2i tilePos) const;
+	bool IsBlockPlaceable(const std::vector<sf::Vector2i>& blockTilePositions, sf::Vector2i tileOrigin) const;
 	bool IsInActiveBlockTilePositions(int row, int col) const;
 
+	// Index conversion helpers
 	int IndexTiles(int row, int col) const; // Converts 2D grid position to 1D index in mTiles vector
 	int IndexTiles(sf::Vector2i tilePos) const;
 	sf::Vector2i IndexToTilePos(int index); // Convert index for tilemap to tile position vector

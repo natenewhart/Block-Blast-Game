@@ -244,58 +244,48 @@ void TileMap::PlaceBlockOnTileMapOverlay()
 
 Block::View TileMap::CreateRandomBlock()
 {
-	for (int i = 0; i < 1000; i++)
-	{
-		assert(i != 999);
-
-		Block::View newBlock;	
-
-		newBlock.shape = (Block::Shape)mPRNG.Int(1, Blocks::cNumberOfShapes - 1); // Get random block Shape
-		newBlock.orientation = mPRNG.Int(1, Blocks::cOrientations[newBlock.shape]); // Get random block orientation
-
-		// Initalize array of tilemap tiles
-		std::vector<int> tiles;
-		tiles.reserve(mWidth * mHeight);
-		for (int i = 0; i < tiles.capacity(); i++)
-		{
-			tiles.emplace_back(i);
-		}
-		shuffleVector(tiles, mPRNG); // Shuffle tilemap indices
-
-		auto tilePositions = SignatureToRotatedTilePositions(newBlock); // Gets block tile positions at origin
-		for (int i = 0; i < tiles.size(); i++) // Iterate over tilemap randomly
-		{
-			sf::Vector2i tileShift = IndexToTilePos(tiles[i]);
-			if (IsBlockPlaceable(tilePositions, tileShift)) // And... 
-			{
-				newBlock.position = TilePosToPixelPos(tileShift);
-				// Cache tilePositions array that is translated to correct tile origin
-				return newBlock;
-			}
-		}
-	}	
 	return Block::View{}; // Return a default initialized block to indicate no block 
 	// TODO: this function should know about the current block view hand. It should know its size and be able to insert itself into the array
 	// That way, this function can just return a boolean value and if it did work, we will know because the block passed wasn't a null block
+
+	// TODO: Code
+	//Block::View nextBlock;
+
+	//bool blockFound = false;
+	//int count = 0; // DEBUG
+	//while (!blockFound) // TODO move this while loop chunk into CreateRandomBlock();
+	//{
+	//	count++; assert(count < 200); // DEBUG
+
+	//	nextBlock = GetRandomBlockView();
+	//	blockFound = TryPlaceBlockView(currHandTileMap, nextBlock);
+	//}
 }
+
+// QUESTIONS: should CreateRandomBlock be a function or just split into two parts and rip for loop inside createrRandomBlockHand()
+// I am asking this because CreateRandomBlock needs to create a block OR tell me that the block cannot be placed. This is 2 things in one and function would have to have a weird signature.
 
 Block::tViewHand TileMap::CreateRandomBlockHand()
 {
+	std::vector<bool> currHandTileMap = CopyTileMapToBoolean();
 	Block::tViewHand blockHand;
 
-	int blockCount = 0;
-	while (blockCount < Blocks::cHandSize)
+	int tries = 0; // DEBUG
+	for (int blockCount = 0; blockCount < Blocks::cHandSize;)
 	{
-		Block::View nextBlock = CreateRandomBlock(); // Get block
-		if (nextBlock.shape == Block::Shape::Empty)  // Check if block is invalid and repeat if so
+		tries++; assert(tries < 100); // DEBUG
+		Block::View nextBlock = GetRandomBlockView();
+		if (!TryPlaceBlockView(currHandTileMap, nextBlock)) // If block cannot be placed skip this iteration
+		{
 			continue;
+		}
 
 		blockHand[blockCount] = nextBlock; // Append block to array
-		blockCount++;                      // Iterate block count
-		
-		if (blockCount > 2) break; // No need to submit the last block, wasted resources
 
-		// TODO: Submit block here
+		if (blockCount == 2) break; // Skip submission of last block
+
+		SubmitBlockView(currHandTileMap, nextBlock);
+		blockCount++;
 	}
 	return blockHand;
 }
@@ -304,13 +294,103 @@ Block::tHand TileMap::CreateBlockHand()
 {
 	std::vector<bool> currTileMap;
 
-	int numHands = 0;
-	while (false)
+	int maxHands = 1;
+	float maxHandWeight = 0.f;
+	Block::tViewHand bestHand;
+
+	for (int numHands = 0; numHands < maxHands; numHands++)
 	{
+		Block::tViewHand currHand = CreateRandomBlockHand();
+		float currWeight = WeighBlockViewHand(currHand);
 
+		if (currWeight > maxHandWeight)
+		{
+			bestHand = currHand;
+		}
 	}
+	return ConvertToBlockHand(bestHand);
+}
 
-	return Block::tHand();
+// Block Hand Creation Helpers Below
+
+Block::View TileMap::GetRandomBlockView()
+{
+	auto shape      = (Block::Shape)mPRNG.Int(1, Blocks::cNumberOfShapes - 1); // Get random block Shape
+	int orientation = mPRNG.Int(1, Blocks::cOrientations[shape]);              // Get random block orientation
+	return { {0,0}, shape, orientation };
+}
+
+bool TileMap::TryPlaceBlockView(const std::vector<bool>& tileMap, Block::View& outBlock)
+{
+	std::vector<int> tiles;
+	tiles.reserve(mWidth * mHeight);
+	for (int i = 0; i < tiles.capacity(); i++)
+		tiles.emplace_back(i);
+	shuffleVector(tiles, mPRNG); // Shuffle tilemap indices
+
+	auto tilePositions = SignatureToRotatedTilePositions(outBlock); // Gets block tile positions at origin
+	for (int i = 0; i < tiles.size(); i++) // Iterate over tilemap randomly
+	{
+		sf::Vector2i originTile = IndexToTilePos(tiles[i]);
+		if (IsBlockViewPlaceable(tileMap, tilePositions, originTile))
+		{
+			outBlock.position = TilePosToPixelPos(originTile);
+			return true;
+		}
+	}
+	return false;
+}
+
+bool TileMap::IsBlockViewPlaceable(const std::vector<bool>& tileMap, const std::vector<sf::Vector2i>& blockTilePositions, sf::Vector2i tileOrigin) const
+{
+	for (sf::Vector2i blockTilePos : blockTilePositions)
+	{
+		blockTilePos += tileOrigin;
+		if (!IsTilePosition(blockTilePos) || tileMap[IndexTiles(blockTilePos)] == false) return false;
+	}
+	return true;
+}
+
+std::vector<bool> TileMap::CopyTileMapToBoolean()
+{
+	std::vector<bool> isEmptyTileMap;
+	isEmptyTileMap.reserve(mTiles.size());
+	for (int i = 0; i < mTiles.size(); i++)
+	{
+		isEmptyTileMap.emplace_back(mTiles[i].isEmpty);
+	}
+	return isEmptyTileMap;
+}
+
+void TileMap::SubmitBlockView(std::vector<bool>& tileMap, const Block::View& block)
+{
+	// TODO: do these together in this function before splitting into functions
+	//PlaceBlockView(tileMap, block);
+	//CheckAndClearFullHandLines(tileMap);
+}
+
+float TileMap::WeighBlockViewHand(const Block::tViewHand& blockHand)
+{
+	return -1.f;
+}
+
+Block::tHand TileMap::ConvertToBlockHand(const Block::tViewHand& other)
+{
+	static const sf::Color cColors[] = // All possible colors
+	{
+		sf::Color::Red, sf::Color::Green, sf::Color::Blue,
+		sf::Color::Yellow, sf::Color::Magenta, sf::Color::Cyan,
+		sf::Color::White, sf::Color::Black
+	};
+
+	Block::tHand result;
+	mPRNG.SetRangeInt(0, std::size(cColors) - 1);
+	for (int i = 0; i < Blocks::cHandSize; i++)
+	{
+		sf::Color color = cColors[mPRNG.Int()];
+		result[i] = Block(other[i].shape, other[i].position, other[i].orientation, color);
+	}
+	return result;
 }
 
 
