@@ -13,9 +13,9 @@ public:
 
 	// Range Setting Functions
 	void SetRangeDouble(double min, double max);
-	void SetRangeFloat (float min, float max);
+	void SetRangeFloat(float min, float max);
 	void SetRangeUInt64(uint64_t min, uint64_t max);
-	void SetRangeInt   (int min, int max);
+	void SetRangeInt(int min, int max);
 
 	void ResetRanges(); // Reset all ranges
 
@@ -46,9 +46,9 @@ private:
 inline CRandom::CRandom()
 	: mGenerator(Seed())
 	, mDoubleDistribution(0.0, 1.0)
-	, mFloatDistribution (0.0f, 1.0f)
+	, mFloatDistribution(0.0f, 1.0f)
 	, mUInt64Distribution(0, std::numeric_limits<uint64_t>::max())
-	, mIntDistribution   (std::numeric_limits<int>::lowest(), std::numeric_limits<int>::max())
+	, mIntDistribution(std::numeric_limits<int>::lowest(), std::numeric_limits<int>::max())
 {
 }
 
@@ -66,9 +66,9 @@ inline uint64_t CRandom::Seed()
 inline void CRandom::ResetRanges()
 {
 	mDoubleDistribution = std::uniform_real_distribution<double>(0.0, 1.0);
-	mFloatDistribution  = std::uniform_real_distribution<float>(0.0f, 1.0f);
+	mFloatDistribution = std::uniform_real_distribution<float>(0.0f, 1.0f);
 	mUInt64Distribution = std::uniform_int_distribution<uint64_t>(0, std::numeric_limits<uint64_t>::max());
-	mIntDistribution    = std::uniform_int_distribution<int>(std::numeric_limits<int>::lowest(), std::numeric_limits<int>::max());
+	mIntDistribution = std::uniform_int_distribution<int>(std::numeric_limits<int>::lowest(), std::numeric_limits<int>::max());
 }
 
 inline void CRandom::SetRangeDouble(double min, double max)

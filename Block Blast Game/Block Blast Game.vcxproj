@@ -123,7 +123,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);SFML_STATIC</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp23</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)external\SFML\include;$(SolutionDir)external</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)external\SFML\include;$(SolutionDir)external\Header Libs</AdditionalIncludeDirectories>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
     <Link>
@@ -142,7 +142,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);SFML_STATIC</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp23</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)external\SFML\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)external\SFML\include;$(SolutionDir)external\Header Libs</AdditionalIncludeDirectories>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
     <Link>
@@ -161,7 +161,6 @@
   <ItemGroup>
     <ClCompile Include="src\BlockData.cpp" />
     <ClCompile Include="src\Block.cpp" />
-    <ClCompile Include="src\Deltatime.cpp" />
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\GameSettings.cpp" />
     <ClCompile Include="src\Library.cpp" />
@@ -171,7 +170,6 @@
   <ItemGroup>
     <ClInclude Include="src\BlockData.h" />
     <ClInclude Include="src\Block.h" />
-    <ClInclude Include="src\Deltatime.h" />
     <ClInclude Include="src\Game.h" />
     <ClInclude Include="src\GameSettings.h" />
     <ClInclude Include="src\Library.h" />

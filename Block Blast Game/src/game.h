@@ -2,7 +2,7 @@
 // game.h
 
 #include "SFML/Graphics.hpp"
-#include "Deltatime.h"
+#include "DeltaTime.hpp"
 #include "Tilemap.h"
 #include "Block.h"
 
@@ -63,7 +63,7 @@ private:
 	sf::Event mEvent;         // Event variable used to store event for evnt handling. Will generallly store last event popped from event queue.
 	State mState;
 
-	DeltaTimeCalculator mDeltaTimeCalculator;
+	DeltaTimer mDeltaTimeCalculator;
 	// Window Parameters
 	// TODO: locked game ratio for computer and only resizeable proportionlly to such ratio
     int mScreenWidth;

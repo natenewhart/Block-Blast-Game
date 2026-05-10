@@ -32,9 +32,10 @@ void Game::Init() {}
 
 void Game::MainLoop()
 {
+	mDeltaTimeCalculator.ResetClock();
     while (mWindow.isOpen())
 	{
-		mDeltaTime = mDeltaTimeCalculator.GetDeltaTime();
+		mDeltaTime = mDeltaTimeCalculator.GetTimeFloat();
 
 		HandleEvents();
 		Update();
