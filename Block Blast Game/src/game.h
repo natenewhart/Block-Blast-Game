@@ -49,12 +49,13 @@ private:
 	void DrawBlocks();
 
 	// Block Helper Functions
-	void CreateNewBlockHand(); // Updates blockHand with three new blocks based on current tile map state. Implements block spawning algorithm
+	void NewBlockHand(); // Updates blockHand with three new blocks based on current tile map state. Implements block spawning algorithm
 	
 	// Active block methods
 	void SetActiveBlock(Block* block); // Set active block to given block pointer, set isActiveBlock to true if block pointer is not nullptr, false if block pointer is nullptr
 	void ResetActiveBlock(); // Resets active block position to initial position when picked up, used for resetting block position after placing on tilemap
 	void HideActiveBlock();  // Move active block to off screen position, used for hiding block when it is placed on tilemap
+
 
 // ----------------- Member Variables -----------------
 private:
@@ -77,7 +78,12 @@ private:
 	// Block Management Variables
     Block* mActiveBlock;  // Pointer to block currently being moved by mouse, nullptr if no block is being moved
 	Block::tHand mBlockHand; // Block queue which stores 3 blocks to be placed at each turn
+	const std::array<sf::Vector2f, Blocks::cHandSize> mcBlockHandInitPositions = { sf::Vector2f(800, 100), sf::Vector2f(800, 300), sf::Vector2f(800, 500) };
 	int mBlockHandCount; // Number of blocks in hand (number of unplaced blocks)
+
+	//sf::Vector2f(800, 100), 0, sf::Color::Cyan);
+	//mBlockHand[1] = Block(Block::Shape::FiveByOne,    sf::Vector2f(800, 300), 2, sf::Color::Green);
+	//mBlockHand[2] = Block(Block::Shape::ThreeDiagonal,    sf::Vector2f(800, 500), 1, sf::Color::Blue);
 
 	// Display Variables
     sf::Text mText; // Temporary text variable for testing

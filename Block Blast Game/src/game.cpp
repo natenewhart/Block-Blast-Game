@@ -23,9 +23,11 @@ Game::Game()
 	mText.setFillColor(sf::Color::White);
 	mText.setString(std::to_string(mFrameRateLimit));
 
-	mBlockHand[0] = Block(Block::Shape::ThreeByThree, sf::Vector2f(800, 100), 0, sf::Color::Cyan);
-	mBlockHand[1] = Block(Block::Shape::FiveByOne,    sf::Vector2f(800, 300), 2, sf::Color::Green);
-	mBlockHand[2] = Block(Block::Shape::ThreeDiagonal,    sf::Vector2f(800, 500), 1, sf::Color::Blue);
+	//mBlockHand[0] = Block(Block::Shape::LShapeLarge, sf::Vector2f(800, 100), 0, sf::Color::Cyan);
+	//mBlockHand[1] = Block(Block::Shape::TwoByThree,    sf::Vector2f(800, 300), 0, sf::Color::Green);
+	//mBlockHand[2] = Block(Block::Shape::TwoByThree,    sf::Vector2f(800, 500), 0, sf::Color::Blue);
+	
+	NewBlockHand();
 }
 
 void Game::Init() {}
@@ -96,7 +98,6 @@ void Game::Update()
 	mText.setPosition(mScreenWidth - mText.getLocalBounds().width - 9, 0);
 
 	// Game updates
-	mTileMap.CreateRandomBlock();
 	UpdateBlockPlacement();
 }
 
@@ -104,6 +105,11 @@ void Game::UpdateBlockPlacement()
 {
 	if (!mActiveBlock)
 	{
+		if (mBlockHandCount == 0) // Reset block hand when counter hits zero
+		{
+			NewBlockHand();
+			mBlockHandCount = 3;
+		}
 		if (mState.mouseLeftButtonPressed) // Check mouse button press
 		{
 			for (auto& block : mBlockHand)
@@ -133,19 +139,22 @@ void Game::UpdateBlockPlacement()
 	if (!mState.mouseLeftButtonReleased)
 	{
 		mTileMap.PlaceBlockOverlay();
+		return;
 	}
-	else
-	{
-		mTileMap.PlaceBlock();
-		HideActiveBlock();
-	}
+
+	mTileMap.PlaceBlock();
+	HideActiveBlock();
 }
 
 // ------------------- Update Helper Functions -------------------
 
-void Game::CreateNewBlockHand()
+void Game::NewBlockHand()
 {
-
+	mBlockHand = mTileMap.CreateBlockHand();
+	for (int i = 0; i < Blocks::cHandSize; i++)
+	{
+		mBlockHand[i].SetBlockCenterPosition(mcBlockHandInitPositions[i]);
+	}
 }
 
 void Game::SetActiveBlock(Block* block)

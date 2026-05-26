@@ -4,7 +4,7 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
-#include "CRandom\CRandom.h"
+#include "CRandom.hpp"
 
 float distance(const sf::Vector2f& a, const sf::Vector2f& b);
 float distanceSquared(const sf::Vector2f& a, const sf::Vector2f& b);

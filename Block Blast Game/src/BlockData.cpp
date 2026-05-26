@@ -93,19 +93,19 @@ const float Blocks::cWeights[cNumberOfShapes] =
 {
 	0.0f, // Empty  
 
-	1.0f, // OneByOne
-	0.9f, // TwoByOne
-	0.8f, // ThreeByOne
-	0.7f, // FourByOne
+	0.1f, // OneByOne
+	0.2f, // TwoByOne
+	0.4f, // ThreeByOne
+	0.5f, // FourByOne
 	0.6f, // FiveByOne
-	1.0f, // TwoByTwo
-	0.8f, // TwoByThree
-	0.7f, // ThreeByThree
-	0.5f, // LShapeLarge
+	0.5f, // TwoByTwo
+	0.6f, // TwoByThree
+	0.8f, // ThreeByThree
+	0.7f, // LShapeLarge
 	0.5f, // LShapeMedium
 	0.5f, // LShapeSmall
-	0.5f, // TShape
+	0.8f, // TShape
 	0.6f, // SShape
-	0.6f, // TwoDiagonal
-	0.6f  // ThreeDiagonal
+	0.3f, // TwoDiagonal
+	0.1f  // ThreeDiagonal
 };

@@ -6,7 +6,7 @@
 #include <queue>
 
 #include "Block.h"	
-#include "CRandom\CRandom.h"
+#include "CRandom.hpp"
 
 #pragma once
 
@@ -68,12 +68,13 @@ public:
 
 	// CreateRandomBlock helpers
 	Block::View GetRandomBlockView(); // Lightweight function that just does the random finding of block
-	bool TryPlaceBlockView   (const std::vector<bool>& tileMap, Block::View& outBlock); // Find position for current block view and set block position. If not placeable return false
+	bool TryPlaceBlockView   (const std::vector<bool>& tileMap, Block::View& outBlock, std::vector<sf::Vector2i>& tilePositions); // Find position for current block view and set block position. If not placeable return false
 	bool IsBlockViewPlaceable(const std::vector<bool>& tileMap, const std::vector<sf::Vector2i>& blockTilePositions, sf::Vector2i tileOrigin) const; // Check if block view is placeable on custom tileMap parameter
+	void PlaceBlockView      (std::vector<bool>& tileMap, const std::vector<sf::Vector2i>& blockTilePositions); // Place block view on tilemap by setting tiles at block tile positions to occupied and block color. Returns true if block was placed successfully, false if any tile positions of block were occupied on tilemap
 
 	// CreateRandomBlockHand helpers
 	std::vector<bool> CopyTileMapToBoolean();
-	void SubmitBlockView(std::vector<bool>& tileMap, const Block::View& block);
+	void SubmitBlockView(std::vector<bool>& tileMap, const std::vector<sf::Vector2i>& blockTilePositions);
 
 	// CreateBlockHand helpers
 	float WeighBlockViewHand(const Block::tViewHand& blockHand);
@@ -92,7 +93,7 @@ public:
 	void ClearSubmittedBlockCache();
 
 private:
-	CRandom mPRNG; // Psuedo random number generator
+	CRandom mRNG; // Psuedo random number generator
 
 	sf::RectangleShape mTileRect;        // Rectangle shape used for drawing tiles. We can reuse the same shape and just change its position and color for each tile.
 	sf::Vertex         mGridVertices[4]; // Vertices for drawing grid lines (2 vertical and 2 horizontal)

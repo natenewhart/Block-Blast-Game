@@ -275,7 +275,8 @@ Block::tViewHand TileMap::CreateRandomBlockHand()
 	{
 		tries++; assert(tries < 100); // DEBUG
 		Block::View nextBlock = GetRandomBlockView();
-		if (!TryPlaceBlockView(currHandTileMap, nextBlock)) // If block cannot be placed skip this iteration
+		std::vector<sf::Vector2i> blockTilePositions;
+		if (!TryPlaceBlockView(currHandTileMap, nextBlock, blockTilePositions)) // If block cannot be placed skip this iteration
 		{
 			continue;
 		}
@@ -284,7 +285,7 @@ Block::tViewHand TileMap::CreateRandomBlockHand()
 
 		if (blockCount == 2) break; // Skip submission of last block
 
-		SubmitBlockView(currHandTileMap, nextBlock);
+		SubmitBlockView(currHandTileMap, blockTilePositions);
 		blockCount++;
 	}
 	return blockHand;
@@ -292,10 +293,8 @@ Block::tViewHand TileMap::CreateRandomBlockHand()
 
 Block::tHand TileMap::CreateBlockHand()
 {
-	std::vector<bool> currTileMap;
-
-	int maxHands = 1;
-	float maxHandWeight = 0.f;
+	int maxHands = 4;
+	float maxHandWeight = -1.f;
 	Block::tViewHand bestHand;
 
 	for (int numHands = 0; numHands < maxHands; numHands++)
@@ -305,6 +304,7 @@ Block::tHand TileMap::CreateBlockHand()
 
 		if (currWeight > maxHandWeight)
 		{
+			maxHandWeight = currWeight;
 			bestHand = currHand;
 		}
 	}
@@ -315,26 +315,28 @@ Block::tHand TileMap::CreateBlockHand()
 
 Block::View TileMap::GetRandomBlockView()
 {
-	auto shape      = (Block::Shape)mPRNG.Int(1, Blocks::cNumberOfShapes - 1); // Get random block Shape
-	int orientation = mPRNG.Int(1, Blocks::cOrientations[shape]);              // Get random block orientation
-	return { {0,0}, shape, orientation };
+	auto shape = (Block::Shape)mRNG.Int(1, Blocks::cNumberOfShapes - 1); // Get random block Shape
+	int orientation = mRNG.Int(1, Blocks::cOrientations[shape]);              // Get random block orientation
+	return { {0,0}, shape, orientation }; // Return with position at origin
 }
 
-bool TileMap::TryPlaceBlockView(const std::vector<bool>& tileMap, Block::View& outBlock)
+bool TileMap::TryPlaceBlockView(const std::vector<bool>& tileMap, Block::View& outBlock, std::vector<sf::Vector2i>& tilePositions)
 {
 	std::vector<int> tiles;
 	tiles.reserve(mWidth * mHeight);
 	for (int i = 0; i < tiles.capacity(); i++)
 		tiles.emplace_back(i);
-	shuffleVector(tiles, mPRNG); // Shuffle tilemap indices
 
-	auto tilePositions = SignatureToRotatedTilePositions(outBlock); // Gets block tile positions at origin
+	shuffleVector(tiles, mRNG);
+
+	tilePositions = SignatureToRotatedTilePositions(outBlock);
 	for (int i = 0; i < tiles.size(); i++) // Iterate over tilemap randomly
 	{
 		sf::Vector2i originTile = IndexToTilePos(tiles[i]);
 		if (IsBlockViewPlaceable(tileMap, tilePositions, originTile))
 		{
 			outBlock.position = TilePosToPixelPos(originTile);
+			tilePositions = TranslateBlockTilePositions(tilePositions, originTile);
 			return true;
 		}
 	}
@@ -351,6 +353,14 @@ bool TileMap::IsBlockViewPlaceable(const std::vector<bool>& tileMap, const std::
 	return true;
 }
 
+void TileMap::PlaceBlockView(std::vector<bool>& tileMap, const std::vector<sf::Vector2i>& blockTilePositions)
+{
+	for (sf::Vector2i blockTilePos : blockTilePositions)
+	{
+		tileMap[IndexTiles(blockTilePos)] = false;
+	}
+}
+
 std::vector<bool> TileMap::CopyTileMapToBoolean()
 {
 	std::vector<bool> isEmptyTileMap;
@@ -362,16 +372,52 @@ std::vector<bool> TileMap::CopyTileMapToBoolean()
 	return isEmptyTileMap;
 }
 
-void TileMap::SubmitBlockView(std::vector<bool>& tileMap, const Block::View& block)
+void TileMap::SubmitBlockView(std::vector<bool>& tileMap, const std::vector<sf::Vector2i>& blockTilePositions)
 {
-	// TODO: do these together in this function before splitting into functions
-	//PlaceBlockView(tileMap, block);
+	PlaceBlockView(tileMap, blockTilePositions);
 	//CheckAndClearFullHandLines(tileMap);
+
+	for (int i = 0; i < tileMap.size(); i++)
+	{
+		int row = i / mWidth;
+		int col = i % mWidth;
+
+		// Check row
+		for (int c = 0; c < mWidth; c++)
+		{
+			if (tileMap[IndexTiles(row, c)]) break;
+			if (c == mWidth - 1)
+			{
+				for (int j = 0; j < mWidth; j++) // Clear row
+				{
+					tileMap[IndexTiles(row, j)] = true;
+				}
+			}
+		}
+
+		// Check column
+		for (int r = 0; r < mHeight; r++)
+		{
+			if (tileMap[IndexTiles(r, col)]) break;
+			if (r == mHeight - 1)
+			{
+				for (int j = 0; j < mHeight; j++) // Clear Column
+				{
+					tileMap[IndexTiles(j, col)] = true;
+				}
+			}
+		}
+	}
 }
 
 float TileMap::WeighBlockViewHand(const Block::tViewHand& blockHand)
 {
-	return -1.f;
+	float weight = 0.f;
+	for (int i = 0; i < Blocks::cHandSize; i++)
+	{
+		weight += Blocks::cWeights[blockHand[i].shape];
+	}
+	return weight;
 }
 
 Block::tHand TileMap::ConvertToBlockHand(const Block::tViewHand& other)
@@ -380,14 +426,14 @@ Block::tHand TileMap::ConvertToBlockHand(const Block::tViewHand& other)
 	{
 		sf::Color::Red, sf::Color::Green, sf::Color::Blue,
 		sf::Color::Yellow, sf::Color::Magenta, sf::Color::Cyan,
-		sf::Color::White, sf::Color::Black
+		sf::Color::White
 	};
 
 	Block::tHand result;
-	mPRNG.SetRangeInt(0, std::size(cColors) - 1);
+	mRNG.SetRangeInt(0, std::size(cColors) - 1);
 	for (int i = 0; i < Blocks::cHandSize; i++)
 	{
-		sf::Color color = cColors[mPRNG.Int()];
+		sf::Color color = cColors[mRNG.Int()];
 		result[i] = Block(other[i].shape, other[i].position, other[i].orientation, color);
 	}
 	return result;
