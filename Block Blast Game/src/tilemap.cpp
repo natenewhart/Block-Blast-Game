@@ -197,12 +197,6 @@ std::vector<sf::Vector2i> TileMap::SignatureToRotatedTilePositions(const Block::
 		sf::Vector2i currGridPos = sf::Vector2i(Block::RotateSignaturePosition(localTilePos, block.orientation));
 
 		output.emplace_back(currGridPos.x, currGridPos.y);
-
-		auto rotated = Block::RotateSignaturePosition(localTilePos, block.orientation);
-
-		std::println("({}, {}) -> ({}, {})",
-			localTilePos.x, localTilePos.y,
-			rotated.x, rotated.y);
 	}
 	return output;
 }
@@ -261,7 +255,6 @@ Block::tViewHand TileMap::CreateRandomBlockHand()
 		std::vector<sf::Vector2i> blockTilePositions;
 		if (!TryPlaceBlockView(currHandTileMap, nextBlock, blockTilePositions)) // If block cannot be placed skip this iteration
 		{
-			std::println("Failed to place block");
 			continue;
 		}
 
