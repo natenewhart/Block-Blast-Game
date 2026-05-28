@@ -20,8 +20,13 @@ private:
 	{
 		sf::Color color;
 		sf::Color overlayColor;
-		bool isEmpty;
+		bool isOccupied;
 	};
+	struct Grid
+	{
+		std::vector<bool> tiles; // 1D vector representing 2D grid of tilemap, true if tile is occupied, false if tile is empty
+	};
+
 public:
 	TileMap(sf::Vector2f position); // Position constructor
 
@@ -34,10 +39,12 @@ public:
 
 	void Draw(sf::RenderWindow& window); // Draws grid lines and tiles
 
+	Block::tHand CreateBlockHand(); // Create block hand of three blocks based on current tilemap state using block spawning algorithm
+
 	// UNUSED FUNCTION
 	bool IsBlockNearPlaceable(sf::Vector2f blockPosition) const; // Is block close enough to tilemap to warrant a placeability check
 	
-//private: this is only for debug purpouses
+private:
 	void Init(); // Initializes tilemap data and grid vertices
 	int  InitSearchAreaWidth(int blockSearchAreaSize) const; // Initialize search area width constant variable
 
@@ -63,10 +70,10 @@ public:
 
 	// Block Inventory Spawner Private Members, three step process each function having their own helpers
 	Block::tViewHand CreateRandomBlockHand();
-	Block::tHand CreateBlockHand();
 
 	Block::View GetRandomBlockView(); // Lightweight function that just does the random finding of block
 	bool TryPlaceBlockView   (const std::vector<bool>& tileMap, Block::View& outBlock, std::vector<sf::Vector2i>& tilePositions); // Find position for current block view and set block position. If not placeable return false
+	std::vector<int> GetOpenTileIndices(const std::vector<bool>& tileMap) const; // Get indices of open tiles in tilemap
 	bool IsBlockViewPlaceable(const std::vector<bool>& tileMap, const std::vector<sf::Vector2i>& blockTilePositions, sf::Vector2i tileOrigin) const; // Check if block view is placeable on custom tileMap parameter
 	void PlaceBlockView      (std::vector<bool>& tileMap, const std::vector<sf::Vector2i>& blockTilePositions); // Place block view on tilemap by setting tiles at block tile positions to occupied and block color. Returns true if block was placed successfully, false if any tile positions of block were occupied on tilemap
 

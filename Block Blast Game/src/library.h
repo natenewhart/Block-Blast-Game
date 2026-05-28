@@ -11,7 +11,7 @@ float distanceSquared(const sf::Vector2f& a, const sf::Vector2f& b);
 inline bool isWithinRect(sf::Vector2f rectTopLeft, sf::Vector2f rectScale, sf::Vector2f pos); // Is pos within rectangle of given size and position
 
 template<typename T>
-void shuffleVector(std::vector<T>& vec, CRandom& rng);
+void shuffleVector(CRandom& rng, std::vector<T>& vec);
 
 // ---------------------  Inline Definitions --------------------
 
@@ -22,7 +22,7 @@ inline bool isWithinRect(sf::Vector2f rectTopLeft, sf::Vector2f rectScale, sf::V
 }
 
 template<typename T>
-inline void shuffleVector(std::vector<T>& vec, CRandom& rng)
+inline void shuffleVector(CRandom& rng, std::vector<T>& vec)
 {
 	for (int i = vec.size() - 1; i > 0; i--)
 	{
