@@ -242,29 +242,6 @@ void TileMap::PlaceBlockOnTileMapOverlay()
 
 // ------------------- Block Inventory Spawning Functions ---------------------
 
-Block::View TileMap::CreateRandomBlock()
-{
-	return Block::View{}; // Return a default initialized block to indicate no block 
-	// TODO: this function should know about the current block view hand. It should know its size and be able to insert itself into the array
-	// That way, this function can just return a boolean value and if it did work, we will know because the block passed wasn't a null block
-
-	// TODO: Code
-	//Block::View nextBlock;
-
-	//bool blockFound = false;
-	//int count = 0; // DEBUG
-	//while (!blockFound) // TODO move this while loop chunk into CreateRandomBlock();
-	//{
-	//	count++; assert(count < 200); // DEBUG
-
-	//	nextBlock = GetRandomBlockView();
-	//	blockFound = TryPlaceBlockView(currHandTileMap, nextBlock);
-	//}
-}
-
-// QUESTIONS: should CreateRandomBlock be a function or just split into two parts and rip for loop inside createrRandomBlockHand()
-// I am asking this because CreateRandomBlock needs to create a block OR tell me that the block cannot be placed. This is 2 things in one and function would have to have a weird signature.
-
 Block::tViewHand TileMap::CreateRandomBlockHand()
 {
 	std::vector<bool> currHandTileMap = CopyTileMapToBoolean();
@@ -293,7 +270,7 @@ Block::tViewHand TileMap::CreateRandomBlockHand()
 
 Block::tHand TileMap::CreateBlockHand()
 {
-	int maxHands = 4;
+	int maxHands = 10;
 	float maxHandWeight = -1.f;
 	Block::tViewHand bestHand;
 
