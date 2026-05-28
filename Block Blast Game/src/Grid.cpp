@@ -26,15 +26,15 @@ bool Grid::InBounds(sf::Vector2i position) const
 
 // ---------------- Get ----------------
 
-bool Grid::Get(int col, int row) const
+bool Grid::IsOccupied(int col, int row) const
 {
     assert(InBounds(col, row));
     return mTiles[Index(col, row)];
 }
 
-bool Grid::Get(sf::Vector2i position) const
+bool Grid::IsOccupied(sf::Vector2i position) const
 {
-    return Get(position.x, position.y);
+    return IsOccupied(position.x, position.y);
 }
 
 // ---------------- Set ----------------
