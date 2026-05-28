@@ -255,15 +255,14 @@ Block::tViewHand TileMap::CreateRandomBlockHand()
 		std::vector<sf::Vector2i> blockTilePositions;
 		if (!TryPlaceBlockView(currHandTileMap, nextBlock, blockTilePositions)) // If block cannot be placed skip this iteration
 		{
+			std::println("Failed to place block");
 			continue;
 		}
 
-		blockHand[blockCount] = nextBlock; // Append block to array
+		blockHand[blockCount++] = nextBlock; // Append next block
 
-		if (blockCount == 2) break; // Skip submission of last block
-
-		SubmitBlockView(currHandTileMap, blockTilePositions);
-		blockCount++;
+		if (blockCount < Blocks::cHandSize)  // Submit block to boolean tilemap
+			SubmitBlockView(currHandTileMap, blockTilePositions);
 	}
 	return blockHand;
 }
@@ -535,11 +534,11 @@ void TileMap::DrawTiles(sf::RenderWindow& window)
 			{
 				mTileRect.setFillColor(tile.color);
 			}
-			if (mTiles[IndexTiles(row, col)].overlayColor != sf::Color::Transparent)
+			if (tile.overlayColor != sf::Color::Transparent)
 			{
 				mTileRect.setFillColor(mTiles[IndexTiles(row, col)].overlayColor);
 			}
-			if (!tile.isEmpty || mTiles[IndexTiles(row, col)].overlayColor != sf::Color::Transparent)
+			if (!tile.isEmpty || tile.overlayColor != sf::Color::Transparent)
 			{
 				window.draw(mTileRect);
 			}

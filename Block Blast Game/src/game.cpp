@@ -23,10 +23,10 @@ Game::Game()
 	mText.setFillColor(sf::Color::White);
 	mText.setString(std::to_string(mFrameRateLimit));
 
-	//mBlockHand[0] = Block(Block::Shape::LShapeLarge, sf::Vector2f(800, 100), 0, sf::Color::Cyan);
-	//mBlockHand[1] = Block(Block::Shape::TwoByThree,    sf::Vector2f(800, 300), 0, sf::Color::Green);
-	//mBlockHand[2] = Block(Block::Shape::TwoByThree,    sf::Vector2f(800, 500), 0, sf::Color::Blue);
-	
+	//mBlockHand[0] = Block(Block::Shape::LShapeSmall, sf::Vector2f(800, 100), 0, sf::Color::Cyan);
+	//mBlockHand[1] = Block(Block::Shape::LShapeSmall,    sf::Vector2f(800, 300), 0, sf::Color::Green);
+	//mBlockHand[2] = Block(Block::Shape::LShapeSmall,    sf::Vector2f(800, 500), 0, sf::Color::Blue);
+	//
 	NewBlockHand();
 }
 
