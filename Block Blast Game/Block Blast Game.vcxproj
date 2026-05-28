@@ -159,6 +159,7 @@
     <Font Include="res\couri.ttf" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Grid.cpp" />
     <ClCompile Include="src\BlockData.cpp" />
     <ClCompile Include="src\Block.cpp" />
     <ClCompile Include="src\Game.cpp" />
@@ -168,6 +169,7 @@
     <ClCompile Include="src\Tilemap.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Grid.h" />
     <ClInclude Include="src\BlockData.h" />
     <ClInclude Include="src\Block.h" />
     <ClInclude Include="src\Game.h" />
