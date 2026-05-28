@@ -97,7 +97,7 @@ sf::Vector2f Block::RotateSignaturePosition(sf::Vector2f signaturePos, int orien
 {
 	static const sf::Vector2f directions[4] = { {1,0},{0,1},{-1,0},{0,-1} };
 	sf::Vector2f d = directions[orientation];
-
+		
 	return { signaturePos.x * d.x - signaturePos.y * d.y, signaturePos.x * d.y + signaturePos.y * d.x };
 }
 

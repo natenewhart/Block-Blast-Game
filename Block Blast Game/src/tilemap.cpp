@@ -197,6 +197,12 @@ std::vector<sf::Vector2i> TileMap::SignatureToRotatedTilePositions(const Block::
 		sf::Vector2i currGridPos = sf::Vector2i(Block::RotateSignaturePosition(localTilePos, block.orientation));
 
 		output.emplace_back(currGridPos.x, currGridPos.y);
+
+		auto rotated = Block::RotateSignaturePosition(localTilePos, block.orientation);
+
+		std::println("({}, {}) -> ({}, {})",
+			localTilePos.x, localTilePos.y,
+			rotated.x, rotated.y);
 	}
 	return output;
 }
@@ -292,7 +298,7 @@ Block::tHand TileMap::CreateBlockHand()
 Block::View TileMap::GetRandomBlockView()
 {
 	auto shape = (Block::Shape)mRNG.Int(1, Blocks::cNumberOfShapes - 1); // Get random block Shape
-	int orientation = mRNG.Int(1, Blocks::cOrientations[shape]);              // Get random block orientation
+	int orientation = mRNG.Int(0, Blocks::cOrientations[shape] - 1);              // Get random block orientation
 	return { {0,0}, shape, orientation }; // Return with position at origin
 }
 
