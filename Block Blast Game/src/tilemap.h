@@ -105,6 +105,8 @@ private:
 
 	std::vector<Tile> mTiles; // Stores tile data in a 2D vector (rows of columns). Important: declared
 	
+	Grid mGrid; // Grid object used for checking full rows and columns and storing row and column counts for block placement and deletion
+
 	// Submitted block variables
 	std::vector<sf::Vector2i> mActiveBlockTilePositions; // Stores grid positions of tiles that a block would occupy if placed at a given position, used for checking if block placement is valid and for highlighting tiles when player is moving block around tilemap
 	std::vector<bool> mFullRows;
