@@ -26,7 +26,7 @@ public:
 private:
 	int Index(int col, int row) const;
 
-	std::vector<bool> mTiles;
+	std::vector<uint8_t> mTiles;
 };
 
 //class Grid
