@@ -37,17 +37,34 @@ bool Grid::IsOccupied(sf::Vector2i position) const
     return IsOccupied(position.x, position.y);
 }
 
-// ---------------- Set ----------------
+// ---------------- Setters ----------------
 
-void Grid::Set(int col, int row, bool value)
+void Grid::ClearTile(int col, int row)
 {
-    assert(InBounds(col, row));
-    mTiles[Index(col, row)] = value;
+    assert(InBounds(col, row)); // DEBUG
+    if (InBounds(col, row))
+    {
+        mTiles[Index(col, row)] = false;
+    }
 }
 
-void Grid::Set(sf::Vector2i position, bool value)
+void Grid::ClearTile(sf::Vector2i position)
 {
-    Set(position.x, position.y, value);
+    ClearTile(position.x, position.y);
+}
+
+void Grid::FillTile(int col, int row)
+{
+    assert(InBounds(col, row)); // DEBUG
+    if (InBounds(col, row))
+    {
+        mTiles[Index(col, row)] = true;
+    }
+}
+
+void Grid::FillTile(sf::Vector2i position)
+{
+    FillTile(position.x, position.y);
 }
 
 // ---------------- Clear ----------------
