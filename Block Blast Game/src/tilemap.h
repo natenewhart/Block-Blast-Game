@@ -6,6 +6,7 @@
 #include <queue>
 
 #include "Block.h"	
+#include "Grid.h"
 #include "CRandom.hpp"
 
 #pragma once
@@ -21,10 +22,6 @@ private:
 		sf::Color color;
 		sf::Color overlayColor;
 		bool isOccupied;
-	};
-	struct Grid
-	{
-		std::vector<bool> tiles; // 1D vector representing 2D grid of tilemap, true if tile is occupied, false if tile is empty
 	};
 
 public:
