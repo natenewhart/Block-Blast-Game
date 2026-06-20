@@ -65,6 +65,11 @@ void Grid::FillTile(sf::Vector2i position)
     FillTile(position.x, position.y);
 }
 
+sf::Vector2i Grid::ToTilePos(int index) const
+{
+    return sf::Vector2i(index % GameSettings::Get().tileMap.width, index / GameSettings::Get().tileMap.width);
+}
+
 // ---------------- Clear ----------------
 
 void Grid::Clear()

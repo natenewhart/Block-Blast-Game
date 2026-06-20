@@ -15,6 +15,7 @@
 *	static variables:   s
 * 
 */
+#include <print>
 
 int main()
 {
