@@ -7,9 +7,20 @@
 
 Grid::Grid(bool isFull)
     : mTiles(GameSettings::Get().tileMap.width * GameSettings::Get().tileMap.height, isFull)
+	, mTileColors(GameSettings::Get().tileMap.width* GameSettings::Get().tileMap.height, sf::Color::Transparent)
 {}
 
 // ---------------- Bounds ----------------
+
+sf::Color Grid::GetTileColor(int col, int row) const
+{
+	return mTileColors[Index(col, row)];
+}
+
+sf::Color Grid::GetTileColor(sf::Vector2i position) const
+{
+    return GetTileColor(position.x, position.y);
+}
 
 bool Grid::InBounds(int col, int row) const
 {
@@ -43,6 +54,7 @@ void Grid::ClearTile(int col, int row)
     if (InBounds(col, row))
     {
         mTiles[Index(col, row)] = false;
+        mTileColors[Index(col, row)] = sf::Color::Transparent;
     }
 }
 
@@ -51,18 +63,19 @@ void Grid::ClearTile(sf::Vector2i position)
     ClearTile(position.x, position.y);
 }
 
-void Grid::FillTile(int col, int row)
+void Grid::FillTile(int col, int row, sf::Color color)
 {
     assert(InBounds(col, row)); // DEBUG
     if (InBounds(col, row))
     {
         mTiles[Index(col, row)] = true;
+        mTileColors[Index(col, row)] = color;
     }
 }
 
-void Grid::FillTile(sf::Vector2i position)
+void Grid::FillTile(sf::Vector2i position, sf::Color color)
 {
-    FillTile(position.x, position.y);
+    FillTile(position.x, position.y, color);
 }
 
 sf::Vector2i Grid::ToTilePos(int index) const
@@ -74,7 +87,7 @@ sf::Vector2i Grid::ToTilePos(int index) const
 
 void Grid::Clear()
 {
-    std::fill(mTiles.begin(), mTiles.end(), false);
+	*this = Grid();
 }
 
 // ---------------- Private helper ----------------
@@ -83,87 +96,3 @@ int Grid::Index(int col, int row) const
 {
     return row * GameSettings::Get().tileMap.width + col;
 }
-
-
-//#include "Grid.h"
-//#include "GameSettings.h"
-//
-//#include <cassert>
-//
-//// ---------------- Constructor ----------------
-//
-//Grid::Grid(bool isOccupied)
-//    : mWidth(GameSettings::Get().tileMap.width)
-//    , mHeight(GameSettings::Get().tileMap.height)
-//    , mTiles(mWidth* mHeight, isOccupied)
-//{}
-//
-//// ---------------- Bounds ----------------
-//
-//bool Grid::InBounds(int col, int row) const
-//{
-//    return col >= 0 && col < mWidth &&
-//        row >= 0 && row < mHeight;
-//}
-//
-//bool Grid::InBounds(sf::Vector2i position) const
-//{
-//    return InBounds(position.x, position.y);
-//}
-//
-//// ---------------- Get ----------------
-//
-//bool Grid::IsOccupied(int col, int row) const
-//{
-//    assert(InBounds(col, row));
-//    return mTiles[Index(col, row)];
-//}
-//
-//bool Grid::IsOccupied(sf::Vector2i position) const
-//{
-//    return IsOccupied(position.x, position.y);
-//}
-//
-//// ---------------- Setters ----------------
-//
-//void Grid::ClearTile(int col, int row)
-//{
-//    assert(InBounds(col, row)); // DEBUG
-//    if (InBounds(col, row))
-//    {
-//        mTiles[Index(col, row)] = false;
-//    }
-//}
-//
-//void Grid::ClearTile(sf::Vector2i position)
-//{
-//    ClearTile(position.x, position.y);
-//}
-//
-//void Grid::FillTile(int col, int row)
-//{
-//    assert(InBounds(col, row)); // DEBUG
-//    if (InBounds(col, row))
-//    {
-//        mTiles[Index(col, row)] = true;
-//    }
-//}
-//
-//void Grid::FillTile(sf::Vector2i position)
-//{
-//    FillTile(position.x, position.y);
-//}
-//
-//// ---------------- Clear ----------------
-//
-//void Grid::Clear()
-//{
-//    std::fill(mTiles.begin(), mTiles.end(), false);
-//}
-//
-//// ---------------- Private helper ----------------
-//
-//int Grid::Index(int col, int row) const
-//{
-//    return row * mWidth + col;
-//}

@@ -56,7 +56,7 @@ private:
 	std::vector<sf::Vector2i> TranslateBlockTilePositions(const std::vector<sf::Vector2i>& blockTilePositions, sf::Vector2i tileOrigin) const;
 	bool SetClosestOpenBlockPositions(const Block& block); // Find closest tileMap grid positions for block on grid. Store indices in mBlockPlacementBuffer and return true if block is placeable, and false otherwise
 	void PlaceBlockOnGrid(Grid& grid);        // Places block on tilemap at given grid position by setting tiles at block tile positions to occupied and block color. Returns true if block was placed successfully, false if any tile positions of block were occupied on tilemap
-	void PlaceBlockColors(); // Set tile colors based on tile occupancy, used for drawing tiles
+	//void PlaceBlockColors(); // Set tile colors based on tile occupancy, used for drawing tiles
 
 	void CheckFullLines(Grid& grid);
 	void ClearFullLines(Grid& grid);
@@ -77,7 +77,7 @@ private:
 	bool IsInActiveBlockTilePositions(int col, int row) const;
 
 	// Index conversion helpers
-	int IndexTiles(sf::Vector2i tilePos) const;
+	//int IndexTiles(sf::Vector2i tilePos) const;
 
 private:
 	CRandom mRNG; // Psuedo random number generator
@@ -89,8 +89,6 @@ private:
 	int mHeight; // Number of tiles in vertical direction
 
 	Grid mGrid;
-	std::vector<sf::Color> mTileColors;
-
 	SubmissionBuffer mSubmitBuffer; // Cache for block placement data to be used when player places block on tilemap after moving it around for preview
 
 	sf::Vector2f mPosition;          // Top left corner of tilemap
