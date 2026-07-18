@@ -97,7 +97,7 @@ void Game::Update()
 	mText.setString(std::to_string(static_cast<int>(1.f / mDeltaTime + 0.5f)));
 	mText.setPosition(mScreenWidth - mText.getLocalBounds().width - 9, 0);
 
-	std::println("debug");
+	//std::println("debug");
 
 	// Game updates
 	UpdateBlockPlacement();
@@ -143,7 +143,6 @@ void Game::UpdateBlockPlacement()
 		//mTileMap.PlaceBlockOverlay();
 		return;
 	}
-
 	mTileMap.PlaceBlock();
 	HideActiveBlock();
 }

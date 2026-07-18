@@ -20,7 +20,7 @@ TileMap::TileMap(sf::Vector2f position)
 	, mcSearchAreaWidth(InitSearchAreaWidth(mcBlockSearchAreaSize))
 	//, mFullRows(mHeight, false)
 	//, mFullCols(mWidth, false)
-	, mSubmitBuffer{}
+	, mSubmitBuffer{std::vector<sf::Vector2i>(), std::vector<bool>(mHeight, false), std::vector<bool>(mWidth, false), sf::Color::Transparent}
 	, mTileColors(mHeight * mWidth, sf::Color::Transparent)
 {
 	Init();
@@ -61,7 +61,6 @@ void TileMap::Clear()
 	std::fill(mTileColors.begin(), mTileColors.end(), sf::Color::Transparent);
 	mGrid.Clear();
 
-	
 	ClearSubmittedBlockCache();
 }
 
@@ -71,7 +70,6 @@ void TileMap::Clear()
 bool TileMap::SubmitBlock(const Block& block)
 {
 	ClearSubmittedBlockCache();
-	std::println("size of active tiles {}", mSubmitBuffer.tilePositions.size());
 
 	bool isValidBlockPos = SetClosestOpenBlockPositions(block);
 	mSubmitBuffer.activeBlockColor = block.GetColor();
@@ -79,8 +77,6 @@ bool TileMap::SubmitBlock(const Block& block)
 	if (isValidBlockPos)
 		CheckFullLines(mGrid);
 
-	std::println("size of active tiles {}", mSubmitBuffer.tilePositions.size());
-	
 	return isValidBlockPos;
 }
 
@@ -119,7 +115,9 @@ void TileMap::CheckFullLines(Grid& grid)
 void TileMap::PlaceBlock()
 {
 	PlaceBlockOnGrid(mGrid);
+	PlaceBlockColors();
 	ClearFullLines(mGrid);
+	ClearSubmittedBlockCache();
 }
 
 void TileMap::ClearFullLines(Grid& grid)
@@ -237,7 +235,6 @@ void TileMap::PlaceBlockOnGrid(Grid& grid)
 {
 	for (sf::Vector2i tilePos : mSubmitBuffer.tilePositions)
 	{
-		//mTiles[IndexTiles(tilePos)] = Tile{mSubmitBuffer.activeBlockColor, sf::Color::Transparent, true};
 		grid.FillTile(tilePos);
 	}
 }
@@ -246,7 +243,6 @@ void TileMap::PlaceBlockColors()
 {
 	for (sf::Vector2i tilePos : mSubmitBuffer.tilePositions)
 	{
-		//mTiles[IndexTiles(tilePos)] = Tile{mSubmitBuffer.activeBlockColor, sf::Color::Transparent, true};
 		mTileColors[IndexTiles(tilePos)] = mSubmitBuffer.activeBlockColor;
 	}
 }
@@ -286,7 +282,7 @@ Block::tViewHand TileMap::CreateRandomBlockHand()
 		{
 			PlaceBlockOnGrid(currGrid);
 			CheckFullLines  (currGrid);
-			ClearFullLines  (currGrid);
+			//ClearFullLines  (currGrid);
 		}
 			//SubmitBlockView(currHandTileMap, blockTilePositions);
 	}
@@ -450,7 +446,6 @@ Block::tHand TileMap::ConvertToBlockHand(const Block::tViewHand& other)
 	return result;
 }
 
-
 // ------------------- Private Helper Functions -------------------
 
 bool TileMap::IsBlockNearPlaceable(sf::Vector2f blockPosition) const
@@ -469,11 +464,6 @@ sf::Vector2f TileMap::SnapToTile(sf::Vector2f position) const
 	relativePos.y -= (int)relativePos.y % (int)GameSettings::Get().tile.size.y;
 	return mPosition + relativePos;
 }
-//
-//void TileMap::DeleteTile(int index)
-//{
-//	mTiles[index] = Tile{ sf::Color::Transparent, sf::Color::Transparent, false }; // Reset tile to default state (empty and transparent)
-//}
 
 sf::Vector2i TileMap::GetTilePosition(sf::Vector2f screenPosition) const
 {
@@ -499,30 +489,14 @@ int TileMap::IndexTiles(sf::Vector2i tilePos) const
 	assert(tilePos.x >= 0 && tilePos.x < mWidth && tilePos.y >= 0 && tilePos.y < mHeight); // DEBUG
 	return tilePos.y * mWidth + tilePos.x;
 }
-//
-//sf::Vector2i TileMap::IndexToTilePos(int index)
-//{
-//	return sf::Vector2i(index % mWidth, index / mWidth);
-//}
 
 void TileMap::ClearSubmittedBlockCache()
 {
-	//for (auto& tile : mSu) // Reset tile overlay colors after each update
-	//{
-	//	tile.overlayColor = sf::Color::Transparent;
-	//}
-
 	mSubmitBuffer.tilePositions.clear();
 
 	std::fill(mSubmitBuffer.rowsToClear.begin(), mSubmitBuffer.rowsToClear.end(), false);
 	std::fill(mSubmitBuffer.colsToClear.begin(), mSubmitBuffer.colsToClear.end(), false);
 }
-//
-//bool TileMap::IsTilePosition(sf::Vector2i gridPosition) const
-//{
-//	return gridPosition.x >= 0 && gridPosition.x < mWidth &&
-//		gridPosition.y >= 0 && gridPosition.y < mHeight;
-//}
 
 bool TileMap::IsInActiveBlockTilePositions(int col, int row) const
 {
@@ -565,15 +539,19 @@ void TileMap::DrawTiles(sf::RenderWindow& window)
 			mTileRect.setPosition(mPosition.x + col * GameSettings::Get().tile.size.x, mPosition.y + row * GameSettings::Get().tile.size.y);
 
 			bool isActiveBlockTile = IsInActiveBlockTilePositions(col, row);
+			
+			bool isActiveRowOrCol = mSubmitBuffer.rowsToClear[row] || mSubmitBuffer.colsToClear[col];
 
-			if (isOccupied)
+			if (isActiveBlockTile || isActiveRowOrCol)
 			{
-				mTileRect.setFillColor(mTileColors[IndexTiles(sf::Vector2i(col, row))]);
+				sf::Color overlayColor = mSubmitBuffer.activeBlockColor;
+				overlayColor.a = 128; // Set alpha to 50% for overlay
+				mTileRect.setFillColor(overlayColor);
 				window.draw(mTileRect);
 			}
-			if (isActiveBlockTile)
+			else if (isOccupied)
 			{
-				mTileRect.setFillColor(mSubmitBuffer.activeBlockColor);
+				mTileRect.setFillColor(mTileColors[IndexTiles(sf::Vector2i(col, row))]);
 				window.draw(mTileRect);
 			}
 		}
