@@ -18,7 +18,6 @@ TileMap::TileMap(sf::Vector2f position)
 	, mcBlockSearchAreaSize(2)
 	, mcSearchAreaWidth(InitSearchAreaWidth(mcBlockSearchAreaSize))
 	, mSubmitBuffer{std::vector<sf::Vector2i>(), std::vector<bool>(mHeight, false), std::vector<bool>(mWidth, false), sf::Color::Transparent}
-	//, mTileColors(mHeight * mWidth, sf::Color::Transparent)
 {
 	Init();
 }
@@ -47,7 +46,6 @@ int TileMap::InitSearchAreaWidth(int blockSearchAreaSize) const
 
 void TileMap::Clear()
 {
-	//std::fill(mTileColors.begin(), mTileColors.end(), sf::Color::Transparent);
 	mGrid.Clear();
 
 	ClearSubmittedBlockCache();
@@ -97,7 +95,6 @@ void TileMap::CheckFullLines(Grid& grid)
 void TileMap::PlaceBlock()
 {
 	PlaceBlockOnGrid(mGrid);
-	//PlaceBlockColors();
 	ClearFullLines(mGrid);
 	ClearSubmittedBlockCache();
 }
@@ -201,14 +198,6 @@ void TileMap::PlaceBlockOnGrid(Grid& grid)
 		grid.FillTile(tilePos, mSubmitBuffer.activeBlockColor);
 	}
 }
-
-//void TileMap::PlaceBlockColors()
-//{
-//	for (sf::Vector2i tilePos : mSubmitBuffer.tilePositions)
-//	{
-//		mTileColors[IndexTiles(tilePos)] = mSubmitBuffer.activeBlockColor;
-//	}
-//}
 
 // ------------------- Block Inventory Spawning Functions ---------------------
 
@@ -351,12 +340,6 @@ sf::Vector2f TileMap::TilePosToPixelPos(sf::Vector2i tilePos) const
 {
 	return mPosition + sf::Vector2f(tilePos.x * GameSettings::Get().tile.size.x, tilePos.y * GameSettings::Get().tile.size.y);
 }
-
-//int TileMap::IndexTiles(sf::Vector2i tilePos) const
-//{
-//	assert(tilePos.x >= 0 && tilePos.x < mWidth && tilePos.y >= 0 && tilePos.y < mHeight); // DEBUG
-//	return tilePos.y * mWidth + tilePos.x;
-//}
 
 void TileMap::ClearSubmittedBlockCache()
 {
