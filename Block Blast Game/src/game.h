@@ -81,10 +81,6 @@ private:
 	const std::array<sf::Vector2f, Blocks::cHandSize> mcBlockHandInitPositions = { sf::Vector2f(800, 100), sf::Vector2f(800, 300), sf::Vector2f(800, 500) };
 	int mBlockHandCount; // Number of blocks in hand (number of unplaced blocks)
 
-	//sf::Vector2f(800, 100), 0, sf::Color::Cyan);
-	//mBlockHand[1] = Block(Block::Shape::FiveByOne,    sf::Vector2f(800, 300), 2, sf::Color::Green);
-	//mBlockHand[2] = Block(Block::Shape::ThreeDiagonal,    sf::Vector2f(800, 500), 1, sf::Color::Blue);
-
 	// Display Variables
     sf::Text mText; // Temporary text variable for testing
 	sf::Font mFont; // Temporary font variable for testing
