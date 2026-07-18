@@ -41,6 +41,8 @@ private:
 	void Init(); // Initializes tilemap data and grid vertices
 	int  InitSearchAreaWidth(int blockSearchAreaSize) const; // Initialize search area width constant variable
 
+	void ClearSubmittedBlockCache();
+
 	// Draw Private Functions
 	void DrawGridLines(sf::RenderWindow& window); // Draws grid lines with top left corner at mPosition
 	void DrawTiles    (sf::RenderWindow& window); // Draws tiles
@@ -63,12 +65,8 @@ private:
 	Block::tViewHand CreateRandomBlockHand();
 
 	Block::View GetRandomBlockView(); // Lightweight function that just does the random finding of block
-	bool TryPlaceBlockView   (const Grid& grid, Block::View& outBlock, std::vector<sf::Vector2i>& tilePositions); // Find position for current block view and set block position. If not placeable return false
+	bool TryPlaceBlockView(const Grid& grid, Block::View& outBlock, std::vector<sf::Vector2i>& tilePositions); // Find position for current block view and set block position. If not placeable return false
 	std::vector<int> GetOpenTileIndices(const Grid& grid) const; // Get indices of open tiles in tilemap
-
-	// CreateRandomBlockHand helpers
-	std::vector<bool> CopyTileMapToBoolean();
-	void SubmitBlockView(std::vector<bool>& tileMap, const std::vector<sf::Vector2i>& blockTilePositions);
 
 	// CreateBlockHand helpers
 	float WeighBlockViewHand(const Block::tViewHand& blockHand);
@@ -80,8 +78,6 @@ private:
 
 	// Index conversion helpers
 	int IndexTiles(sf::Vector2i tilePos) const;
-
-	void ClearSubmittedBlockCache();
 
 private:
 	CRandom mRNG; // Psuedo random number generator
@@ -97,7 +93,7 @@ private:
 
 	SubmissionBuffer mSubmitBuffer; // Cache for block placement data to be used when player places block on tilemap after moving it around for preview
 
-	sf::Vector2f mPosition;        // Top left corner of tilemap
+	sf::Vector2f mPosition;          // Top left corner of tilemap
 	const int mcBlockSearchAreaSize; // Area of searching for finding open blocks for block placement if value is 1 then search 1x1 area around block. If value is 2 then search 3x3 area around block, etc.
 	const int mcSearchAreaWidth;     // Width of search area for finding open blocks for block placement, calculated from cBlockSearchAreaSize
 };
