@@ -42,14 +42,15 @@ private:
 	void HandleBlockEvents();
 	void ResetGameState(); // Reset values for game state every frame
 	
-	void Update();       // All non-render & non-event updates
+	void Update(); // All non-render & non-event updates
 	void UpdateBlockPlacement();
+	void UpdateScore(int tilesCleared); // Update score based on number of tiles cleared in a single block placement)
 
 	void Render();       // Draw game
 	void DrawBlocks();
 
 	// Block Helper Functions
-	void NewBlockHand(); // Updates blockHand with three new blocks based on current tile map state. Implements block spawning algorithm
+	void MakeNewBlockHand(); // Updates blockHand with three new blocks based on current tile map state. Implements block spawning algorithm
 	
 	// Active block methods
 	void SetActiveBlock(Block* block); // Set active block to given block pointer, set isActiveBlock to true if block pointer is not nullptr, false if block pointer is nullptr
@@ -74,6 +75,16 @@ private:
 	// Game Variables
     float mDeltaTime; // Last frame delta time value
 	TileMap mTileMap;
+
+	// Game Score Variables
+	float mScore;           // Current game score
+	float mScoreMultiplier; // Current score multiplier based on number of lines cleared in a single block placement
+	int   mMovesSinceLastScore;
+	int   mScoreStreak; // Number of consecutive block placements that cleared at least one line
+	const float mcScoreMultiplierIncrement = 0.5f; // 
+	const float mcScorePerTile			   = 10.f; // Score per tile placed on tilemap
+	const float mcScoreMultiplierMax       = 5.f;  // Maximum score multiplier
+	const int   mcMovesBeforePenalty       = 5;    // Number of moves before score multiplier penalty is applied
 
 	// Block Management Variables
     Block* mActiveBlock;  // Pointer to block currently being moved by mouse, nullptr if no block is being moved

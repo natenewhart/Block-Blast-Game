@@ -17,6 +17,11 @@
 */
 #include <print>
 
+int HelperFunc1()
+{
+	return 1;
+}
+
 int main()
 {
 	Game game;

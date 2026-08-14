@@ -12,12 +12,12 @@ namespace Blocks
 	using tSignature = std::vector<sf::Vector2f>;
 
 	// Constants
-	constexpr uint32_t cHandSize       = 3;
+	constexpr uint32_t cHandSize = 3; // TODO: maybe move this into GameSettings singleton class
 	constexpr uint32_t cNumberOfShapes = 16;
 
 	// Tables
-	extern const tSignature cSignatures[cNumberOfShapes]; // Table mapping block shapes to block signatures
-	extern const int   cOrientations[cNumberOfShapes]; // Table mapping block shapes to the maximum possible orientations they can exhibit (1,2, or 4)
-	extern const float cWeights[cNumberOfShapes]; // Table mapping block shapes to block bias weights for block generation
+	extern const tSignature cSignatures  [cNumberOfShapes]; // Table mapping block shapes to block signatures
+	extern const int        cOrientations[cNumberOfShapes]; // Table mapping block shapes to the maximum possible orientations they can exhibit (1,2, or 4)
+	extern const float      cWeights     [cNumberOfShapes]; // Table mapping block shapes to block bias weights for block generation
 };
 

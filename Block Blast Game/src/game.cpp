@@ -10,6 +10,8 @@ Game::Game()
 	, mTileMap(GameSettings::Get().tileMap.initialPosition)
 	, mActiveBlock(nullptr)
 	, mBlockHandCount(3)
+	, mScore(0.f)
+	, mScoreMultiplier(1.f)
 {
 	mWindow.create(sf::VideoMode(mScreenWidth, mScreenHeight), "Block Blast");
 	mWindow.setFramerateLimit(mFrameRateLimit);
@@ -23,11 +25,7 @@ Game::Game()
 	mText.setFillColor(sf::Color::White);
 	mText.setString(std::to_string(mFrameRateLimit));
 
-	//mBlockHand[0] = Block(Block::Shape::LShapeSmall, sf::Vector2f(800, 100), 0, sf::Color::Cyan);
-	//mBlockHand[1] = Block(Block::Shape::LShapeSmall,    sf::Vector2f(800, 300), 0, sf::Color::Green);
-	//mBlockHand[2] = Block(Block::Shape::LShapeSmall,    sf::Vector2f(800, 500), 0, sf::Color::Blue);
-	//
-	NewBlockHand();
+	MakeNewBlockHand();
 }
 
 void Game::Init() {}
@@ -94,8 +92,12 @@ void Game::Update()
     mState.mousePosition = sf::Vector2f(sf::Mouse::getPosition(mWindow));
 
 	// On Screen FPS Updates
-	mText.setString(std::to_string(static_cast<int>(1.f / mDeltaTime + 0.5f)));
-	mText.setPosition(mScreenWidth - mText.getLocalBounds().width - 9, 0);
+	//mText.setString(std::to_string(static_cast<int>(1.f / mDeltaTime + 0.5f)));
+	//mText.setPosition(mScreenWidth - mText.getLocalBounds().width - 9, 0);
+
+	// Score 
+	mText.setString(std::to_string(static_cast<int>(mScore)));
+	//mText.setPosition(0, 0);
 
 	// Game updates
 	UpdateBlockPlacement();
@@ -107,7 +109,7 @@ void Game::UpdateBlockPlacement()
 	{
 		if (mBlockHandCount == 0) // Reset block hand when counter hits zero
 		{
-			NewBlockHand();
+			MakeNewBlockHand();
 			mBlockHandCount = 3;
 		}
 		if (mState.mouseLeftButtonPressed) // Check mouse button press
@@ -137,14 +139,26 @@ void Game::UpdateBlockPlacement()
 	}
 	else if (mState.mouseLeftButtonReleased)
 	{
-		mTileMap.PlaceBlock();
+		int tilesCleared = mTileMap.PlaceBlock();
+		UpdateScore(tilesCleared);
 		HideActiveBlock();
 	}
 }
 
+void Game::UpdateScore(int tilesCleared)
+{
+	if (tilesCleared == 0)
+	{
+		mScoreMultiplier = 1.f; // Reset score multiplier if no tiles cleared
+		return;
+	}
+	mScore += tilesCleared * mScoreMultiplier * mcScorePerTile;
+	mScoreMultiplier += mcScoreMultiplierIncrement;
+}
+
 // ------------------- Update Helper Functions -------------------
 
-void Game::NewBlockHand()
+void Game::MakeNewBlockHand()
 {
 	mBlockHand = mTileMap.CreateBlockHand();
 	for (int i = 0; i < Blocks::cHandSize; i++)

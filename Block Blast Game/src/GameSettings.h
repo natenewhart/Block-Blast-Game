@@ -1,6 +1,7 @@
 // Nate Newhart
 // GameSettings.h
-// Game settings singlet class to hold all global variables needed for game
+
+// Game settings singleton class to hold all global variables needed for game
 // Interacts with json file to load and save settings
 
 #pragma once

@@ -32,7 +32,7 @@ public:
 
 	bool SubmitBlock(const Block& block); // Cache block placement position, rows to be deleted, and return boolean value if block can be placed
 	
-	void PlaceBlock();        // Places cached block to screen and handles deletion updates
+	int PlaceBlock(); // Places cached block to screen and handles deletion updates. Returns number of tiles removed by block placement
 	void Draw(sf::RenderWindow& window); // Draws grid lines and tiles
 
 	Block::tHand CreateBlockHand(); // Create block hand of three blocks based on current tilemap state using block spawning algorithm
@@ -58,7 +58,7 @@ private:
 	void PlaceBlockOnGrid(Grid& grid);        // Places block on tilemap at given grid position by setting tiles at block tile positions to occupied and block color. Returns true if block was placed successfully, false if any tile positions of block were occupied on tilemap
 
 	void CheckFullLines(Grid& grid);
-	void ClearFullLines(Grid& grid);
+	int  ClearFullLines(Grid& grid); // Clears tiles on grid and returns number of tiles cleared
 
 	// Block Inventory Spawner Private Members, three step process each function having their own helpers
 	Block::tViewHand CreateRandomBlockHand();

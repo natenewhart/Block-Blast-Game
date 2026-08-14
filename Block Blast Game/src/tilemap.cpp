@@ -92,27 +92,33 @@ void TileMap::CheckFullLines(Grid& grid)
 	}
 }
 
-void TileMap::PlaceBlock()
+int TileMap::PlaceBlock()
 {
 	PlaceBlockOnGrid(mGrid);
-	ClearFullLines(mGrid);
+	int tilesCleared = ClearFullLines(mGrid);
 	ClearSubmittedBlockCache();
+	return tilesCleared;
 }
 
-void TileMap::ClearFullLines(Grid& grid)
+int TileMap::ClearFullLines(Grid& grid)
 {
+	int rowsCleared = 0;
+	int colsCleared = 0;
 	for (int row = 0; row < mHeight; row++)
 	{
 		if (!mSubmitBuffer.rowsToClear[row]) continue;
 		for (int col = 0; col < mWidth; col++)
 			grid.ClearTile(col, row);
+		rowsCleared++;
 	}
 	for (int col = 0; col < mWidth; col++)
 	{
 		if (!mSubmitBuffer.colsToClear[col]) continue;
 		for (int row = 0; row < mHeight; row++)
 			grid.ClearTile(col, row);
+		colsCleared++;
 	}
+	return rowsCleared * mWidth + colsCleared * mHeight - rowsCleared * colsCleared; // Return number of tiles cleared, subtract overlap of cleared rows and columns
 }
 
 // ------------------- Block Placement Functions -------------------
