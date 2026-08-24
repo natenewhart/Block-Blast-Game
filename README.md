@@ -1,4 +1,4 @@
-# Block Blast Game - Work In Progress...
+# Block Blast Game
 This is a simple recreation of the Block Blast game, built using C++ and the SFML library.
 
 ## Features
