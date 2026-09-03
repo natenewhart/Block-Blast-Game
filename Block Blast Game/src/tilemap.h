@@ -35,7 +35,7 @@ public:
 	int PlaceBlock(); // Places cached block to screen and handles deletion updates. Returns number of tiles removed by block placement
 	void Draw(sf::RenderWindow& window); // Draws grid lines and tiles
 
-	Block::tHand CreateBlockHand(); // Create block hand of three blocks based on current tilemap state using block spawning algorithm
+	Block::tHand CreateBestBlockHand(); // Create block hand of three blocks based on current tilemap state using block spawning algorithm, finds the hand with the highest summed weight
 
 private:
 	void Init(); // Initializes tilemap data and grid vertices

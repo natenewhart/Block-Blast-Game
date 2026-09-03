@@ -234,9 +234,9 @@ Block::tViewHand TileMap::CreateRandomBlockHand()
 	return blockHand;
 }
 
-Block::tHand TileMap::CreateBlockHand()
+Block::tHand TileMap::CreateBestBlockHand()
 {
-	int maxHands = 10;
+	int maxHands = 25; // Number of random hands to generate and weigh, the best one will be returned
 	float maxHandWeight = -1.f;
 	Block::tViewHand bestHand;
 

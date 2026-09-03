@@ -13,7 +13,7 @@ Game::Game()
 	, mScore(0.f)
 	, mScoreMultiplier(1.f)
 {
-	mWindow.create(sf::VideoMode(mScreenWidth, mScreenHeight), "Block Blast");
+	mWindow.create(sf::VideoMode(mScreenWidth, mScreenHeight), "Block Blast"); 
 	mWindow.setFramerateLimit(mFrameRateLimit);
 
 	// Initialize Text
@@ -160,7 +160,7 @@ void Game::UpdateScore(int tilesCleared)
 
 void Game::MakeNewBlockHand()
 {
-	mBlockHand = mTileMap.CreateBlockHand();
+	mBlockHand = mTileMap.CreateBestBlockHand();
 	for (int i = 0; i < Blocks::cHandSize; i++)
 	{
 		mBlockHand[i].SetBlockCenterPosition(mcBlockHandInitPositions[i]);
