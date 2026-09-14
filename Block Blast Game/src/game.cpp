@@ -15,6 +15,7 @@ Game::Game()
 {
 	mWindow.create(sf::VideoMode(mScreenWidth, mScreenHeight), "Block Blast"); 
 	mWindow.setFramerateLimit(mFrameRateLimit);
+	mWindow.setMouseCursorVisible(false); // Remove moues cursor
 
 	// Initialize Text
 	if (!mFont.loadFromFile("res/cour.ttf")) // Replace "arial.ttf" with the path to your font file
@@ -197,6 +198,7 @@ void Game::Render()
 	DrawBlocks();
 
 	mWindow.draw(mText); // Draw FPS onto screen
+	DrawMouseCursor();
 
 	mWindow.display();
 }
@@ -211,5 +213,28 @@ void Game::DrawBlocks()
 	if (mActiveBlock)
 	{
 		mActiveBlock->Draw(mWindow); // Draw active block on top of other blocks
+	}
+}
+
+void Game::DrawMouseCursor()
+{
+	float size = 5;
+	float gap  = 1;
+
+	sf::RectangleShape crosshair(sf::Vector2f(50.f, 50.f)); // width, height — same value = square
+	crosshair.setSize(sf::Vector2f(size, size));
+	crosshair.setFillColor(sf::Color::White);
+	crosshair.setOutlineColor(sf::Color::Black);
+	crosshair.setOutlineThickness(1);
+
+	std::array<sf::Vector2f, 4> crosshairPositions = {
+		sf::Vector2f(-1, 0.f), sf::Vector2f(1, 0.f),
+		sf::Vector2f(0.f, -1), sf::Vector2f(0.f, 1)
+	};
+
+	for (auto position : crosshairPositions)
+	{
+		crosshair.setPosition(mState.mousePosition + (size + gap) * position);
+		mWindow.draw(crosshair);
 	}
 }

@@ -48,6 +48,7 @@ private:
 
 	void Render();       // Draw game
 	void DrawBlocks();
+	void DrawMouseCursor();
 
 	// Block Helper Functions
 	void MakeNewBlockHand(); // Updates blockHand with three new blocks based on current tile map state. Implements block spawning algorithm
