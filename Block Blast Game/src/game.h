@@ -5,6 +5,7 @@
 #include "DeltaTime.hpp"
 #include "Tilemap.h"
 #include "Block.h"
+#include "Button.h"
 
 #pragma once
 
@@ -14,8 +15,10 @@ class Game
 public:
 	enum Mode
 	{ 
+		StartMenu,
 		Play,
-		Pause
+		Pause,
+		GameOver
 	};
 	struct State 
 	{
@@ -24,8 +27,9 @@ public:
 
 		Mode gameMode;
 		
-		bool mouseLeftButtonPressed;
-		bool mouseLeftButtonReleased;
+		bool mouseLeftButtonPressed  = false;
+		bool mouseLeftButtonReleased = false;
+		bool isEscapeKeyPressed      = false;
 	};
 
 // ----------------- Member Functions -----------------
@@ -37,18 +41,27 @@ public:
 private:
 	void Init(); // Initializes Game State and variables - used in constructor
 
-	// Game Loop Private Functions
+	// ------------------- Event Handling -----------------
 	void HandleEvents(); // Retreive event queue and handle all events
 	void HandleBlockEvents();
 	void ResetGameState(); // Reset values for game state every frame
 	
+	// ------------------- Update Functions -----------------
 	void Update(); // All non-render & non-event updates
 	void UpdateBlockPlacement();
 	void UpdateScore(int tilesCleared); // Update score based on number of tiles cleared in a single block placement)
 
-	void Render();       // Draw game
+	// ------------------- Render Functions -----------------
+	void Render();
+	void RenderStartMenu();
+	void RenderPlay();
+	void RenderPause();
+	void RenderGameOver();
 	void DrawBlocks();
 	void DrawMouseCursor();
+
+	// ------------------- Game State Management -----------------
+	void ResetTileMapAndBlockHand(); // Restart Game
 
 	// Block Helper Functions
 	void MakeNewBlockHand(); // Updates blockHand with three new blocks based on current tile map state. Implements block spawning algorithm
@@ -96,4 +109,14 @@ private:
 	// Display Variables
     sf::Text mText; // Temporary text variable for testing
 	sf::Font mFont; // Temporary font variable for testing
+
+	sf::RectangleShape mPauseScreenOverlay; // Semi-transparent overlay for pause menu
+
+	Button mStartButton;
+	Button mPauseButton;
+	Button mResumeButton;
+	Button mRestartButton;
+	Button mGameOverRestartButton;
+	// TODO: add quit button for game over screen to bring you to start menu
+	// TODO: button colors fix to make better
 };

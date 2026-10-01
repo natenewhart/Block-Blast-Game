@@ -74,7 +74,7 @@ const int Blocks::cOrientations[cNumberOfShapes] =
 
 	1, // OneByOne
 	2, // TwoByOne
-	2, // ThreeByOne
+	2, // ThreeByOned
 	2, // FourByOne
 	2, // FiveByOne
 	1, // TwoByTwo

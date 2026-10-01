@@ -12,14 +12,30 @@ Game::Game()
 	, mBlockHandCount(3)
 	, mScore(0.f)
 	, mScoreMultiplier(1.f)
+	, mPauseScreenOverlay(sf::Vector2f(static_cast<float>(mScreenWidth), static_cast<float>(mScreenHeight)))
+	, mStartButton  (mFont, "START",   sf::Vector2f(mScreenWidth / 2 - Button::mcDefaultSize.x / 2, mScreenHeight / 2 - Button::mcDefaultSize.y / 2))
+	, mPauseButton  (mFont, "PAUSE",   sf::Vector2f(mScreenWidth - Button::mcDefaultSize.x, 0))
+	, mResumeButton (mFont, "RESUME",  sf::Vector2f(mScreenWidth / 2 - Button::mcDefaultSize.x / 2, mScreenHeight / 2 - Button::mcDefaultSize.y / 2))
+	, mRestartButton(mFont, "RESTART", sf::Vector2f(mScreenWidth / 2 - Button::mcDefaultSize.x / 2, mScreenHeight / 2 + Button::mcDefaultSize.y / 2))
+	, mGameOverRestartButton(mFont, "RESTART", sf::Vector2f(mScreenWidth / 2 - Button::mcDefaultSize.x / 2, mScreenHeight / 2 - Button::mcDefaultSize.y / 2))
 {
-	mWindow.create(sf::VideoMode(mScreenWidth, mScreenHeight), "Block Blast"); 
+	mWindow.create(sf::VideoMode(mScreenWidth, mScreenHeight), "Block Blast",
+		sf::Style::Titlebar | sf::Style::Close);
 	mWindow.setFramerateLimit(mFrameRateLimit);
 	mWindow.setMouseCursorVisible(false); // Remove moues cursor
+	mWindow.setKeyRepeatEnabled(false);
 
-	// Initialize Text
-	if (!mFont.loadFromFile("res/cour.ttf")) // Replace "arial.ttf" with the path to your font file
+	if (!mFont.loadFromFile("res/cour.ttf"))
 		std::quick_exit(-1);
+
+	// Init every button text AFTER font has been sucesffully loaded from disk
+	mStartButton.UpdateText();
+	mPauseButton.UpdateText();
+	mResumeButton.UpdateText();
+	mRestartButton.UpdateText();
+	mGameOverRestartButton.UpdateText();
+
+	mPauseScreenOverlay.setFillColor(sf::Color(0, 0, 0, 150));
 
 	mText.setFont(mFont);
 	mText.setCharacterSize(24);
@@ -27,6 +43,9 @@ Game::Game()
 	mText.setString(std::to_string(mFrameRateLimit));
 
 	MakeNewBlockHand();
+
+	// Start game at start menu
+	mState.gameMode = Mode::StartMenu;
 }
 
 void Game::Init() {}
@@ -56,11 +75,13 @@ void Game::HandleEvents()
 		{
 			mWindow.close();
 		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+		if (mEvent.type == sf::Event::KeyPressed)
 		{
-			mWindow.close();
+			if (mEvent.key.code == sf::Keyboard::Escape)
+			{
+				mState.isEscapeKeyPressed = true;
+			}
 		}
-
 		HandleBlockEvents();
 	}
 }
@@ -83,6 +104,7 @@ void Game::ResetGameState()
 {
 	mState.mouseLeftButtonPressed  = false;
 	mState.mouseLeftButtonReleased = false;
+	mState.isEscapeKeyPressed      = false;
 }
 
 // ------------------- Update Methods -------------------
@@ -92,16 +114,62 @@ void Game::Update()
 	// State Updates:
     mState.mousePosition = sf::Vector2f(sf::Mouse::getPosition(mWindow));
 
+	switch (mState.gameMode)
+	{
+	case Mode::StartMenu:
+		mStartButton.Update(mState.mousePosition, mState.mouseLeftButtonPressed);
+		if (mStartButton.IsPressed())
+			mState.gameMode = Mode::Play;
+		break;
+
+	case Mode::Play:
+		if (mState.isEscapeKeyPressed)
+			mState.gameMode = Mode::Pause;
+
+		mText.setString(std::to_string(static_cast<int>(mScore))); // Score
+
+		mPauseButton.Update(mState.mousePosition, mState.mouseLeftButtonPressed);
+		if (mPauseButton.IsPressed())
+			mState.gameMode = Mode::Pause;
+
+		UpdateBlockPlacement();
+		break;
+
+	case Mode::Pause:
+
+		if (mState.isEscapeKeyPressed)
+			mState.gameMode = Mode::Play;
+
+		mResumeButton.Update(mState.mousePosition, mState.mouseLeftButtonPressed);
+		mRestartButton.Update(mState.mousePosition, mState.mouseLeftButtonPressed);
+		
+		if (mResumeButton.IsPressed())
+			mState.gameMode = Mode::Play;
+
+		if (mRestartButton.IsPressed())
+		{
+			ResetTileMapAndBlockHand();
+			mState.gameMode = Mode::Play;
+		}
+
+		break;
+
+	case Mode::GameOver:
+		// TODO: separate game over restart button behavior
+		mGameOverRestartButton.Update(mState.mousePosition, mState.mouseLeftButtonPressed);
+		if (mGameOverRestartButton.IsPressed())
+		{
+			ResetTileMapAndBlockHand();
+			mState.gameMode = Mode::Play;
+		}
+		break;
+	}
+	
+	// Global State Updates:
+
 	// On Screen FPS Updates
 	//mText.setString(std::to_string(static_cast<int>(1.f / mDeltaTime + 0.5f)));
 	//mText.setPosition(mScreenWidth - mText.getLocalBounds().width - 9, 0);
-
-	// Score 
-	mText.setString(std::to_string(static_cast<int>(mScore)));
-	//mText.setPosition(0, 0);
-
-	// Game updates
-	UpdateBlockPlacement();
 }
 
 void Game::UpdateBlockPlacement()
@@ -166,6 +234,7 @@ void Game::MakeNewBlockHand()
 	{
 		mBlockHand[i].SetBlockCenterPosition(mcBlockHandInitPositions[i]);
 	}
+	mBlockHandCount = Blocks::cHandSize;
 }
 
 void Game::SetActiveBlock(Block* block)
@@ -193,14 +262,54 @@ void Game::Render()
 {
     mWindow.clear(sf::Color(20, 20, 20));
 
-	// Render order
 	mTileMap.Draw(mWindow);
-	DrawBlocks();
 
-	mWindow.draw(mText); // Draw FPS onto screen
-	DrawMouseCursor();
+	switch (mState.gameMode)
+	{
+	case Mode::StartMenu:
+		RenderStartMenu();
+		break;
+
+	case Mode::Play:
+		RenderPlay();
+		mPauseButton.Draw(mWindow);
+		break;
+
+	case Mode::Pause:
+		RenderPlay();
+		RenderPause();
+		break;
+
+	case Mode::GameOver:
+		RenderGameOver();
+		break;
+	}
+	DrawMouseCursor(); 
 
 	mWindow.display();
+}
+
+void Game::RenderStartMenu()
+{
+	mStartButton.Draw(mWindow);
+	mWindow.draw(mText); // Draw Score onto screen
+}
+
+void Game::RenderPlay()
+{
+	DrawBlocks();
+}
+
+void Game::RenderPause()
+{
+	mWindow.draw(mPauseScreenOverlay);
+	mResumeButton. Draw(mWindow);
+	mRestartButton.Draw(mWindow);
+}
+
+void Game::RenderGameOver()
+{
+	mGameOverRestartButton.Draw(mWindow);
 }
 
 void Game::DrawBlocks()
@@ -221,7 +330,7 @@ void Game::DrawMouseCursor()
 	float size = 5;
 	float gap  = 1;
 
-	sf::RectangleShape crosshair(sf::Vector2f(50.f, 50.f)); // width, height — same value = square
+	sf::RectangleShape crosshair(sf::Vector2f(50.f, 50.f)); // width, height — same value = squaref
 	crosshair.setSize(sf::Vector2f(size, size));
 	crosshair.setFillColor(sf::Color::White);
 	crosshair.setOutlineColor(sf::Color::Black);
@@ -237,4 +346,11 @@ void Game::DrawMouseCursor()
 		crosshair.setPosition(mState.mousePosition + (size + gap) * position);
 		mWindow.draw(crosshair);
 	}
+}
+
+void Game::ResetTileMapAndBlockHand()
+{
+	mTileMap.Clear();
+	MakeNewBlockHand();
+	mBlockHandCount = 3;
 }
