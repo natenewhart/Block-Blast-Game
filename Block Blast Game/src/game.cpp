@@ -174,6 +174,11 @@ void Game::Update()
 
 void Game::UpdateBlockPlacement()
 {
+	if (mBlockHandCount == 1)
+	{
+		// Check if game over condition is met: no more blocks can be placed on tilemap
+	}
+
 	if (!mActiveBlock)
 	{
 		if (mBlockHandCount == 0) // Reset block hand when counter hits zero
@@ -262,8 +267,6 @@ void Game::Render()
 {
     mWindow.clear(sf::Color(20, 20, 20));
 
-	mTileMap.Draw(mWindow);
-
 	switch (mState.gameMode)
 	{
 	case Mode::StartMenu:
@@ -292,12 +295,13 @@ void Game::Render()
 void Game::RenderStartMenu()
 {
 	mStartButton.Draw(mWindow);
-	mWindow.draw(mText); // Draw Score onto screen
 }
 
 void Game::RenderPlay()
 {
+	mTileMap.Draw(mWindow);
 	DrawBlocks();
+	mWindow.draw(mText); // Draw Score onto screen
 }
 
 void Game::RenderPause()
