@@ -15,7 +15,7 @@ class Game
 public:
 	enum Mode
 	{ 
-		StartMenu,
+		MainMenu,
 		Play,
 		Pause,
 		GameOver
@@ -53,7 +53,7 @@ private:
 
 	// ------------------- Render Functions -----------------
 	void Render();
-	void RenderStartMenu();
+	void RenderMainMenu();
 	void RenderPlay();
 	void RenderPause();
 	void RenderGameOver();
@@ -117,6 +117,6 @@ private:
 	Button mResumeButton;
 	Button mRestartButton;
 	Button mGameOverRestartButton;
-	// TODO: add quit button for game over screen to bring you to start menu
+	// TODO: add quit button for game over screen to bring you to main menu
 	// TODO: button colors fix to make better
 };

@@ -45,8 +45,8 @@ Game::Game()
 
 	MakeNewBlockHand();
 
-	// Start game at start menu
-	mState.gameMode = Mode::StartMenu;
+	// Start game at main menu
+	mState.gameMode = Mode::MainMenu;
 }
 
 void Game::Init() {}
@@ -117,7 +117,7 @@ void Game::Update()
 
 	switch (mState.gameMode)
 	{
-	case Mode::StartMenu:
+	case Mode::MainMenu:
 		mStartButton.Update(mState.mousePosition, mState.mouseLeftButtonPressed);
 		if (mStartButton.IsPressed())
 			mState.gameMode = Mode::Play;
@@ -270,8 +270,8 @@ void Game::Render()
 
 	switch (mState.gameMode)
 	{
-	case Mode::StartMenu:
-		RenderStartMenu();
+	case Mode::MainMenu:
+		RenderMainMenu();
 		break;
 
 	case Mode::Play:
@@ -293,7 +293,7 @@ void Game::Render()
 	mWindow.display();
 }
 
-void Game::RenderStartMenu()
+void Game::RenderMainMenu()
 {
 	mStartButton.Draw(mWindow);
 }
