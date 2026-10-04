@@ -6,8 +6,8 @@
 // ---------------- Constructor ----------------
 
 Grid::Grid(bool isFull)
-    : mTiles(GameSettings::Get().tileMap.width * GameSettings::Get().tileMap.height, isFull)
-	, mTileColors(GameSettings::Get().tileMap.width* GameSettings::Get().tileMap.height, sf::Color::Transparent)
+    : mTiles(Config::Get().tileMap.width * Config::Get().tileMap.height, isFull)
+	, mTileColors(Config::Get().tileMap.width* Config::Get().tileMap.height, sf::Color::Transparent)
 {}
 
 // ---------------- Bounds ----------------
@@ -24,8 +24,8 @@ sf::Color Grid::GetTileColor(sf::Vector2i position) const
 
 bool Grid::InBounds(int col, int row) const
 {
-    return col >= 0 && col < GameSettings::Get().tileMap.width &&
-        row >= 0 && row < GameSettings::Get().tileMap.height;
+    return col >= 0 && col < Config::Get().tileMap.width &&
+        row >= 0 && row < Config::Get().tileMap.height;
 }
 
 bool Grid::InBounds(sf::Vector2i position) const
@@ -80,7 +80,7 @@ void Grid::FillTile(sf::Vector2i position, sf::Color color)
 
 sf::Vector2i Grid::ToTilePos(int index) const
 {
-    return sf::Vector2i(index % GameSettings::Get().tileMap.width, index / GameSettings::Get().tileMap.width);
+    return sf::Vector2i(index % Config::Get().tileMap.width, index / Config::Get().tileMap.width);
 }
 
 // ---------------- Clear ----------------
@@ -94,5 +94,5 @@ void Grid::Clear()
 
 int Grid::Index(int col, int row) const
 {
-    return row * GameSettings::Get().tileMap.width + col;
+    return row * Config::Get().tileMap.width + col;
 }

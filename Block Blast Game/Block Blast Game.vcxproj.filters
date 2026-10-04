@@ -91,5 +91,8 @@
     <ClInclude Include="src\Crosshair.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\GameUI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

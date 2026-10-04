@@ -4,15 +4,17 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 
+
 class Button
 {
 public:
 	Button(const sf::Font& font, const std::string& title, sf::Vector2f position = { 0.f,0.f }, sf::Vector2f size = {mcDefaultSize.x - 2.f, mcDefaultSize.y - 2.f});
 
-	bool IsPressed();
+	bool IsClicked();
 
 	void SetFontSize(int fontSize);
 	void SetLabel(const std::string& label);
+	void SetSecondaryColor(sf::Color color);
 
 	void UpdateText(); // Update and recenter text, THIS HAS TO BE RUN AFTER THE FONT IS LOADED FROM DISK
 
@@ -30,6 +32,7 @@ private:
 	sf::Vector2f mPosition;
 	sf::Vector2f mSize; // Width, Height in pixels
 	sf::Color    mColor;
+	sf::Color    mSecondaryColor;
 	int mFontSize;
 
 	bool mIsPressed;

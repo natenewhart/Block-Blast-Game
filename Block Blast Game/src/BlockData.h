@@ -12,7 +12,7 @@ namespace Blocks
 	using tSignature = std::vector<sf::Vector2f>;
 
 	// Constants
-	constexpr uint32_t cHandSize = 3; // TODO: maybe move this into GameSettings singleton class
+
 	constexpr uint32_t cNumberOfShapes = 16;
 
 	// Tables

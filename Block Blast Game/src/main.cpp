@@ -24,6 +24,7 @@ int HelperFunc1()
 
 int main()
 {
+	Config::Get(); // Initialize game settings singleton
 	Game game;
 
 	game.MainLoop();

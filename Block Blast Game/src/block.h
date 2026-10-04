@@ -30,8 +30,8 @@ public:
 		int          orientation;
 	};
 
-	using tHand     = std::array<Block, Blocks::cHandSize>; // Block hand storage type
-	using tViewHand = std::array<View,  Blocks::cHandSize>; // Block hand made up of Block::Views
+	using tHand     = std::array<Block, Config::Block::cHandSize>; // Block hand storage type
+	using tViewHand = std::array<View,  Config::Block::cHandSize>; // Block hand made up of Block::Views
 
 public:
 	Block();
@@ -50,7 +50,8 @@ public:
 
 	void SetPosition(sf::Vector2f position);       // Set position of origin tile in block
 	void SetBlockCenterPosition(sf::Vector2f centerPosition); // Set block position given the center of the entire block
-	 
+	void SetTileScale(sf::Vector2f tileSize);            // Set size of tiles which make up block
+
 	bool IsTouching(sf::Vector2f position) const; // Checks if any position vector is within bounds of block tiles
 	void Hide();                              // Hides block by setting signature to null pointer
 
@@ -58,6 +59,7 @@ public:
 
 private:
 	void Init();
+	void UpdateRotationScaleTransform(); // Updates rotation and scale transform based on block orientation and tile size
 	void PopulateVertexArray(); // Initializes vertex array based on block signature and tile size
 
 	sf::Vector2f ConvertToBlockLocalPosition(sf::Vector2f worldPosition) const; // Convert world position to block local position by applying inverse transform
@@ -67,7 +69,8 @@ private:
 	sf::Transform   mRotationScaleTransform;
 	sf::VertexArray mMesh;      // Vertex array used for drawing block, each tile is a quad which is 4 vertices
 	
-	sf::Vector2f mPosition;     // Top left corner of tile in block at (0, 0) given by BLOCK_SIGNATURES 
+	sf::Vector2f mPosition;     // Top left corner of tile in block at (0, 0) given by BLOCK_SIGNATURES
+	sf::Vector2f mTileSize;         // Size of tiles in block
 	int          mOrientation;  // 0, 1, 2, or 3 for 0, 90, 180, or 270 degree rotation
 	Shape		 mShape;        // Block shape which is used to determine block signature and therefore block tile positions
 	sf::Color    mColor;        // Block color which is used for drawing block and placing block on tilemap

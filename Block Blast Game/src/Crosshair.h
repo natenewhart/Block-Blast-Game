@@ -9,9 +9,9 @@ struct Crosshair
 	Crosshair()
 	{
 		mRect.setSize({mcSize, mcSize});
-		mRect.setFillColor(sf::Color::White);
+		mRect.setFillColor(sf::Color(250,250,250));
 		mRect.setOutlineColor(sf::Color::Black);
-		mRect.setOutlineThickness(1.f);
+		mRect.setOutlineThickness(0.f);
 	}
 
 	void Update(sf::Vector2f mousePosition)
@@ -29,13 +29,15 @@ struct Crosshair
 
 		for (sf::Vector2f direction : cDirections)
 		{
-			mRect.setPosition(mPosition + (mcSize + mcGap) * direction);
+			sf::Vector2f offset = (mcSize + mcGap) * direction;
+			sf::Vector2f rectPosition = mPosition + offset - sf::Vector2f(mcSize / 2.f, mcSize / 2.f);
+			mRect.setPosition(rectPosition);
 			window.draw(mRect);
 		}
 	}
 
 	sf::RectangleShape mRect;
 	sf::Vector2f mPosition;
-	const float mcSize = 5.f;
-	const float mcGap  = 1.f;
+	const float mcSize = 7.f;
+	const float mcGap  = 0.f;
 };

@@ -9,6 +9,7 @@ Block::Block()
     , mPosition    (0.f, 0.f)
     , mOrientation (0)
     , mColor       (sf::Color::White)
+	, mTileSize(Config::Get().tile.handSize)
 {
 	Init();
 }
@@ -18,6 +19,7 @@ Block::Block(Shape shape, sf::Vector2f position, int orientation, sf::Color colo
     , mPosition    (position)
     , mOrientation (orientation)
     , mColor       (color)
+	, mTileSize(Config::Get().tile.handSize)
 {
 	Init();
 }
@@ -34,13 +36,19 @@ const Blocks::tSignature& Block::GetSignature() const
 
 void Block::Init()
 {
-	mRotationScaleTransform.rotate(mOrientation * 90.f);
-	mRotationScaleTransform.scale(GameSettings::Get().tile.size);
+	UpdateRotationScaleTransform();
 
 	SetPosition(mPosition);
 	SetBlockCenterPosition(mPosition);
 
 	PopulateVertexArray();
+}
+
+void Block::UpdateRotationScaleTransform()
+{
+	mRotationScaleTransform = sf::Transform::Identity;
+	mRotationScaleTransform.rotate(mOrientation * 90.f);
+	mRotationScaleTransform.scale(mTileSize);
 }
 
 void Block::PopulateVertexArray()
@@ -116,6 +124,14 @@ void Block::SetBlockCenterPosition(sf::Vector2f centerPosition)
 	sf::Vector2f newPos = mPosition + diff;
 
 	SetPosition(newPos);
+}
+
+void Block::SetTileScale(sf::Vector2f tileSize)
+{
+	mTileSize = tileSize;
+	UpdateRotationScaleTransform();
+	SetPosition(mPosition);         // rebuild mTransform with the new scale
+	SetBlockCenterPosition(mPosition);
 }
 
 bool Block::IsTouching(sf::Vector2f position) const // Checks if any position vector is within bounds of block tiles

@@ -7,6 +7,7 @@
 #include "Block.h"
 #include "Button.h"
 #include "Crosshair.h"
+#include "GameUI.h"
 
 #pragma once
 
@@ -40,7 +41,7 @@ public:
 	void MainLoop(); // Block Blast Game Loop
 
 private:
-	void Init(); // Initializes Game State and variables - used in constructor
+	sf::Vector2f InitTileMapPosition() const;
 
 	// ------------------- Event Handling -----------------
 	void HandleEvents(); // Retreive event queue and handle all events
@@ -51,18 +52,17 @@ private:
 	void Update(); // All non-render & non-event updates
 	void UpdateBlockPlacement();
 	void UpdateScore(int tilesCleared); // Update score based on number of tiles cleared in a single block placement)
-	void UpdateMainMenuButton();
 
 	// ------------------- Render Functions -----------------
 	void Render();
-	void RenderMainMenu();
+	//void RenderMainMenu();
 	void RenderGame();
-	void RenderPauseMenu();
-	void RenderGameOverMenu();
+	//void RenderPauseMenu();
+	//void RenderGameOverMenu();
 	void DrawBlocks();
 
 	// ------------------- Game State Management -----------------
-	void ResetTileMapAndBlockHand(); // Restart Game
+	void RestartGame(); // Restart Game
 
 	// Block Helper Functions
 	void MakeNewBlockHand(); // Updates blockHand with three new blocks based on current tile map state. Implements block spawning algorithm
@@ -79,6 +79,7 @@ private:
 	sf::RenderWindow mWindow; // SFML render window
 	sf::Event mEvent;         // Event variable used to store event for evnt handling. Will generallly store last event popped from event queue.
 	State mState;
+
 
 	DeltaTimer mDeltaTimeCalculator;
 	// Window Parameters
@@ -104,26 +105,19 @@ private:
 	// Block Management Variables
     Block* mActiveBlock;  // Pointer to block currently being moved by mouse, nullptr if no block is being moved
 	Block::tHand mBlockHand; // Block queue which stores 3 blocks to be placed at each turn
-	const std::array<sf::Vector2f, Blocks::cHandSize> mcBlockHandInitPositions = { sf::Vector2f(800, 100), sf::Vector2f(800, 300), sf::Vector2f(800, 500) };
 	int mBlockHandCount; // Number of blocks in hand (number of unplaced blocks)
 
 	// Display Variables
-    sf::Text mText; // Temporary text variable for testing
-	sf::Font mFont; // Temporary font variable for testing
+	sf::Font mFont;
+    sf::Text mScoreText;
 
 	Crosshair mCrosshair;
-	sf::RectangleShape mPauseScreenOverlay; // Semi-transparent overlay for pause menu
 
-	Button mStartButton;
-	Button mQuitButton;
-
-	Button mPauseButton;
-
-	Button mResumeButton;
-	Button mRestartButton;
-	Button mMainMenuButton;
-
-	Button mGameOverRestartButton;
+	UI::Overlay mOverlay; // Semi-transparent overlay for pause menu
+	UI::MainMenu mMainMenuUI;
+	UI::Pause mPauseMenuUI;
+	UI::GameOver  mGameOverUI;
+	UI::Hud       mHudUI;
 	// TODO: add quit button for game over screen to bring you to main menu
 	// TODO: button colors fix to make better
 };

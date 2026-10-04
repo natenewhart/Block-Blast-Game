@@ -10,10 +10,10 @@
 class Game;
 
 TileMap::TileMap(sf::Vector2f position)
-	: mTileRect(GameSettings::Get().tile.size)
+	: mTileRect(Config::Get().tile.size)
 	, mGridVertices{ sf::Vertex(), sf::Vertex(), sf::Vertex(), sf::Vertex() }
-	, mWidth(GameSettings::Get().tileMap.width)
-	, mHeight(GameSettings::Get().tileMap.height)
+	, mWidth(Config::Get().tileMap.width)
+	, mHeight(Config::Get().tileMap.height)
 	, mGrid()
 	, mPosition(position)
 	, mcBlockSearchAreaSize(2)
@@ -32,12 +32,12 @@ void TileMap::Init()
 		vertex.color = Colors::cGridLines;
 		vertex.position = mPosition;
 	}
-	mGridVertices[1].position.y += GameSettings::Get().tile.size.y * mHeight;
-	mGridVertices[3].position.x += GameSettings::Get().tile.size.x * mWidth;
+	mGridVertices[1].position.y += Config::Get().tile.size.y * mHeight;
+	mGridVertices[3].position.x += Config::Get().tile.size.x * mWidth;
 
 	mTileRect.setFillColor(sf::Color::Transparent); // Placeholder color for empty tile
 
-	mBoardRect.setSize(sf::Vector2f(GameSettings::Get().tile.size.x * mWidth, GameSettings::Get().tile.size.y * mHeight));
+	mBoardRect.setSize(Config::Get().tileMap.size);
 	mBoardRect.setPosition(mPosition);
 	mBoardRect.setFillColor(Colors::cBoardPanel); // Use whatever name you gave it in Colors.h
 }
@@ -147,7 +147,7 @@ bool TileMap::SetClosestOpenBlockPositions(const Block& block)
 		if (IsBlockPlaceable(mGrid, blockTilePositions, currTilePos))
 		{
 			// Get distance between block origin center and current tile center
-			float currDistance = distanceSquared(TilePosToPixelPos(currTilePos) + 0.5f * GameSettings::Get().tile.size, block.GetOriginTileCenterPosition());
+			float currDistance = distanceSquared(TilePosToPixelPos(currTilePos) + 0.5f * Config::Get().tile.size, block.GetOriginTileCenterPosition());
 
 			if (currDistance < minDistance)
 			{
@@ -218,7 +218,7 @@ Block::tViewHand TileMap::CreateRandomBlockHand()
 	Block::tViewHand blockHand;
 
 	int tries = 0; // DEBUG
-	for (int blockCount = 0; blockCount < Blocks::cHandSize;)
+	for (int blockCount = 0; blockCount < Config::Block::cHandSize;)
 	{
 		tries++; assert(tries < 100); // DEBUG
 		Block::View nextBlock = GetRandomBlockView();
@@ -230,7 +230,7 @@ Block::tViewHand TileMap::CreateRandomBlockHand()
 		mSubmitBuffer.tilePositions = TranslateBlockTilePositions(SignatureToRotatedTilePositions(nextBlock), originTilePos); // Store block tile positions in tilemap coordinates
 		blockHand[blockCount++] = nextBlock; // Append next block
 
-		if (blockCount < Blocks::cHandSize)  // Submit block to boolean tilemap
+		if (blockCount < Config::Block::cHandSize)  // Submit block to boolean tilemap
 		{
 			PlaceBlockOnGrid(currGrid);
 			CheckFullLines  (currGrid);
@@ -302,7 +302,7 @@ std::vector<int> TileMap::GetOpenTileIndices(const Grid& grid) const
 float TileMap::WeighBlockViewHand(const Block::tViewHand& blockHand)
 {
 	float weight = 0.f;
-	for (int i = 0; i < Blocks::cHandSize; i++)
+	for (int i = 0; i < Config::Block::cHandSize; i++)
 	{
 		weight += Blocks::cWeights[blockHand[i].shape];
 	}
@@ -313,7 +313,7 @@ Block::tHand TileMap::ConvertToBlockHand(const Block::tViewHand& other)
 {
 	Block::tHand result;
 	mRNG.SetRangeInt(0, std::size(Colors::cBlocks) - 1);
-	for (int i = 0; i < Blocks::cHandSize; i++)
+	for (int i = 0; i < Config::Block::cHandSize; i++)
 	{
 		sf::Color color = Colors::cBlocks[mRNG.Int()];
 		result[i] = Block(other[i].shape, other[i].position, other[i].orientation, color);
@@ -326,23 +326,23 @@ Block::tHand TileMap::ConvertToBlockHand(const Block::tViewHand& other)
 sf::Vector2f TileMap::SnapToTile(sf::Vector2f position) const
 {
 	sf::Vector2f relativePos = position - mPosition;
-	relativePos.x -= (int)relativePos.x % (int)GameSettings::Get().tile.size.x;
-	relativePos.y -= (int)relativePos.y % (int)GameSettings::Get().tile.size.y;
+	relativePos.x -= (int)relativePos.x % (int)Config::Get().tile.size.x;
+	relativePos.y -= (int)relativePos.y % (int)Config::Get().tile.size.y;
 	return mPosition + relativePos;
 }
 
 sf::Vector2i TileMap::GetTilePosition(sf::Vector2f screenPosition) const
 {
 	sf::Vector2f relativePos = screenPosition - mPosition;
-	int col = static_cast<int>(relativePos.x / GameSettings::Get().tile.size.x);
-	int row = static_cast<int>(relativePos.y / GameSettings::Get().tile.size.y);
+	int col = static_cast<int>(relativePos.x / Config::Get().tile.size.x);
+	int row = static_cast<int>(relativePos.y / Config::Get().tile.size.y);
 
 	return sf::Vector2i(col, row);
 }
 
 sf::Vector2f TileMap::TilePosToPixelPos(sf::Vector2i tilePos) const
 {
-	return mPosition + sf::Vector2f(tilePos.x * GameSettings::Get().tile.size.x, tilePos.y * GameSettings::Get().tile.size.y);
+	return mPosition + sf::Vector2f(tilePos.x * Config::Get().tile.size.x, tilePos.y * Config::Get().tile.size.y);
 }
 
 void TileMap::ClearSubmittedBlockCache()
@@ -387,10 +387,10 @@ void TileMap::DrawGridLines(sf::RenderWindow& window)
 	for (int i = 0; i <= mWidth; i++)
 	{
 		window.draw(mGridVertices, 4, sf::Lines);
-		mGridVertices[0].position.x += GameSettings::Get().tile.size.x;
-		mGridVertices[1].position.x += GameSettings::Get().tile.size.x;
-		mGridVertices[2].position.y += GameSettings::Get().tile.size.y;
-		mGridVertices[3].position.y += GameSettings::Get().tile.size.y;
+		mGridVertices[0].position.x += Config::Get().tile.size.x;
+		mGridVertices[1].position.x += Config::Get().tile.size.x;
+		mGridVertices[2].position.y += Config::Get().tile.size.y;
+		mGridVertices[3].position.y += Config::Get().tile.size.y;
 	}
 	mGridVertices[0].position.x = mPosition.x;
 	mGridVertices[1].position.x = mPosition.x;
@@ -405,7 +405,7 @@ void TileMap::DrawTiles(sf::RenderWindow& window)
 		for (int col = 0; col < mWidth; col++)
 		{
 			bool isOccupied = mGrid.IsOccupied(col, row);
-			mTileRect.setPosition(mPosition.x + col * GameSettings::Get().tile.size.x, mPosition.y + row * GameSettings::Get().tile.size.y);
+			mTileRect.setPosition(mPosition.x + col * Config::Get().tile.size.x, mPosition.y + row * Config::Get().tile.size.y);
 
 			bool isActiveBlockTile = IsInActiveBlockTilePositions(col, row);
 			bool isFullRowOrCol    = mSubmitBuffer.rowsToClear[row] || mSubmitBuffer.colsToClear[col];

@@ -4,23 +4,22 @@
 
 #include <print>
 
+inline static sf::Font LoadFont(const std::string& path); // Pre load font in game constructor
+
 Game::Game()
-	: mScreenWidth(1280), mScreenHeight(720)
+	: mScreenWidth(Config::Get().screen.width), mScreenHeight(Config::Get().screen.height)
 	, mFrameRateLimit(0)
 	, mDeltaTime(1.f / 60.f)
-	, mTileMap(GameSettings::Get().tileMap.initialPosition)
+	, mTileMap(Config::Get().tileMap.position)
 	, mActiveBlock(nullptr)
-	, mBlockHandCount(3)
+	, mBlockHandCount(Config::Get().block.cHandSize)
 	, mScore(0.f)
+	, mFont(LoadFont("res/ARCADE_N.TTF"))
 	, mScoreMultiplier(1.f)
-	, mPauseScreenOverlay(sf::Vector2f(static_cast<float>(mScreenWidth), static_cast<float>(mScreenHeight)))
-	, mStartButton  (mFont, "PLAY",   sf::Vector2f(mScreenWidth / 2 - Button::mcDefaultSize.x / 2, mScreenHeight / 2 - Button::mcDefaultSize.y / 2))
-	, mQuitButton   (mFont, "QUIT", sf::Vector2f(mScreenWidth / 2 - Button::mcDefaultSize.x / 2, mScreenHeight - Button::mcDefaultSize.y))
-	, mPauseButton  (mFont, "PAUSE",   sf::Vector2f(mScreenWidth - Button::mcDefaultSize.x, 0))
-	, mResumeButton (mFont, "RESUME",  sf::Vector2f(mScreenWidth / 2 - Button::mcDefaultSize.x / 2, mScreenHeight / 2 - Button::mcDefaultSize.y / 2))
-	, mRestartButton(mFont, "RESTART", sf::Vector2f(mScreenWidth / 2 - Button::mcDefaultSize.x / 2, mScreenHeight / 2 + Button::mcDefaultSize.y / 2))
-	, mMainMenuButton(mFont, "MAIN MENU", sf::Vector2f(mScreenWidth / 2 - Button::mcDefaultSize.x / 2, mScreenHeight - Button::mcDefaultSize.y))
-	, mGameOverRestartButton(mFont, "RESTART", sf::Vector2f(mScreenWidth / 2 - Button::mcDefaultSize.x / 2, mScreenHeight / 2 - Button::mcDefaultSize.y / 2))
+	, mMainMenuUI(mFont)
+	, mPauseMenuUI(mFont)
+	, mGameOverUI(mFont)
+	, mHudUI(mFont)
 {
 	mWindow.create(sf::VideoMode(mScreenWidth, mScreenHeight), "Block Blast",
 		sf::Style::Titlebar | sf::Style::Close);
@@ -28,25 +27,13 @@ Game::Game()
 	mWindow.setMouseCursorVisible(false); // Remove moues cursor
 	mWindow.setKeyRepeatEnabled(false);
 
-	if (!mFont.loadFromFile("res/ARCADE_N.TTF"))
-		std::quick_exit(-1);
-
-	// Init every button text AFTER font has been sucesffully loaded from disk
-	mStartButton.UpdateText();
-	mPauseButton.UpdateText();
-	mResumeButton.UpdateText();
-	mRestartButton.UpdateText();
-	//mMainMenuButton.UpdateText();
-	mMainMenuButton.SetFontSize(25);
-	mGameOverRestartButton.UpdateText();
-
-	mPauseScreenOverlay.setFillColor(sf::Color(0, 0, 0, 150));
-
-	mText.setFont(mFont);
-	mText.setCharacterSize(24);
-	mText.setFillColor(sf::Color::White);
-	mText.setString(std::to_string(mFrameRateLimit));
-
+	mScoreText.setFont(mFont);
+	mScoreText.setCharacterSize(50);
+	mScoreText.setFillColor(sf::Color::White);
+	mScoreText.setOutlineColor(sf::Color(200, 100, 150));
+	mScoreText.setOutlineThickness(2.f);
+	mScoreText.setString("");
+	mScoreText.setPosition(Config::Get().scorePosition - sf::Vector2f(mScoreText.getGlobalBounds().width / 2, mScoreText.getGlobalBounds().height / 2));
 
 	MakeNewBlockHand();
 
@@ -54,7 +41,22 @@ Game::Game()
 	mState.gameMode = Mode::MainMenu;
 }
 
-void Game::Init() {}
+static sf::Font LoadFont(const std::string& path)
+{
+	sf::Font font;
+	if (!font.loadFromFile(path))
+		std::quick_exit(-1);
+	return font;
+}
+
+sf::Vector2f Game::InitTileMapPosition() const
+{
+	sf::Vector2f tileMapPixelSize = { Config::Get().tileMap.width  * Config::Get().tile.size.x,
+						              Config::Get().tileMap.height * Config::Get().tile.size.y };
+	float x = (1.f / 3.f) * mScreenWidth  - tileMapPixelSize.x / 2;
+	float y = mScreenHeight / 2 - tileMapPixelSize.y / 2;
+	return { x, y };
+}
 
 void Game::MainLoop()
 {
@@ -87,20 +89,20 @@ void Game::HandleEvents()
 			{
 				mState.isEscapeKeyPressed = true;
 			}
-			//if (mEvent.key.code == sf::Keyboard::Num1)
-			//{
-			//	mState.gameMode = Mode::Play;
-			//}
-			//if (mEvent.key.code == sf::Keyboard::Num2)
-			//{
-			//	mState.gameMode = Mode::Pause;
-			//}
-			//if (mEvent.key.code == sf::Keyboard::Num3)
-			//{
-			//	mState.gameMode = Mode::GameOver;
-			//}
-			//if (mEvent.key.code == sf::Keyboard::N)
-			//	MakeNewBlockHand();
+			if (mEvent.key.code == sf::Keyboard::Num1)
+			{
+				mState.gameMode = Mode::Play;
+			}
+			if (mEvent.key.code == sf::Keyboard::Num2)
+			{
+				mState.gameMode = Mode::Pause;
+			}
+			if (mEvent.key.code == sf::Keyboard::Num3)
+			{
+				mState.gameMode = Mode::GameOver;
+			}
+			if (mEvent.key.code == sf::Keyboard::N)
+				MakeNewBlockHand();
 			//if (mEvent.key.code == sf::Keyboard::Num5)
 			//	mBlockHand[1] = Block(Block::Shape::FiveByOne, sf::Vector2f(0.f, 0.f), 0, sf::Color::White); mBlockHand[2] = Block(Block::Shape::OneByOne, sf::Vector2f(300.f, 0.f), 0, sf::Color::White);
 		}
@@ -140,12 +142,13 @@ void Game::Update()
 	switch (mState.gameMode)
 	{
 	case Mode::MainMenu:
-		mStartButton.Update(mState.mousePosition, mState.mouseLeftButtonPressed);
-		mQuitButton. Update(mState.mousePosition, mState.mouseLeftButtonPressed);
+		mMainMenuUI.Update(mDeltaTime);
+		mMainMenuUI.play.Update(mState.mousePosition, mState.mouseLeftButtonPressed);
+		mMainMenuUI.exit.Update(mState.mousePosition, mState.mouseLeftButtonPressed);
 
-		if (mStartButton.IsPressed())
+		if (mMainMenuUI.play.IsClicked())
 			mState.gameMode = Mode::Play;
-		if (mQuitButton.IsPressed())
+		if (mMainMenuUI.exit.IsClicked())
 			mWindow.close();
 
 		break;
@@ -154,10 +157,11 @@ void Game::Update()
 		if (mState.isEscapeKeyPressed)
 			mState.gameMode = Mode::Pause;
 
-		mText.setString(std::to_string(static_cast<int>(mScore))); // Score
+		mScoreText.setString(std::to_string(static_cast<int>(mScore))); // Score
+		mScoreText.setPosition(Config::Get().scorePosition - sf::Vector2f(mScoreText.getGlobalBounds().width / 2, mScoreText.getGlobalBounds().height / 2));
 
-		mPauseButton.Update(mState.mousePosition, mState.mouseLeftButtonPressed);
-		if (mPauseButton.IsPressed())
+		mHudUI.pause.Update(mState.mousePosition, mState.mouseLeftButtonPressed);
+		if (mHudUI.pause.IsClicked())
 			mState.gameMode = Mode::Pause;
 
 		UpdateBlockPlacement();
@@ -167,46 +171,39 @@ void Game::Update()
 		if (mState.isEscapeKeyPressed)
 			mState.gameMode = Mode::Play;
 
-		mResumeButton.Update(mState.mousePosition, mState.mouseLeftButtonPressed);
-		mRestartButton.Update(mState.mousePosition, mState.mouseLeftButtonPressed);
-		
-		if (mResumeButton.IsPressed())
+		mPauseMenuUI.resume.Update(mState.mousePosition, mState.mouseLeftButtonPressed);
+		mPauseMenuUI.restart.Update(mState.mousePosition, mState.mouseLeftButtonPressed);
+		mPauseMenuUI.exit.Update(mState.mousePosition, mState.mouseLeftButtonPressed);
+
+		if (mPauseMenuUI.resume.IsClicked())
 			mState.gameMode = Mode::Play;
 
-		if (mRestartButton.IsPressed())
+		if (mPauseMenuUI.restart.IsClicked())
 		{
-			ResetTileMapAndBlockHand();
+			RestartGame();
 			mState.gameMode = Mode::Play;
 		}
-		UpdateMainMenuButton();
+		if (mPauseMenuUI.exit.IsClicked())
+		{
+			mState.gameMode = Mode::MainMenu;
+		}
 		break;
 
 	case Mode::GameOver:
-		// TODO: separate game over restart button behavior
-		mGameOverRestartButton.Update(mState.mousePosition, mState.mouseLeftButtonPressed);
-		if (mGameOverRestartButton.IsPressed())
+		mGameOverUI.restart.Update(mState.mousePosition, mState.mouseLeftButtonPressed);
+		mGameOverUI.exit.Update(mState.mousePosition, mState.mouseLeftButtonPressed);
+
+		if (mGameOverUI.restart.IsClicked())
 		{
-			ResetTileMapAndBlockHand();
+			RestartGame();
 			mState.gameMode = Mode::Play;
 		}
-		UpdateMainMenuButton();
+		if (mGameOverUI.exit.IsClicked())
+		{
+			RestartGame();
+			mState.gameMode = Mode::MainMenu;
+		}
 		break;
-	}
-	
-	// Global State Updates:
-
-	// On Screen FPS Updates
-	//mText.setString(std::to_string(static_cast<int>(1.f / mDeltaTime + 0.5f)));
-	//mText.setPosition(mScreenWidth - mText.getLocalBounds().width - 9, 0);
-}
-
-void Game::UpdateMainMenuButton()
-{
-	mMainMenuButton.Update(mState.mousePosition, mState.mouseLeftButtonPressed);
-	if (mMainMenuButton.IsPressed())
-	{
-		//ResetTileMapAndBlockHand();
-		mState.gameMode = Mode::MainMenu;
 	}
 }
 
@@ -262,9 +259,11 @@ void Game::UpdateBlockPlacement()
 
 void Game::UpdateScore(int tilesCleared)
 {
+	std::println("mult {}", mScoreMultiplier);
 	if (tilesCleared == 0)
 	{
-		mScoreMultiplier = 1.f; // Reset score multiplier if no tiles cleared
+		mScore += mcScorePerTile * mActiveBlock->GetSignature().size();
+		mScoreMultiplier = std::max(1.f, mScoreMultiplier * 0.5f); // Reset score multiplier if no tiles cleared
 		return;
 	}
 	mScore += tilesCleared * mScoreMultiplier * mcScorePerTile;
@@ -276,21 +275,23 @@ void Game::UpdateScore(int tilesCleared)
 void Game::MakeNewBlockHand()
 {
 	mBlockHand = mTileMap.CreateBestBlockHand();
-	for (int i = 0; i < Blocks::cHandSize; i++)
+	for (int i = 0; i < Config::Block::cHandSize; i++)
 	{
-		mBlockHand[i].SetBlockCenterPosition(mcBlockHandInitPositions[i]);
+		mBlockHand[i].SetBlockCenterPosition(Config::Get().block.handPositions[i]);
 	}
-	mBlockHandCount = Blocks::cHandSize;
+	mBlockHandCount = Config::Block::cHandSize;
 }
 
 void Game::SetActiveBlock(Block* block)
 {
 	mState.activeBlockInitPosition = block->GetBlockCenterPosition();
+	block->SetTileScale(Config::Get().tile.size); // Set active block tile size to hand tile size when picked up
 	mActiveBlock = block;
 }
 
 void Game::ResetActiveBlock()
 {
+	mActiveBlock->SetTileScale(Config::Get().tile.handSize);
 	mActiveBlock->SetBlockCenterPosition(mState.activeBlockInitPosition);
 	mActiveBlock = nullptr;
 }
@@ -313,22 +314,28 @@ void Game::Render()
 	switch (mState.gameMode)
 	{
 	case Mode::MainMenu:
-		RenderMainMenu();
+		//RenderMainMenu();
+		mMainMenuUI.Draw(mWindow);
 		break;
 
 	case Mode::Play:
 		RenderGame();
-		mPauseButton.Draw(mWindow);
+		//mPauseButton.Draw(mWindow);
 		break;
 
 	case Mode::Pause:
 		RenderGame();
-		RenderPauseMenu();
+		mOverlay.Draw(mWindow);
+		//RenderPauseMenu();
+		mPauseMenuUI.Draw(mWindow);
 		break;
 
 	case Mode::GameOver:
 		RenderGame();
-		RenderGameOverMenu();
+		mOverlay.Draw(mWindow);
+
+		//RenderGameOverMenu();
+		mGameOverUI.Draw(mWindow);
 		break;
 	}
 	mCrosshair.Draw(mWindow);
@@ -336,40 +343,42 @@ void Game::Render()
 	mWindow.display();
 }
 
-void Game::RenderMainMenu()
-{
-	mQuitButton.Draw(mWindow);
-	mStartButton.Draw(mWindow);
-}
+//void Game::RenderMainMenu()
+//{
+//	mMainMenuUI.quit.Draw(mWindow);
+//	mMainMenuUI.play.Draw(mWindow);
+//}
 
 void Game::RenderGame()
 {
 	mTileMap.Draw(mWindow);
 	DrawBlocks();
-	mWindow.draw(mText); // Draw Score onto screen
+	mWindow.draw(mScoreText); // Draw Score onto screen
 }
 
-void Game::RenderPauseMenu()
-{
-	mWindow.draw(mPauseScreenOverlay);
-	mResumeButton. Draw(mWindow);
-	mRestartButton.Draw(mWindow);
-	mMainMenuButton.Draw(mWindow);
-}
-
-void Game::RenderGameOverMenu()
-{
-	mWindow.draw(mPauseScreenOverlay);
-	mGameOverRestartButton.Draw(mWindow);
-	mMainMenuButton.Draw(mWindow);
-}
+//void Game::RenderPauseMenu()
+//{
+//	mWindow.draw(mPauseScreenOverlay);
+//	mPauseMenuUI.resume.Draw(mWindow);
+//	mPauseMenuUI.restart.Draw(mWindow);
+//	mPauseMenuUI.exit.Draw(mWindow);
+//}
+//
+//void Game::RenderGameOverMenu()
+//{
+//	mWindow.draw(mPauseScreenOverlay);
+//	mGameOverUI.restart.Draw(mWindow);
+//	mGameOverUI.exit.Draw(mWindow);
+//}
 
 void Game::DrawBlocks()
 {
     for (auto& block : mBlockHand)
 	{
 		if (&block != mActiveBlock) // Preserve draw order: active block is drawn on top of other blocks
+		{
 			block.Draw(mWindow);
+		}
 	}
 	if (mActiveBlock)
 	{
@@ -377,9 +386,11 @@ void Game::DrawBlocks()
 	}
 }
 
-void Game::ResetTileMapAndBlockHand()
+void Game::RestartGame()
 {
 	mTileMap.Clear();
 	MakeNewBlockHand();
 	mBlockHandCount = 3;
+
+	mScore = 0;
 }
