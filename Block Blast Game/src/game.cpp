@@ -177,18 +177,8 @@ void Game::Update()
 
 void Game::UpdateBlockPlacement()
 {
-	if (mBlockHandCount == 1)
-	{
-		// Check if game over condition is met: no more blocks can be placed on tilemap
-	}
-
 	if (!mActiveBlock)
 	{
-		if (mBlockHandCount == 0) // Reset block hand when counter hits zero
-		{
-			MakeNewBlockHand();
-			mBlockHandCount = 3;
-		}
 		if (mState.mouseLeftButtonPressed) // Check mouse button press
 		{
 			for (auto& block : mBlockHand)
@@ -219,6 +209,16 @@ void Game::UpdateBlockPlacement()
 		int tilesCleared = mTileMap.PlaceBlock();
 		UpdateScore(tilesCleared);
 		HideActiveBlock();
+
+		if (mBlockHandCount == 1) // Check for game over
+		{
+			
+		}
+		else if (mBlockHandCount == 0) // Reset block hand when counter hits zero
+		{
+			MakeNewBlockHand();
+			mBlockHandCount = 3;
+		}
 	}
 }
 

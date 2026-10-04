@@ -45,7 +45,6 @@ private:
 	void ClearSubmittedBlockCache();
 
 	// Draw Private Functions
-	void DrawBackground(sf::RenderWindow& window); // Draws background rectangle behind tilemap	
 	void DrawGridLines(sf::RenderWindow& window); // Draws grid lines with top left corner at mPosition
 	void DrawTiles    (sf::RenderWindow& window); // Draws tiles
 
