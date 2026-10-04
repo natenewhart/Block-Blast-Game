@@ -222,10 +222,12 @@ Block::tViewHand TileMap::CreateRandomBlockHand()
 	{
 		tries++; assert(tries < 100); // DEBUG
 		Block::View nextBlock = GetRandomBlockView();
-		if (!TryPlaceBlockView(currGrid, nextBlock, mSubmitBuffer.tilePositions)) // If block cannot be placed skip this iteration
-		{
+		sf::Vector2i originTilePos;
+		if (!TryPlaceBlockView(currGrid, nextBlock, originTilePos)) // If block cannot be placed skip this iteration
 			continue;
-		}
+
+		nextBlock.position = TilePosToPixelPos(originTilePos);
+		mSubmitBuffer.tilePositions = TranslateBlockTilePositions(mSubmitBuffer.tilePositions, originTilePos);
 
 		blockHand[blockCount++] = nextBlock; // Append next block
 
@@ -268,19 +270,18 @@ Block::View TileMap::GetRandomBlockView()
 	return { {0,0}, shape, orientation }; // Return with position at origin
 }
 
-bool TileMap::TryPlaceBlockView(const Grid& grid, Block::View& outBlock, std::vector<sf::Vector2i>& tilePositions)
+bool TileMap::TryPlaceBlockView(const Grid& grid, const Block::View& blockView, sf::Vector2i& outOriginTile)
 {
 	std::vector<int> tilesIndices = GetOpenTileIndices(grid);
 	shuffleVector(mRNG, tilesIndices);
 
-	tilePositions = SignatureToRotatedTilePositions(outBlock);
+	mSubmitBuffer.tilePositions = SignatureToRotatedTilePositions(blockView);
 	for (int i = 0; i < tilesIndices.size(); i++) // Iterate over tilemap randomly
 	{
 		sf::Vector2i originTile = grid.ToTilePos(tilesIndices[i]);
-		if (IsBlockPlaceable(grid, tilePositions, originTile)) // Check if block can be placed at this tile position
+		if (IsBlockPlaceable(grid, mSubmitBuffer.tilePositions, originTile)) // Check if block can be placed at this tile position
 		{
-			outBlock.position = TilePosToPixelPos(originTile);
-			tilePositions     = TranslateBlockTilePositions(tilePositions, originTile);
+			outOriginTile = originTile; // Return origin tile position of block in tilemap coordinates
 			return true;
 		}
 	}

@@ -32,8 +32,11 @@ public:
 
 	bool SubmitBlock(const Block& block); // Cache block placement position, rows to be deleted, and return boolean value if block can be placed
 	
-	int PlaceBlock(); // Places cached block to screen and handles deletion updates. Returns number of tiles removed by block placement
+	int  PlaceBlock(); // Places cached block to screen and handles deletion updates. Returns number of tiles removed by block placement
 	void Draw(sf::RenderWindow& window); // Draws grid lines and tiles
+
+	bool CanPlaceAnyBlock(const Block::tHand& hand) const; // Given a block check the entire grid to see if the block is placeable
+														   // Used to check game over condition
 
 	Block::tHand CreateBestBlockHand(); // Create block hand of three blocks based on current tilemap state using block spawning algorithm, finds the hand with the highest summed weight
 
@@ -65,7 +68,7 @@ private:
 	Block::tViewHand CreateRandomBlockHand();
 
 	Block::View GetRandomBlockView(); // Lightweight function that just does the random finding of block
-	bool TryPlaceBlockView(const Grid& grid, Block::View& outBlock, std::vector<sf::Vector2i>& tilePositions); // Find position for current block view and set block position. If not placeable return false
+	bool TryPlaceBlockView(const Grid& grid, const Block::View& blockView, sf::Vector2i& outOriginTile); // Find position for current block view and set block position. If not placeable return false
 	std::vector<int> GetOpenTileIndices(const Grid& grid) const; // Get indices of open tiles in tilemap
 
 	// CreateBlockHand helpers
