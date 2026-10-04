@@ -51,13 +51,14 @@ private:
 	void Update(); // All non-render & non-event updates
 	void UpdateBlockPlacement();
 	void UpdateScore(int tilesCleared); // Update score based on number of tiles cleared in a single block placement)
+	void UpdateMainMenuButton();
 
 	// ------------------- Render Functions -----------------
 	void Render();
 	void RenderMainMenu();
-	void RenderPlay();
-	void RenderPause();
-	void RenderGameOver();
+	void RenderGame();
+	void RenderPauseMenu();
+	void RenderGameOverMenu();
 	void DrawBlocks();
 
 	// ------------------- Game State Management -----------------
@@ -114,9 +115,14 @@ private:
 	sf::RectangleShape mPauseScreenOverlay; // Semi-transparent overlay for pause menu
 
 	Button mStartButton;
+	Button mQuitButton;
+
 	Button mPauseButton;
+
 	Button mResumeButton;
 	Button mRestartButton;
+	Button mMainMenuButton;
+
 	Button mGameOverRestartButton;
 	// TODO: add quit button for game over screen to bring you to main menu
 	// TODO: button colors fix to make better

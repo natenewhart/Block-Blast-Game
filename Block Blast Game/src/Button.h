@@ -11,7 +11,10 @@ public:
 
 	bool IsPressed();
 
-	void UpdateText(const std::string& label = ""); // Update and recenter text, THIS HAS TO BE RUN AFTER THE FONT IS LOADED FROM DISK
+	void SetFontSize(int fontSize);
+	void SetLabel(const std::string& label);
+
+	void UpdateText(); // Update and recenter text, THIS HAS TO BE RUN AFTER THE FONT IS LOADED FROM DISK
 
 	void Update(sf::Vector2f mousePosition, bool isMousePressed);
 	void Draw(sf::RenderWindow& window);
@@ -23,6 +26,7 @@ private:
 	sf::RectangleShape mRect;
 	sf::Text           mLabel;
 
+	std::string        mLabelString;
 	sf::Vector2f mPosition;
 	sf::Vector2f mSize; // Width, Height in pixels
 	sf::Color    mColor;

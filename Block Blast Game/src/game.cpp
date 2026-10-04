@@ -14,10 +14,12 @@ Game::Game()
 	, mScore(0.f)
 	, mScoreMultiplier(1.f)
 	, mPauseScreenOverlay(sf::Vector2f(static_cast<float>(mScreenWidth), static_cast<float>(mScreenHeight)))
-	, mStartButton  (mFont, "START",   sf::Vector2f(mScreenWidth / 2 - Button::mcDefaultSize.x / 2, mScreenHeight / 2 - Button::mcDefaultSize.y / 2))
+	, mStartButton  (mFont, "PLAY",   sf::Vector2f(mScreenWidth / 2 - Button::mcDefaultSize.x / 2, mScreenHeight / 2 - Button::mcDefaultSize.y / 2))
+	, mQuitButton   (mFont, "QUIT", sf::Vector2f(mScreenWidth / 2 - Button::mcDefaultSize.x / 2, mScreenHeight - Button::mcDefaultSize.y))
 	, mPauseButton  (mFont, "PAUSE",   sf::Vector2f(mScreenWidth - Button::mcDefaultSize.x, 0))
 	, mResumeButton (mFont, "RESUME",  sf::Vector2f(mScreenWidth / 2 - Button::mcDefaultSize.x / 2, mScreenHeight / 2 - Button::mcDefaultSize.y / 2))
 	, mRestartButton(mFont, "RESTART", sf::Vector2f(mScreenWidth / 2 - Button::mcDefaultSize.x / 2, mScreenHeight / 2 + Button::mcDefaultSize.y / 2))
+	, mMainMenuButton(mFont, "MAIN MENU", sf::Vector2f(mScreenWidth / 2 - Button::mcDefaultSize.x / 2, mScreenHeight - Button::mcDefaultSize.y))
 	, mGameOverRestartButton(mFont, "RESTART", sf::Vector2f(mScreenWidth / 2 - Button::mcDefaultSize.x / 2, mScreenHeight / 2 - Button::mcDefaultSize.y / 2))
 {
 	mWindow.create(sf::VideoMode(mScreenWidth, mScreenHeight), "Block Blast",
@@ -34,6 +36,8 @@ Game::Game()
 	mPauseButton.UpdateText();
 	mResumeButton.UpdateText();
 	mRestartButton.UpdateText();
+	//mMainMenuButton.UpdateText();
+	mMainMenuButton.SetFontSize(25);
 	mGameOverRestartButton.UpdateText();
 
 	mPauseScreenOverlay.setFillColor(sf::Color(0, 0, 0, 150));
@@ -121,8 +125,13 @@ void Game::Update()
 	{
 	case Mode::MainMenu:
 		mStartButton.Update(mState.mousePosition, mState.mouseLeftButtonPressed);
+		mQuitButton. Update(mState.mousePosition, mState.mouseLeftButtonPressed);
+
 		if (mStartButton.IsPressed())
 			mState.gameMode = Mode::Play;
+		if (mQuitButton.IsPressed())
+			mWindow.close();
+
 		break;
 
 	case Mode::Play:
@@ -139,7 +148,6 @@ void Game::Update()
 		break;
 
 	case Mode::Pause:
-
 		if (mState.isEscapeKeyPressed)
 			mState.gameMode = Mode::Play;
 
@@ -154,7 +162,7 @@ void Game::Update()
 			ResetTileMapAndBlockHand();
 			mState.gameMode = Mode::Play;
 		}
-
+		UpdateMainMenuButton();
 		break;
 
 	case Mode::GameOver:
@@ -165,6 +173,7 @@ void Game::Update()
 			ResetTileMapAndBlockHand();
 			mState.gameMode = Mode::Play;
 		}
+		UpdateMainMenuButton();
 		break;
 	}
 	
@@ -173,6 +182,16 @@ void Game::Update()
 	// On Screen FPS Updates
 	//mText.setString(std::to_string(static_cast<int>(1.f / mDeltaTime + 0.5f)));
 	//mText.setPosition(mScreenWidth - mText.getLocalBounds().width - 9, 0);
+}
+
+void Game::UpdateMainMenuButton()
+{
+	mMainMenuButton.Update(mState.mousePosition, mState.mouseLeftButtonPressed);
+	if (mMainMenuButton.IsPressed())
+	{
+		//ResetTileMapAndBlockHand();
+		mState.gameMode = Mode::MainMenu;
+	}
 }
 
 void Game::UpdateBlockPlacement()
@@ -282,18 +301,18 @@ void Game::Render()
 		break;
 
 	case Mode::Play:
-		RenderPlay();
+		RenderGame();
 		mPauseButton.Draw(mWindow);
 		break;
 
 	case Mode::Pause:
-		RenderPlay();
-		RenderPause();
+		RenderGame();
+		RenderPauseMenu();
 		break;
 
 	case Mode::GameOver:
-		RenderPlay();
-		RenderGameOver();
+		RenderGame();
+		RenderGameOverMenu();
 		break;
 	}
 	mCrosshair.Draw(mWindow);
@@ -303,27 +322,30 @@ void Game::Render()
 
 void Game::RenderMainMenu()
 {
+	mQuitButton.Draw(mWindow);
 	mStartButton.Draw(mWindow);
 }
 
-void Game::RenderPlay()
+void Game::RenderGame()
 {
 	mTileMap.Draw(mWindow);
 	DrawBlocks();
 	mWindow.draw(mText); // Draw Score onto screen
 }
 
-void Game::RenderPause()
+void Game::RenderPauseMenu()
 {
 	mWindow.draw(mPauseScreenOverlay);
 	mResumeButton. Draw(mWindow);
 	mRestartButton.Draw(mWindow);
+	mMainMenuButton.Draw(mWindow);
 }
 
-void Game::RenderGameOver()
+void Game::RenderGameOverMenu()
 {
 	mWindow.draw(mPauseScreenOverlay);
 	mGameOverRestartButton.Draw(mWindow);
+	mMainMenuButton.Draw(mWindow);
 }
 
 void Game::DrawBlocks()

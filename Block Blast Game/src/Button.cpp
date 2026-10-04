@@ -30,12 +30,21 @@ bool Button::IsPressed()
 	return mIsPressed;
 }
 
-void Button::UpdateText(const std::string& label)
+void Button::SetFontSize(int fontSize)
 {
-	if (!label.empty())	
-		mLabel.setString(label);
+	mFontSize = fontSize;
+	mLabel.setCharacterSize(mFontSize);
+	UpdateText();
+}
 
-	// Keep label centered in case position/size changed externally
+void Button::SetLabel(const std::string & label)
+{
+	mLabelString = label;
+	UpdateText();
+}
+
+void Button::UpdateText()
+{	
 	sf::FloatRect labelBounds = mLabel.getLocalBounds();
 	mLabel.setOrigin(labelBounds.left + labelBounds.width / 2.f, labelBounds.top + labelBounds.height / 2.f);
 	mLabel.setPosition(mRect.getPosition() + mRect.getSize() / 2.f);
