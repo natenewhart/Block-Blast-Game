@@ -171,6 +171,7 @@
     <ClCompile Include="src\Tilemap.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Crosshair.h" />
     <ClInclude Include="src\Colors.h" />
     <ClInclude Include="src\Button.h" />
     <ClInclude Include="src\Grid.h" />

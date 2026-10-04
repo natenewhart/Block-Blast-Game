@@ -13,7 +13,6 @@ Game::Game()
 	, mBlockHandCount(3)
 	, mScore(0.f)
 	, mScoreMultiplier(1.f)
-	, mCrosshairRect(sf::Vector2f(50.f, 50.f))
 	, mPauseScreenOverlay(sf::Vector2f(static_cast<float>(mScreenWidth), static_cast<float>(mScreenHeight)))
 	, mStartButton  (mFont, "START",   sf::Vector2f(mScreenWidth / 2 - Button::mcDefaultSize.x / 2, mScreenHeight / 2 - Button::mcDefaultSize.y / 2))
 	, mPauseButton  (mFont, "PAUSE",   sf::Vector2f(mScreenWidth - Button::mcDefaultSize.x, 0))
@@ -38,12 +37,6 @@ Game::Game()
 	mGameOverRestartButton.UpdateText();
 
 	mPauseScreenOverlay.setFillColor(sf::Color(0, 0, 0, 150));
-
-	// Crosshair setup
-	mCrosshairRect.setSize(sf::Vector2f(5.f, 5.f));
-	mCrosshairRect.setFillColor(sf::Color::White);
-	mCrosshairRect.setOutlineColor(sf::Color::Black);
-	mCrosshairRect.setOutlineThickness(1);
 
 	mText.setFont(mFont);
 	mText.setCharacterSize(24);
@@ -122,6 +115,7 @@ void Game::Update()
 {
 	// State Updates:
     mState.mousePosition = sf::Vector2f(sf::Mouse::getPosition(mWindow));
+	mCrosshair.Update(mState.mousePosition);
 
 	switch (mState.gameMode)
 	{
@@ -296,7 +290,7 @@ void Game::Render()
 		RenderGameOver();
 		break;
 	}
-	DrawMouseCursor(); 
+	mCrosshair.Draw(mWindow);
 
 	mWindow.display();
 }
@@ -335,23 +329,6 @@ void Game::DrawBlocks()
 	if (mActiveBlock)
 	{
 		mActiveBlock->Draw(mWindow); // Draw active block on top of other blocks
-	}
-}
-
-void Game::DrawMouseCursor()
-{
-	float size = 5;
-	float gap  = 1;
-
-	static const std::array<sf::Vector2f, 4> crosshairPositions = {
-		sf::Vector2f(-1, 0.f), sf::Vector2f(1, 0.f),
-		sf::Vector2f(0.f, -1), sf::Vector2f(0.f, 1)
-	};
-
-	for (auto position : crosshairPositions)
-	{
-		mCrosshairRect.setPosition(mState.mousePosition + (size + gap) * position);
-		mWindow.draw(mCrosshairRect);
 	}
 }
 

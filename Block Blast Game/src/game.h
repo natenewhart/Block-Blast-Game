@@ -6,6 +6,7 @@
 #include "Tilemap.h"
 #include "Block.h"
 #include "Button.h"
+#include "Crosshair.h"
 
 #pragma once
 
@@ -58,7 +59,6 @@ private:
 	void RenderPause();
 	void RenderGameOver();
 	void DrawBlocks();
-	void DrawMouseCursor();
 
 	// ------------------- Game State Management -----------------
 	void ResetTileMapAndBlockHand(); // Restart Game
@@ -110,7 +110,7 @@ private:
     sf::Text mText; // Temporary text variable for testing
 	sf::Font mFont; // Temporary font variable for testing
 
-	sf::RectangleShape mCrosshairRect;
+	Crosshair mCrosshair;
 	sf::RectangleShape mPauseScreenOverlay; // Semi-transparent overlay for pause menu
 
 	Button mStartButton;
