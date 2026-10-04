@@ -222,13 +222,12 @@ Block::tViewHand TileMap::CreateRandomBlockHand()
 	{
 		tries++; assert(tries < 100); // DEBUG
 		Block::View nextBlock = GetRandomBlockView();
-		sf::Vector2i originTilePos;
+		sf::Vector2i originTilePos; // If block can be placed, this will be set to the tile position of the open block position in the grid
+
 		if (!TryPlaceBlockView(currGrid, nextBlock, originTilePos)) // If block cannot be placed skip this iteration
 			continue;
 
-		nextBlock.position = TilePosToPixelPos(originTilePos);
-		mSubmitBuffer.tilePositions = TranslateBlockTilePositions(mSubmitBuffer.tilePositions, originTilePos);
-
+		mSubmitBuffer.tilePositions = TranslateBlockTilePositions(SignatureToRotatedTilePositions(nextBlock), originTilePos); // Store block tile positions in tilemap coordinates
 		blockHand[blockCount++] = nextBlock; // Append next block
 
 		if (blockCount < Blocks::cHandSize)  // Submit block to boolean tilemap
@@ -275,11 +274,11 @@ bool TileMap::TryPlaceBlockView(const Grid& grid, const Block::View& blockView, 
 	std::vector<int> tilesIndices = GetOpenTileIndices(grid);
 	shuffleVector(mRNG, tilesIndices);
 
-	mSubmitBuffer.tilePositions = SignatureToRotatedTilePositions(blockView);
+	auto tilePositions = SignatureToRotatedTilePositions(blockView);
 	for (int i = 0; i < tilesIndices.size(); i++) // Iterate over tilemap randomly
 	{
 		sf::Vector2i originTile = grid.ToTilePos(tilesIndices[i]);
-		if (IsBlockPlaceable(grid, mSubmitBuffer.tilePositions, originTile)) // Check if block can be placed at this tile position
+		if (IsBlockPlaceable(grid, tilePositions, originTile)) // Check if block can be placed at this tile position
 		{
 			outOriginTile = originTile; // Return origin tile position of block in tilemap coordinates
 			return true;
@@ -368,6 +367,12 @@ void TileMap::Draw(sf::RenderWindow& window)
 	window.draw(mBoardRect); // Draw baseplate
 	DrawTiles(window);
 	DrawGridLines(window);
+}
+
+bool TileMap::CanPlaceBlock(const Block& block)
+{
+	sf::Vector2i _;
+	return TryPlaceBlockView(mGrid, block.GetView(), _);
 }
 
 void TileMap::DrawGridLines(sf::RenderWindow& window)

@@ -212,7 +212,10 @@ void Game::UpdateBlockPlacement()
 
 		if (mBlockHandCount == 1) // Check for game over
 		{
-			
+			if (!mTileMap.CanPlaceBlock(mBlockHand[0]))
+			{
+				mState.gameMode = Mode::GameOver;
+			}
 		}
 		else if (mBlockHandCount == 0) // Reset block hand when counter hits zero
 		{
@@ -259,8 +262,10 @@ void Game::ResetActiveBlock()
 
 void Game::HideActiveBlock()
 {
+	Block* oldActiveBlock = mActiveBlock;
 	mActiveBlock->Hide();
 	mActiveBlock = nullptr;
+	std::swap(*oldActiveBlock, mBlockHand[mBlockHandCount - 1]); // Move placed block to end of hand and decrement hand count
 	mBlockHandCount--;
 }
 
@@ -287,6 +292,7 @@ void Game::Render()
 		break;
 
 	case Mode::GameOver:
+		RenderPlay();
 		RenderGameOver();
 		break;
 	}
@@ -316,6 +322,7 @@ void Game::RenderPause()
 
 void Game::RenderGameOver()
 {
+	mWindow.draw(mPauseScreenOverlay);
 	mGameOverRestartButton.Draw(mWindow);
 }
 

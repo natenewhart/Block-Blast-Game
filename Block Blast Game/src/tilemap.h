@@ -35,8 +35,8 @@ public:
 	int  PlaceBlock(); // Places cached block to screen and handles deletion updates. Returns number of tiles removed by block placement
 	void Draw(sf::RenderWindow& window); // Draws grid lines and tiles
 
-	bool CanPlaceAnyBlock(const Block::tHand& hand) const; // Given a block check the entire grid to see if the block is placeable
-														   // Used to check game over condition
+	bool CanPlaceBlock(const Block& block); // Given a block check the entire grid to see if the block is placeable
+											// Used to check game over condition
 
 	Block::tHand CreateBestBlockHand(); // Create block hand of three blocks based on current tilemap state using block spawning algorithm, finds the hand with the highest summed weight
 
