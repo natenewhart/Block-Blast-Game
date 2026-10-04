@@ -15,16 +15,9 @@
 *	static variables:   s
 * 
 */
-#include <print>
-
-int HelperFunc1()
-{
-	return 1;
-}
 
 int main()
 {
-	Config::Get(); // Initialize game settings singleton
 	Game game;
 
 	game.MainLoop();
