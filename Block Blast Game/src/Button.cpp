@@ -1,6 +1,6 @@
 #include "Button.h"
 
-const sf::Vector2f Button::mcDefaultSize = { 210.f, 55.f };
+const sf::Vector2f Button::mcDefaultSize = { 175.f, 55.f };
 
 Button::Button(const sf::Font& font, const std::string& title, sf::Vector2f position, sf::Vector2f size)
 	: mPosition(position)
@@ -13,7 +13,7 @@ Button::Button(const sf::Font& font, const std::string& title, sf::Vector2f posi
 	mRect.setSize(mSize);
 	mRect.setPosition(mPosition);
 	mRect.setFillColor(mColor);
-	mRect.setOutlineColor(sf::Color::Blue);
+	mRect.setOutlineColor(sf::Color::White);
 	mRect.setOutlineThickness(2.f);
 
 	// Label defaults

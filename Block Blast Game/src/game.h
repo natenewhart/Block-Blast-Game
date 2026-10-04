@@ -110,6 +110,7 @@ private:
     sf::Text mText; // Temporary text variable for testing
 	sf::Font mFont; // Temporary font variable for testing
 
+	sf::RectangleShape mCrosshairRect;
 	sf::RectangleShape mPauseScreenOverlay; // Semi-transparent overlay for pause menu
 
 	Button mStartButton;

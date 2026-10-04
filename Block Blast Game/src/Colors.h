@@ -11,7 +11,7 @@ namespace Colors
 	// UI
 	inline const sf::Color cBackground(32, 33, 35); // Window background color
 	inline const sf::Color cBoardPanel(42, 44, 48); // Tilemap background color
-	inline const sf::Color cGridLines (58, 60, 66);
+	inline const sf::Color cGridLines (58+10, 60+10, 66+10);
 
 	// Block palette
 	inline const std::array<sf::Color, 8> cBlocks =

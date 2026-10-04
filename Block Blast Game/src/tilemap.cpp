@@ -29,13 +29,17 @@ void TileMap::Init()
 {
 	for (auto& vertex : mGridVertices)
 	{
-		vertex.color    = Colors::cGridLines;
+		vertex.color = Colors::cGridLines;
 		vertex.position = mPosition;
 	}
 	mGridVertices[1].position.y += GameSettings::Get().tile.size.y * mHeight;
 	mGridVertices[3].position.x += GameSettings::Get().tile.size.x * mWidth;
 
 	mTileRect.setFillColor(sf::Color::Transparent); // Placeholder color for empty tile
+
+	mBoardRect.setSize(sf::Vector2f(GameSettings::Get().tile.size.x * mWidth, GameSettings::Get().tile.size.y * mHeight));
+	mBoardRect.setPosition(mPosition);
+	mBoardRect.setFillColor(Colors::cBoardPanel); // Use whatever name you gave it in Colors.h
 }
 
 int TileMap::InitSearchAreaWidth(int blockSearchAreaSize) const
@@ -360,6 +364,7 @@ bool TileMap::IsInActiveBlockTilePositions(int col, int row) const
 
 void TileMap::Draw(sf::RenderWindow& window)
 {
+	window.draw(mBoardRect); // Draw baseplate
 	DrawTiles(window);
 	DrawGridLines(window);
 }

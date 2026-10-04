@@ -38,15 +38,17 @@ public:
 	Block::tHand CreateBestBlockHand(); // Create block hand of three blocks based on current tilemap state using block spawning algorithm, finds the hand with the highest summed weight
 
 private:
+	// TODO: do we need init function? just put in constructor?
 	void Init(); // Initializes tilemap data and grid vertices
 	int  InitSearchAreaWidth(int blockSearchAreaSize) const; // Initialize search area width constant variable
 
 	void ClearSubmittedBlockCache();
 
 	// Draw Private Functions
+	void DrawBackground(sf::RenderWindow& window); // Draws background rectangle behind tilemap	
 	void DrawGridLines(sf::RenderWindow& window); // Draws grid lines with top left corner at mPosition
 	void DrawTiles    (sf::RenderWindow& window); // Draws tiles
-	
+
 	sf::Vector2f SnapToTile(sf::Vector2f position) const;  // Take pixel pos and return position of current tile (top left)
 	sf::Vector2i GetTilePosition(sf::Vector2f screenPosition) const; // Converts position in screen space to the col, row of tilemap which is the tile that position is inside of, returns (-1, -1) if position is outside of tilemap bounds
 	sf::Vector2f TilePosToPixelPos(sf::Vector2i tilePos) const;
@@ -78,6 +80,7 @@ private:
 private:
 	CRandom mRNG; // Psuedo random number generator
 
+	sf::RectangleShape mBoardRect; // Background panel behind the whole grid
 	sf::RectangleShape mTileRect;        // Rectangle shape used for drawing tiles. We can reuse the same shape and just change its position and color for each tile.
 	sf::Vertex         mGridVertices[4]; // Vertices for drawing grid lines (2 vertical and 2 horizontal)
 
