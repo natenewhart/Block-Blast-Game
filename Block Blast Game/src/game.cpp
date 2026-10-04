@@ -87,6 +87,22 @@ void Game::HandleEvents()
 			{
 				mState.isEscapeKeyPressed = true;
 			}
+			//if (mEvent.key.code == sf::Keyboard::Num1)
+			//{
+			//	mState.gameMode = Mode::Play;
+			//}
+			//if (mEvent.key.code == sf::Keyboard::Num2)
+			//{
+			//	mState.gameMode = Mode::Pause;
+			//}
+			//if (mEvent.key.code == sf::Keyboard::Num3)
+			//{
+			//	mState.gameMode = Mode::GameOver;
+			//}
+			//if (mEvent.key.code == sf::Keyboard::N)
+			//	MakeNewBlockHand();
+			//if (mEvent.key.code == sf::Keyboard::Num5)
+			//	mBlockHand[1] = Block(Block::Shape::FiveByOne, sf::Vector2f(0.f, 0.f), 0, sf::Color::White); mBlockHand[2] = Block(Block::Shape::OneByOne, sf::Vector2f(300.f, 0.f), 0, sf::Color::White);
 		}
 		HandleBlockEvents();
 	}
@@ -229,9 +245,9 @@ void Game::UpdateBlockPlacement()
 		UpdateScore(tilesCleared);
 		HideActiveBlock();
 
-		if (mBlockHandCount == 1) // Check for game over
+		if (mBlockHandCount == 1 || mBlockHandCount == 2) // Check for game over
 		{
-			if (!mTileMap.CanPlaceBlock(mBlockHand[0]))
+			if (!mTileMap.CanPlaceBlockHand(mBlockHand, mBlockHandCount))
 			{
 				mState.gameMode = Mode::GameOver;
 			}

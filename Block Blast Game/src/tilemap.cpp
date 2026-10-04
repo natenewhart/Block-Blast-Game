@@ -369,10 +369,17 @@ void TileMap::Draw(sf::RenderWindow& window)
 	DrawGridLines(window);
 }
 
-bool TileMap::CanPlaceBlock(const Block& block)
+bool TileMap::CanPlaceBlockHand(const Block::tHand& blockHand, int size)
 {
 	sf::Vector2i _;
-	return TryPlaceBlockView(mGrid, block.GetView(), _);
+	for (int i = 0; i < size; i++)
+	{
+		auto blockView = blockHand[i].GetView();
+
+		if (TryPlaceBlockView(mGrid, blockView, _)) // If block cannot be placed skip this iteration
+			return true;
+	}	
+	return false;
 }
 
 void TileMap::DrawGridLines(sf::RenderWindow& window)
