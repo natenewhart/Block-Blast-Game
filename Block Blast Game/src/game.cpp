@@ -1,5 +1,6 @@
 #include "Game.h"
 #include "GameSettings.h"
+#include "Colors.h"
 
 #include <print>
 
@@ -25,7 +26,7 @@ Game::Game()
 	mWindow.setMouseCursorVisible(false); // Remove moues cursor
 	mWindow.setKeyRepeatEnabled(false);
 
-	if (!mFont.loadFromFile("res/cour.ttf"))
+	if (!mFont.loadFromFile("res/ARCADE_N.TTF"))
 		std::quick_exit(-1);
 
 	// Init every button text AFTER font has been sucesffully loaded from disk
@@ -265,7 +266,7 @@ void Game::HideActiveBlock()
 
 void Game::Render()
 {
-    mWindow.clear(sf::Color(20, 20, 20));
+    mWindow.clear(Colors::cBackground);
 
 	switch (mState.gameMode)
 	{

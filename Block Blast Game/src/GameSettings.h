@@ -26,7 +26,6 @@ private:
 		int width;
 		int height;
 	};
-
 // ---------------------------- Singleton Implementation -------------------------------
 public:
 	GameSettings();

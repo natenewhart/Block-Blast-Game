@@ -1,10 +1,13 @@
+// Nate Newhart: Button.h
+// Contains the Button class which is a simple UI button that can be clicked and has a label
+
 #pragma once
 #include <SFML/Graphics.hpp>
 
 class Button
 {
 public:
-	Button(const sf::Font& font, const std::string& title, sf::Vector2f position = { 0.f,0.f }, sf::Vector2f size = mcDefaultSize);
+	Button(const sf::Font& font, const std::string& title, sf::Vector2f position = { 0.f,0.f }, sf::Vector2f size = {mcDefaultSize.x - 2.f, mcDefaultSize.y - 2.f});
 
 	bool IsPressed();
 
@@ -23,6 +26,7 @@ private:
 	sf::Vector2f mPosition;
 	sf::Vector2f mSize; // Width, Height in pixels
 	sf::Color    mColor;
+	int mFontSize;
 
 	bool mIsPressed;
 };

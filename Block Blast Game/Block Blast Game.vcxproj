@@ -153,6 +153,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <Font Include="res\ARCADE_N.TTF" />
     <Font Include="res\cour.ttf" />
     <Font Include="res\courbd.ttf" />
     <Font Include="res\courbi.ttf" />
@@ -170,6 +171,7 @@
     <ClCompile Include="src\Tilemap.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Colors.h" />
     <ClInclude Include="src\Button.h" />
     <ClInclude Include="src\Grid.h" />
     <ClInclude Include="src\BlockData.h" />

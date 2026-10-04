@@ -1,6 +1,7 @@
 #include "Tilemap.h"
 #include "Library.h"
 #include "GameSettings.h"
+#include "Colors.h"
 
 #include <cassert>
 
@@ -28,7 +29,7 @@ void TileMap::Init()
 {
 	for (auto& vertex : mGridVertices)
 	{
-		vertex.color    = sf::Color::White;
+		vertex.color    = Colors::cGridLines;
 		vertex.position = mPosition;
 	}
 	mGridVertices[1].position.y += GameSettings::Get().tile.size.y * mHeight;
@@ -306,18 +307,11 @@ float TileMap::WeighBlockViewHand(const Block::tViewHand& blockHand)
 
 Block::tHand TileMap::ConvertToBlockHand(const Block::tViewHand& other)
 {
-	static const sf::Color cColors[] = // All possible colors
-	{
-		sf::Color::Red, sf::Color::Green, sf::Color::Blue,
-		sf::Color::Yellow, sf::Color::Magenta, sf::Color::Cyan,
-		sf::Color::White
-	};
-
 	Block::tHand result;
-	mRNG.SetRangeInt(0, std::size(cColors) - 1);
+	mRNG.SetRangeInt(0, std::size(Colors::cBlocks) - 1);
 	for (int i = 0; i < Blocks::cHandSize; i++)
 	{
-		sf::Color color = cColors[mRNG.Int()];
+		sf::Color color = Colors::cBlocks[mRNG.Int()];
 		result[i] = Block(other[i].shape, other[i].position, other[i].orientation, color);
 	}
 	return result;
@@ -401,7 +395,7 @@ void TileMap::DrawTiles(sf::RenderWindow& window)
 			if (isActiveBlockTile || isFullRowOrCol)
 			{
 				sf::Color overlayColor = mSubmitBuffer.activeBlockColor;
-				overlayColor.a = 128; 
+				overlayColor.a = Colors::cBlockPreviewAlpha;
 
 				mTileRect.setFillColor(overlayColor);
 				window.draw(mTileRect);
