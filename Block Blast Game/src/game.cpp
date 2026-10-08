@@ -16,6 +16,7 @@ Game::Game()
 	, mScore(0.f)
 	, mFont(LoadFont("res/ARCADE_N.TTF"))
 	, mScoreMultiplier(1.f)
+	, mScoreStreak(1.f)
 	, mMainMenuUI(mFont)
 	, mPauseMenuUI(mFont)
 	, mGameOverUI(mFont)
@@ -259,15 +260,22 @@ void Game::UpdateBlockPlacement()
 
 void Game::UpdateScore(int tilesCleared)
 {
-	std::println("mult {}", mScoreMultiplier);
+	std::println("Score Multiplier {}, Moves Since Last Score {}, Score Streak {}", mScoreMultiplier, mMovesSinceLastScore, mScoreStreak);
 	if (tilesCleared == 0)
 	{
 		mScore += mcScorePerTile * mActiveBlock->GetSignature().size();
-		mScoreMultiplier = std::max(1.f, mScoreMultiplier * 0.5f); // Reset score multiplier if no tiles cleared
+		mMovesSinceLastScore++;
+		if (mMovesSinceLastScore > mcMovesBeforePenalty)
+		{
+			mScoreMultiplier = 1.f;
+		}
+		mScoreStreak = 1;
 		return;
 	}
 	mScore += tilesCleared * mScoreMultiplier * mcScorePerTile;
-	mScoreMultiplier += mcScoreMultiplierIncrement;
+	mScoreMultiplier += mcScoreMultiplierIncrement * mScoreStreak;
+	mMovesSinceLastScore = 0;
+	mScoreStreak++;
 }
 
 // ------------------- Update Helper Functions -------------------

@@ -80,7 +80,6 @@ private:
 	sf::Event mEvent;         // Event variable used to store event for evnt handling. Will generallly store last event popped from event queue.
 	State mState;
 
-
 	DeltaTimer mDeltaTimeCalculator;
 	// Window Parameters
 	// TODO: locked game ratio for computer and only resizeable proportionlly to such ratio
