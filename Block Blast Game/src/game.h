@@ -55,10 +55,7 @@ private:
 
 	// ------------------- Render Functions -----------------
 	void Render();
-	//void RenderMainMenu();
 	void RenderGame();
-	//void RenderPauseMenu();
-	//void RenderGameOverMenu();
 	void DrawBlocks();
 
 	// ------------------- Game State Management -----------------

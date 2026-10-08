@@ -351,33 +351,12 @@ void Game::Render()
 	mWindow.display();
 }
 
-//void Game::RenderMainMenu()
-//{
-//	mMainMenuUI.quit.Draw(mWindow);
-//	mMainMenuUI.play.Draw(mWindow);
-//}
-
 void Game::RenderGame()
 {
 	mTileMap.Draw(mWindow);
 	DrawBlocks();
 	mWindow.draw(mScoreText); // Draw Score onto screen
 }
-
-//void Game::RenderPauseMenu()
-//{
-//	mWindow.draw(mPauseScreenOverlay);
-//	mPauseMenuUI.resume.Draw(mWindow);
-//	mPauseMenuUI.restart.Draw(mWindow);
-//	mPauseMenuUI.exit.Draw(mWindow);
-//}
-//
-//void Game::RenderGameOverMenu()
-//{
-//	mWindow.draw(mPauseScreenOverlay);
-//	mGameOverUI.restart.Draw(mWindow);
-//	mGameOverUI.exit.Draw(mWindow);
-//}
 
 void Game::DrawBlocks()
 {
