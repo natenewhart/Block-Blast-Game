@@ -96,7 +96,7 @@ private:
 	const float mcScoreMultiplierIncrement = 0.5f; // 
 	const float mcScorePerTile			   = 10.f; // Score per tile placed on tilemap
 	const float mcScoreMultiplierMax       = 5.f;  // Maximum score multiplier
-	const int   mcMovesBeforePenalty       = 5;    // Number of moves before score multiplier penalty is applied
+	const int   mcMovesBeforePenalty       = 3;    // Number of moves before score multiplier penalty is applied
 
 	// Block Management Variables
     Block* mActiveBlock;  // Pointer to block currently being moved by mouse, nullptr if no block is being moved

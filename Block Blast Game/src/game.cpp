@@ -16,7 +16,7 @@ Game::Game()
 	, mScore(0.f)
 	, mFont(LoadFont("res/ARCADE_N.TTF"))
 	, mScoreMultiplier(1.f)
-	, mScoreStreak(1.f)
+	, mScoreStreak(0)
 	, mMainMenuUI(mFont)
 	, mPauseMenuUI(mFont)
 	, mGameOverUI(mFont)
@@ -242,7 +242,8 @@ void Game::UpdateBlockPlacement()
 		int tilesCleared = mTileMap.PlaceBlock();
 		UpdateScore(tilesCleared);
 		HideActiveBlock();
-
+		std::println("Score Multiplier {}, Moves Since Last Score {}, Score Streak {}", mScoreMultiplier, mMovesSinceLastScore, mScoreStreak);
+		
 		if (mBlockHandCount == 1 || mBlockHandCount == 2) // Check for game over
 		{
 			if (!mTileMap.CanPlaceBlockHand(mBlockHand, mBlockHandCount))
@@ -260,20 +261,22 @@ void Game::UpdateBlockPlacement()
 
 void Game::UpdateScore(int tilesCleared)
 {
-	std::println("Score Multiplier {}, Moves Since Last Score {}, Score Streak {}", mScoreMultiplier, mMovesSinceLastScore, mScoreStreak);
 	if (tilesCleared == 0)
 	{
 		mScore += mcScorePerTile * mActiveBlock->GetSignature().size();
 		mMovesSinceLastScore++;
-		if (mMovesSinceLastScore > mcMovesBeforePenalty)
+
+		if (mBlockHandCount == 1 && mMovesSinceLastScore < 3) mMovesSinceLastScore = 0; // Reset score streak if you don't score at least once per hand
+		if (mMovesSinceLastScore >= mcMovesBeforePenalty)
 		{
 			mScoreMultiplier = 1.f;
 		}
-		mScoreStreak = 1;
+
+		mScoreStreak = 0;
 		return;
 	}
 	mScore += tilesCleared * mScoreMultiplier * mcScorePerTile;
-	mScoreMultiplier += mcScoreMultiplierIncrement * mScoreStreak;
+	mScoreMultiplier += mcScoreMultiplierIncrement * (1 + mScoreStreak);
 	mMovesSinceLastScore = 0;
 	mScoreStreak++;
 }
