@@ -19,21 +19,22 @@ C++
 
 1. Clone the project into visual studio and build to compile, the project file is already set up with all links and dependencies.
 > Note: The SFML library comes pre-installed in the \external folder.
-3. Make sure `res/cour.ttf` exists relative to the working directory.
-4. Build and run (`main.cpp` is the entry point`).
+2. Build and run (`main.cpp` is the entry point`).
 
 ## Controls
 * **Left click and hold** on a block in your hand to pick it up
-* **Drag** the block around the grid, it'll show a preview of where it will land and highlight any rows or columns it's about to clear
-* **Release** over a valid spot to place the block
+* **Drag** the block around the grid, it'll show a preview of its position and highlight any rows or columns it will clear upon placement
+* **Release** left click on grid to place block
 * **Release** over an invalid spot and the block will snap back to its tray position
-* **Esc** to close the game
+* **Esc** to pause the game
 
 ## Gameplay
-<img width="1282" height="752" alt="Screenshot 2026-08-23 192920" src="https://github.com/user-attachments/assets/01b74dba-c9c1-4acb-9fbf-30a0f54f0dac" />
-<img width="1282" height="752" alt="Screenshot 2026-08-23 192910" src="https://github.com/user-attachments/assets/7a0ad9e1-997c-4453-88dd-513577af6d9e" />
-<img width="1920" height="1152" alt="Screenshot 2026-08-23 192837" src="https://github.com/user-attachments/assets/8c1379b6-5a70-422d-8c17-f9fea3de8088" />
+https://github.com/user-attachments/assets/2461afec-484a-4c51-94d3-54a34a2fda87
 
+Photos:
+<img height="15%" alt="Screenshot 2026-10-13 192911" src="https://github.com/user-attachments/assets/14c0c925-d30f-46bf-a19a-ece88eed1f75" />
+<img height="15%" alt="Screenshot 2026-10-13 192926" src="https://github.com/user-attachments/assets/007e39b7-81c8-4238-853f-b501d102bbd3" />
+<img height="15%" alt="Screenshot 2026-10-13 192948" src="https://github.com/user-attachments/assets/0a345739-a289-4e46-b02f-ccca4ec31c12" />
 
 ## License
 COMING SOON...
