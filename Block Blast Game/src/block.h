@@ -1,5 +1,17 @@
 // Nate Newhart
-// block.h
+// Block.h
+
+/*
+* Block class container:
+* 
+* Blocks are stored using block signatures which contain vectors of tile positions in relation to an origin tile at 0,0.
+*
+* Each block type has a different signature which is used to determine the shape of the block.
+* The block signatures are stored in a global array which is indexed by the block type.
+*
+* The block class then contains a pointer to the block signature and
+* an orientation which is used to determine how the block is rotated.
+*/
 
 #pragma once
 
@@ -8,16 +20,6 @@
 #include "GameSettings.h"
 #include "SFML/Graphics.hpp"
 #include "BlockData.h"
-
-/*
-* Blocks are stored using block signatures which contain vectors of tile positions in relation to an origin tile at 0,0.
-* 
-* Each block type has a different signature which is used to determine the shape of the block.
-* The block signatures are stored in a global array which is indexed by the block type.
-* 
-* The block class then contains a pointer to the block signature and
-* an orientation which is used to determine how the block is rotated.
-*/
 
 class Block
 {

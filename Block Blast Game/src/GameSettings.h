@@ -1,15 +1,20 @@
 // Nate Newhart
 // GameSettings.h
 
-// Game settings singleton class to hold all global variables needed for game
-// Interacts with json file to load and save settings
+/* Game settings singleton class to hold all global variables
+* 
+* Each struct in Config Class contains relavant data pertaining to its parent
+* Sub-structs are used to maintain naming conventions and organize code base
+* 
+* EXAMPLE: Config::Get().screen.width
+*/
 
 #pragma once
 
 #include <SFML/Graphics.hpp>
 #include <array>
 
-//TDOD: load settings from a json file. If a setting needs to be loaded then add it to the gamesettings object
+// TODO: load settings from a json file. If a setting needs to be loaded then add it to the gamesettings object
 // load settings using constructor and save settings using destructor
 
 class Config

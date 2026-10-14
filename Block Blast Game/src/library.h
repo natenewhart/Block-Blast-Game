@@ -1,11 +1,15 @@
 // Nate Newhart
-// library.h
+// Library.h
+
+// All math related and general helper functions used throughout game are defined here
 
 #pragma once
 
 #include <SFML/Graphics.hpp>
 #include "CRandom.hpp"
 
+// TODO: remove distance function as it is unused
+// TODO: make this file header only and remove library.cpp
 float distance(const sf::Vector2f& a, const sf::Vector2f& b);
 float distanceSquared(const sf::Vector2f& a, const sf::Vector2f& b);
 inline bool isWithinRect(sf::Vector2f rectTopLeft, sf::Vector2f rectScale, sf::Vector2f pos); // Is pos within rectangle of given size and position

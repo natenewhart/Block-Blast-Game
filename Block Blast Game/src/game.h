@@ -1,5 +1,5 @@
 // Nate Newhart
-// game.h
+// Game.h
 
 #include "SFML/Graphics.hpp"
 #include "DeltaTime.hpp"

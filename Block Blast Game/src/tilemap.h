@@ -1,5 +1,13 @@
 // Nate Newhart
-// tilemap.h
+// Tilemap.h
+
+/* Tilemap object stores all SFML rendering and Game logic
+* 
+* tilemap ownership and storage
+* block placement algorithms
+* hand creation algorithms
+* 
+*/
 
 #include <vector>
 #include <SFML/Graphics.hpp>
@@ -30,7 +38,7 @@ public:
 
 	void Clear(); // All tiles set to empty and transparent color
 
-	bool SubmitBlock(const Block& block); // Cache block placement position, rows to be deleted, and return boolean value if block can be placed
+	bool SubmitBlock(const Block& block); // Cache block placement position, rows to be cleared, and return boolean value if block can be placed
 	
 	int  PlaceBlock(); // Places cached block to screen and handles deletion updates. Returns number of tiles removed by block placement
 	void Draw(sf::RenderWindow& window); // Draws grid lines and tiles
