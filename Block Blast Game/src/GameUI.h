@@ -38,11 +38,12 @@ namespace UI
 		Button play;
 		Button exit;
 
-		MainMenu(const sf::Font& font)
+		MainMenu(const sf::Font& font, CRandom& rng)
 			: title("BLOCK BLAST", font, 100)
 			, play(font, "PLAY", sf::Vector2f(Config::Get().screen.width / 2.f, Config::Get().screen.height / 2.f - 40.f))
 			, exit(font, "QUIT", sf::Vector2f(Config::Get().screen.width / 2.f, Config::Get().screen.height / 2.f + 40.f))
 			, animationTime(0)
+			, mRNG(rng)
 		{
 			sf::FloatRect bounds = title.getLocalBounds();
 			title.setOrigin(std::floor(bounds.left + bounds.width / 2.f),
@@ -56,10 +57,10 @@ namespace UI
 			exit.SetFontSize(40);
 			exit.SetSecondaryColor(Colors::Pink);
 
-			sRNG.ResetSeed();
+			mRNG.ResetSeed();
 			for (int i = 0; i < scNumBlocks; i++)
 			{
-				blocks[i] = createRandomBlock(sRNG);
+				blocks[i] = createRandomBlock();
 			}
 		}
 
@@ -83,7 +84,7 @@ namespace UI
 			{
 				if (blocks[i].GetBlockCenterPosition().y > Config::Get().screen.height + 150)
 				{
-					blocks[i] = createRandomBlock(sRNG);
+					blocks[i] = createRandomBlock();
 				}
 
 				blocks[i].SetPosition(sf::Vector2f(blocks[i].GetOriginTilePosition().x, blocks[i].GetOriginTilePosition().y + 100 * dt));
@@ -103,20 +104,20 @@ namespace UI
 		}
 
 	private:
-		Block createRandomBlock(CRandom& rng)
+		Block createRandomBlock()
 		{
-			auto shape = (Block::Shape)rng.Int(1, Blocks::cNumberOfShapes - 1); // Get random block Shape
-			int orientation = rng.Int(0, Blocks::cOrientations[shape] - 1);     // Get random block orientation
-			auto color = Colors::cBlocks[rng.Int(0, 8)];
+			auto shape = (Block::Shape)mRNG.Int(1, Blocks::cNumberOfShapes - 1); // Get random block Shape
+			int orientation = mRNG.Int(0, Blocks::cOrientations[shape] - 1);     // Get random block orientation
+			auto color = Colors::cBlocks[mRNG.Int(0, 8)];
 			color.a = 240;
-			sf::Vector2f pos = { rng.Float(0, Config::Get().screen.width), rng.Float(-Config::Get().screen.height, 0) };
-			float scale = std::powf(rng.Float(0, 1), 0.5f) * 75.f + 25.f;
+			sf::Vector2f pos = { mRNG.Float(0, Config::Get().screen.width), mRNG.Float(-Config::Get().screen.height, 0) };
+			float scale = std::powf(mRNG.Float(0, 1), 0.5f) * 75.f + 25.f;
 			Block randBlock(shape, pos, orientation, color);
 			randBlock.SetTileScale({ scale , scale });
 			return randBlock;
 		}
 
-		static inline CRandom sRNG;
+		CRandom& mRNG;
 		static constexpr int scNumBlocks = 7;
 		Block blocks[scNumBlocks];
 		sf::Vector2f titlePos;

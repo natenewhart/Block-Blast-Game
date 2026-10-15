@@ -9,8 +9,9 @@
 
 class Game;
 
-TileMap::TileMap(sf::Vector2f position)
+TileMap::TileMap(sf::Vector2f position, CRandom& rng)
 	: mTileRect(Config::Get().tile.size)
+	, mRNG(rng)
 	, mGridVertices{ sf::Vertex(), sf::Vertex(), sf::Vertex(), sf::Vertex() }
 	, mWidth(Config::Get().tileMap.width)
 	, mHeight(Config::Get().tileMap.height)

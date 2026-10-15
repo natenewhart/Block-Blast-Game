@@ -34,7 +34,7 @@ private:
 	};
 
 public:
-	TileMap(sf::Vector2f position); // Position constructor
+	TileMap(sf::Vector2f position, CRandom& rng); // Position constructor
 
 	void Clear(); // All tiles set to empty and transparent color
 
@@ -88,7 +88,7 @@ private:
 	bool IsInActiveBlockTilePositions(int col, int row) const;
 
 private:
-	CRandom mRNG; // Psuedo random number generator
+	CRandom& mRNG; // Psuedo random number generator
 
 	sf::RectangleShape mBoardRect; // Background panel behind the whole grid
 	sf::RectangleShape mTileRect;        // Rectangle shape used for drawing tiles. We can reuse the same shape and just change its position and color for each tile.

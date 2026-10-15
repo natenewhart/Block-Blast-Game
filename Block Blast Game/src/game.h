@@ -78,6 +78,7 @@ private:
 	State mState;
 
 	DeltaTimer mDeltaTimeCalculator;
+	CRandom mRNG; // Random number generator
 	// Window Parameters
 	// TODO: locked game ratio for computer and only resizeable proportionlly to such ratio
     int mScreenWidth;
