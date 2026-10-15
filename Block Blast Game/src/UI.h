@@ -1,4 +1,4 @@
-// Nate Newhart: GameUI.h
+// Nate Newhart: UI.h
 // This file contains structs for each menu and their contained text button and animation UI
 
 #pragma once

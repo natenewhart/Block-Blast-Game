@@ -7,7 +7,7 @@
 #include "Block.h"
 #include "Button.h"
 #include "Crosshair.h"
-#include "GameUI.h"
+#include "UI.h"
 
 #pragma once
 
