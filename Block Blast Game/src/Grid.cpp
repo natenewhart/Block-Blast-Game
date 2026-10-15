@@ -1,5 +1,5 @@
 #include "Grid.h"
-#include "GameSettings.h"
+#include "Config.h"
 
 #include <cassert>
 

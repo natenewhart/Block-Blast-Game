@@ -1,6 +1,6 @@
 #include "Tilemap.h"
 #include "Library.h"
-#include "GameSettings.h"
+#include "Config.h"
 #include "Colors.h"
 
 #include <cassert>

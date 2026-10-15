@@ -1,5 +1,5 @@
 #include "Block.h"
-#include "GameSettings.h"
+#include "Config.h"
 #include "Library.h"
 #include "BlockData.h"
 #include <iostream>

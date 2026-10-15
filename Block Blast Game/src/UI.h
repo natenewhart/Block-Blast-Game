@@ -4,7 +4,7 @@
 #pragma once
 
 #include "Button.h"
-#include "GameSettings.h"
+#include "Config.h"
 #include "Colors.h"
 #include <cmath>
 #include <print>

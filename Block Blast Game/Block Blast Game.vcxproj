@@ -179,7 +179,7 @@
     <ClInclude Include="src\BlockData.h" />
     <ClInclude Include="src\Block.h" />
     <ClInclude Include="src\Game.h" />
-    <ClInclude Include="src\GameSettings.h" />
+    <ClInclude Include="src\Config.h" />
     <ClInclude Include="src\Library.h" />
     <ClInclude Include="src\Tilemap.h" />
   </ItemGroup>

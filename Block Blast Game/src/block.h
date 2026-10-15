@@ -17,7 +17,7 @@
 
 #include <vector>
 #include <array>
-#include "GameSettings.h"
+#include "Config.h"
 #include "SFML/Graphics.hpp"
 #include "BlockData.h"
 

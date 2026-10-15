@@ -1,5 +1,5 @@
 // Nate Newhart
-// GameSettings.h
+// Config.h
 
 /* Game settings singleton class to hold all global variables
 * 
@@ -14,7 +14,7 @@
 #include <SFML/Graphics.hpp>
 #include <array>
 
-// TODO: load settings from a json file. If a setting needs to be loaded then add it to the gamesettings object
+// TODO: load settings from a json file. If a setting needs to be loaded then add it to the Config object
 // load settings using constructor and save settings using destructor
 
 class Config

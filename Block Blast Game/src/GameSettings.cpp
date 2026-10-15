@@ -1,4 +1,4 @@
-#include "GameSettings.h"
+#include "Config.h"
 
 Config::Config()
     : screen {1500, 1100} // 15 : 11 natural ratio

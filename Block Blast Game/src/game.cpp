@@ -1,5 +1,5 @@
 #include "Game.h"
-#include "GameSettings.h"
+#include "Config.h"
 #include "Colors.h"
 
 #include <print>
