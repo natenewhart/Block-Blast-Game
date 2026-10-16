@@ -88,7 +88,7 @@ namespace UI
 	{
 		auto shape = (Block::Shape)mRNG.Int(1, Blocks::cNumberOfShapes - 1); // Get random block Shape
 		int orientation = mRNG.Int(0, Blocks::cOrientations[shape] - 1);     // Get random block orientation
-		auto color = Colors::cBlocks[mRNG.Int(0, 8)];
+		auto color = Colors::cBlocks[mRNG.Int(0, 7)];
 		color.a = 240;
 		sf::Vector2f pos = { mRNG.Float(0, Config::Get().screen.width), mRNG.Float(-Config::Get().screen.height, 0) };
 		float scale = std::pow(mRNG.Float(0, 1), 0.5f) * 75.f + 25.f;
@@ -126,8 +126,8 @@ namespace UI
 		, exit(font, "EXIT", sf::Vector2f(Config::Get().screen.width / 2.f, Config::Get().screen.height / 2 + Button::mcDefaultSize.y * 1.2f))
 	{
 		sf::FloatRect bounds = title.getLocalBounds();
-		title.setOrigin(std::floor(bounds.left + bounds.width / 2.f),
-			std::floor(bounds.top + bounds.height / 2.f));
+		title.setOrigin(std::floor(bounds.left + bounds.width / 2.f), 
+						std::floor(bounds.top + bounds.height / 2.f));
 		sf::Vector2f titlePos = { Config::Get().screen.width / 2.f, Config::Get().screen.height / 4.f };
 		title.setPosition(titlePos);
 		title.setOutlineThickness(0.f);
