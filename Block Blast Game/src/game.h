@@ -94,9 +94,10 @@ private:
 	float mScoreMultiplier; // Current score multiplier based on number of lines cleared in a single block placement
 	int   mMovesSinceLastScore;
 	int   mScoreStreak; // Number of consecutive block placements that cleared at least one line
-	const float mcScoreMultiplierIncrement = 0.5f; // 
+	const float mcScoreMultiplierIncrement = 1.f;  // 
 	const float mcScorePerTile			   = 10.f; // Score per tile placed on tilemap
-	const float mcScoreMultiplierMax       = 5.f;  // Maximum score multiplier
+	const float mcScorePerRow              = 100.f;
+	const float mcScoreMultiplierMax       = 11.f; // Maximum score multiplier
 	const int   mcMovesBeforePenalty       = 3;    // Number of moves before score multiplier penalty is applied
 
 	// Block Management Variables

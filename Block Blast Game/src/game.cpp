@@ -274,8 +274,12 @@ void Game::UpdateScore(int tilesCleared)
 		mScoreStreak = 0;
 		return;
 	}
-	mScoreMultiplier += mcScoreMultiplierIncrement * (1 + mScoreStreak);
-	mScore += tilesCleared * mScoreMultiplier * mcScorePerTile;
+	int rowsCleared = ((float)tilesCleared / (float)Config::Get().tileMap.width + 0.5f); // Round up to nearest rows cleared
+	mScore += (rowsCleared * rowsCleared) * mcScorePerRow * mScoreMultiplier; // # of rows squared * points per row
+                                                                         // Clearing rows at once has quadratic impact on score
+	if (mScoreMultiplier < mcScoreMultiplierMax)
+		mScoreMultiplier += mcScoreMultiplierIncrement + mScoreStreak;
+
 	mMovesSinceLastScore = 0;
 	mScoreStreak++;
 }
