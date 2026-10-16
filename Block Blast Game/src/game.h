@@ -74,13 +74,13 @@ private:
 private:
 	// SFML Members
 	sf::RenderWindow mWindow; // SFML render window
-	sf::Event mEvent;         // Event variable used to store event for evnt handling. Will generallly store last event popped from event queue.
+	sf::Event mEvent;         // Event variable used to store event for event handling. Will generally store last event popped from event queue.
 	State mState;
 
 	DeltaTimer mDeltaTimeCalculator;
 	CRandom mRNG; // Random number generator
 	// Window Parameters
-	// TODO: locked game ratio for computer and only resizeable proportionlly to such ratio
+	// TODO: locked game ratio for computer and only resizable proportionally to such ratio
     int mScreenWidth;
 	int mScreenHeight;
 	int mFrameRateLimit; // SFML window's set FPS Limit

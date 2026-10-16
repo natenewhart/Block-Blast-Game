@@ -271,12 +271,11 @@ void Game::UpdateScore(int tilesCleared)
 		{
 			mScoreMultiplier = 1.f;
 		}
-
 		mScoreStreak = 0;
 		return;
 	}
-	mScore += tilesCleared * mScoreMultiplier * mcScorePerTile;
 	mScoreMultiplier += mcScoreMultiplierIncrement * (1 + mScoreStreak);
+	mScore += tilesCleared * mScoreMultiplier * mcScorePerTile;
 	mMovesSinceLastScore = 0;
 	mScoreStreak++;
 }
