@@ -3,12 +3,13 @@
 
 #pragma once
 
-#include "Button.h"
-#include "Config.h"
-#include "Colors.h"
 #include <cmath>
 #include <print>
 #include <CRandom.hpp>
+
+#include "Button.h"
+#include "Config.h"
+#include "Colors.h"
 #include "Block.h"
 
 namespace UI
