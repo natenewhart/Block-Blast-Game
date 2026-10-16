@@ -357,8 +357,8 @@ void Game::Render()
 void Game::RenderGame()
 {
 	mTileMap.Draw(mWindow);
-	DrawBlocks();
 	mWindow.draw(mScoreText); // Draw Score onto screen
+	DrawBlocks();
 }
 
 void Game::DrawBlocks()
