@@ -87,9 +87,9 @@ private:
 	bool IsInActiveBlockTilePositions(int col, int row) const;
 
 private:
-	CRandom& mRNG; // Psuedo random number generator
+	CRandom& mRNG; // Pseudo random number generator
 
-	sf::RectangleShape mBoardRect; // Background panel behind the whole grid
+	sf::RectangleShape mBoardRect;       // Background panel behind the whole grid
 	sf::RectangleShape mTileRect;        // Rectangle shape used for drawing tiles. We can reuse the same shape and just change its position and color for each tile.
 	sf::Vertex         mGridVertices[4]; // Vertices for drawing grid lines (2 vertical and 2 horizontal)
 
