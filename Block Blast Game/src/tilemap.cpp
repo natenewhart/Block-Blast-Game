@@ -229,10 +229,10 @@ Block::tViewHand TileMap::CreateRandomBlockHand()
 	Grid currGrid = mGrid; // Create copy of current grid to simulate block placements on for hand creation
 	Block::tViewHand blockHand;
 
-	int tries = 0; // DEBUG
+	int tries = 0;
 	for (int blockCount = 0; blockCount < Config::Block::cHandSize;)
 	{
-		tries++; assert(tries < 100); // DEBUG
+		tries++; assert(tries < 100); // TODO: no more asssert here, figure out solution
 		Block::View nextBlock = GetRandomBlockView();
 		sf::Vector2i originTilePos; // If block can be placed, this will be set to the tile position of the open block position in the grid
 
@@ -284,11 +284,9 @@ Block::View TileMap::GetRandomBlockView()
 	for (int i = 1; i < Blocks::cNumberOfShapes; i++)
 	{
 		weightSum += Blocks::cWeights[i];
-		if (randShapeFloat <= weightSum)
-		{
-			shape = (Block::Shape)i;
-			break;
-		}
+		shape = (Block::Shape)i;
+
+		if (randShapeFloat <= weightSum) break;
 	}
 
 	int orientation = mRNG.Int(0, Blocks::cOrientations[shape] - 1);     // Get random block orientation
