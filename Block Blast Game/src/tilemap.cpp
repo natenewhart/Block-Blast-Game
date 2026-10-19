@@ -7,8 +7,6 @@
 
 #include <print>
 
-class Game;
-
 TileMap::TileMap(sf::Vector2f position, CRandom& rng)
 	: mTileRect(Config::Get().tile.size)
 	, mRNG(rng)
