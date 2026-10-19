@@ -20,7 +20,7 @@ TileMap::TileMap(sf::Vector2f position, CRandom& rng)
 	, mcBlockSearchAreaSize(2)
 	, mcSearchAreaWidth(InitSearchAreaWidth(mcBlockSearchAreaSize))
 	, mSubmitBuffer{std::vector<sf::Vector2i>(), std::vector<bool>(mHeight, false), std::vector<bool>(mWidth, false), sf::Color::Transparent}
-	, mBlockWeightSum(InitBlockWeightSum())
+	, mcBlockWeightsSum(InitBlockWeightsSum())
 {
 	Init();
 }
@@ -49,14 +49,14 @@ int TileMap::InitSearchAreaWidth(int blockSearchAreaSize) const
 	return 2 * blockSearchAreaSize + 1;
 }
 
-float TileMap::InitBlockWeightSum() const
+float TileMap::InitBlockWeightsSum() const
 {
 	float sum = 0.f;
 	for (float weight : Blocks::cWeights)
 	{
 		sum += weight;
 	}
-	return std::floor(sum * 10.f) / 10.f;
+	return std::floor(sum * 10.f) / 10.f; // Round to 1st decimal place (removes floating point error)
 }
 
 // ------------------- Generic Public Member Functions -------------------
@@ -273,11 +273,10 @@ Block::tHand TileMap::CreateBestBlockHand()
 }
 
 // Block Hand Creation Helpers Below
-
 Block::View TileMap::GetRandomBlockView()
 {
-	float randShapeFloat = mRNG.Float(0, mBlockWeightSum);
-	auto shape = Block::Empty;
+	float randShapeFloat = mRNG.Float(0, mcBlockWeightsSum);
+	Block::Shape shape;
 
 	int i = 0;
 	float weightSum = 0.f;
@@ -286,10 +285,9 @@ Block::View TileMap::GetRandomBlockView()
 		weightSum += Blocks::cWeights[i];
 		shape = (Block::Shape)i;
 
-		if (randShapeFloat <= weightSum) break;
+		if (randShapeFloat <= weightSum) break; 
 	}
-
-	int orientation = mRNG.Int(0, Blocks::cOrientations[shape] - 1);     // Get random block orientation
+	int orientation = mRNG.Int(0, Blocks::cOrientations[shape] - 1); // Get random block orientation
 	return { {0,0}, shape, orientation }; // Return with position at origin
 }
 

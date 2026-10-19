@@ -52,7 +52,7 @@ private:
 	// TODO: do we need init function? just put in constructor?
 	void Init(); // Initializes tilemap data and grid vertices
 	int InitSearchAreaWidth(int blockSearchAreaSize) const; // Initialize search area width constant variable
-	float InitBlockWeightSum() const;
+	float InitBlockWeightsSum() const;
 
 	void ClearSubmittedBlockCache();
 
@@ -105,5 +105,5 @@ private:
 	const int mcBlockSearchAreaSize; // Area of searching for finding open blocks for block placement if value is 1 then search 1x1 area around block. If value is 2 then search 3x3 area around block, etc.
 	const int mcSearchAreaWidth;     // Width of search area for finding open blocks for block placement, calculated from cBlockSearchAreaSize
 
-	const float mBlockWeightSum; // Sum of all block weights
+	const float mcBlockWeightsSum; // Sum of all block weights
 };
