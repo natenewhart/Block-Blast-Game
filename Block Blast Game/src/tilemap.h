@@ -49,8 +49,6 @@ public:
 	Block::tHand CreateBestBlockHand(); // Create block hand of three blocks based on current tilemap state using block spawning algorithm, finds the hand with the highest summed weight
 
 private:
-	// TODO: do we need init function? just put in constructor?
-	void Init(); // Initializes tilemap data and grid vertices
 	int InitSearchAreaWidth(int blockSearchAreaSize) const; // Initialize search area width constant variable
 	float InitBlockWeightsSum() const;
 

@@ -22,13 +22,6 @@ TileMap::TileMap(sf::Vector2f position, CRandom& rng)
 	, mSubmitBuffer{std::vector<sf::Vector2i>(), std::vector<bool>(mHeight, false), std::vector<bool>(mWidth, false), sf::Color::Transparent}
 	, mcBlockWeightsSum(InitBlockWeightsSum())
 {
-	Init();
-}
-
-// ------------------- Init Functions -------------------
-
-void TileMap::Init()
-{
 	for (auto& vertex : mGridVertices)
 	{
 		vertex.color = Colors::cGridLines;
@@ -43,6 +36,8 @@ void TileMap::Init()
 	mBoardRect.setPosition(mPosition);
 	mBoardRect.setFillColor(Colors::cBoardPanel); // Use whatever name you gave it in Colors.h
 }
+
+// ------------------- Init Functions -------------------
 
 int TileMap::InitSearchAreaWidth(int blockSearchAreaSize) const
 {
