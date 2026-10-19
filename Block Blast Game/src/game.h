@@ -111,11 +111,11 @@ private:
 
 	Crosshair mCrosshair;
 
-	UI::Overlay mOverlay; // Semi-transparent overlay for pause menu
+	UI::Overlay  mOverlay; // Semi-transparent overlay for pause menu
 	UI::MainMenu mMainMenuUI;
-	UI::Pause mPauseMenuUI;
-	UI::GameOver  mGameOverUI;
-	UI::Hud       mHudUI;
+	UI::Pause    mPauseMenuUI;
+	UI::GameOver mGameOverUI;
+	UI::Hud      mHudUI;
 	// TODO: add quit button for game over screen to bring you to main menu
 	// TODO: button colors fix to make better
 };
