@@ -165,7 +165,7 @@
     <ClCompile Include="src\BlockData.cpp" />
     <ClCompile Include="src\Block.cpp" />
     <ClCompile Include="src\Game.cpp" />
-    <ClCompile Include="src\GameSettings.cpp" />
+    <ClCompile Include="src\Config.cpp" />
     <ClCompile Include="src\Library.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\Tilemap.cpp" />
