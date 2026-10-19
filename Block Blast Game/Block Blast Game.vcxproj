@@ -168,7 +168,7 @@
     <ClCompile Include="src\Config.cpp" />
     <ClCompile Include="src\Library.cpp" />
     <ClCompile Include="src\Main.cpp" />
-    <ClCompile Include="src\Tilemap.cpp" />
+    <ClCompile Include="src\TileMap.cpp" />
     <ClCompile Include="src\UI.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -182,7 +182,7 @@
     <ClInclude Include="src\Game.h" />
     <ClInclude Include="src\Config.h" />
     <ClInclude Include="src\Library.h" />
-    <ClInclude Include="src\Tilemap.h" />
+    <ClInclude Include="src\TileMap.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

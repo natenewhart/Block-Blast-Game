@@ -1,4 +1,4 @@
-#include "Tilemap.h"
+#include "TileMap.h"
 #include "Library.h"
 #include "Config.h"
 #include "Colors.h"

@@ -3,7 +3,7 @@
 
 #include "SFML/Graphics.hpp"
 #include "DeltaTime.hpp"
-#include "Tilemap.h"
+#include "TileMap.h"
 #include "Block.h"
 #include "Button.h"
 #include "Crosshair.h"

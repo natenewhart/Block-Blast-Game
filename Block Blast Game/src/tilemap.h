@@ -1,7 +1,7 @@
 // Nate Newhart
-// Tilemap.h
+// TileMap.h
 
-/* Tilemap object stores all SFML rendering and Game logic
+/* TileMap object stores all SFML rendering and Game logic
 * 
 * tilemap ownership and storage
 * block placement algorithms

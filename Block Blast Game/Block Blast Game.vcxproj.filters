@@ -47,7 +47,7 @@
     <ClCompile Include="src\Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Tilemap.cpp">
+    <ClCompile Include="src\TileMap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\BlockData.cpp">
@@ -76,7 +76,7 @@
     <ClInclude Include="src\Library.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Tilemap.h">
+    <ClInclude Include="src\TileMap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\BlockData.h">
