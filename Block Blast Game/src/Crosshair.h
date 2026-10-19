@@ -4,8 +4,9 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 
-struct Crosshair
+class Crosshair
 {
+public:
 	Crosshair()
 	{
 		mRect.setSize({mcSize, mcSize});
@@ -35,7 +36,7 @@ struct Crosshair
 			window.draw(mRect);
 		}
 	}
-
+private:
 	sf::RectangleShape mRect;
 	sf::Vector2f mPosition;
 	const float mcSize = 7.f;
