@@ -55,7 +55,7 @@ public:
 	void SetTileScale(sf::Vector2f tileSize);            // Set size of tiles which make up block
 
 	bool IsTouching(sf::Vector2f position) const; // Checks if any position vector is within bounds of block tiles
-	void Hide();                              // Hides block by setting signature to null pointer
+	void Hide();                                  // Hides block by setting shape to Empty
 
 	void Draw(sf::RenderWindow& window);
 
