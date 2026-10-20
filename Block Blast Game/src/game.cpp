@@ -12,7 +12,7 @@ Game::Game()
 	, mDeltaTime(1.f / 60.f)
 	, mTileMap(Config::Get().tileMap.position, mRNG)
 	, mActiveBlock(nullptr)
-	, mBlockHandCount(Config::Get().block.cHandSize)
+	, mBlockHandSize(Config::Get().block.cHandSize)
 	, mScore(0.f)
 	, mFont(LoadFont("res/ARCADE_N.TTF"))
 	, mScoreMultiplier(1.f)
@@ -244,17 +244,17 @@ void Game::UpdateBlockPlacement()
 		HideActiveBlock();
 		std::println("Score Multiplier {}, Moves Since Last Score {}, Score Streak {}", mScoreMultiplier, mMovesSinceLastScore, mScoreStreak);
 		
-		if (mBlockHandCount == 1 || mBlockHandCount == 2) // Check for game over
+		if (mBlockHandSize == 1 || mBlockHandSize == 2) // Check for game over
 		{
-			if (!mTileMap.CanPlaceBlockHand(mBlockHand, mBlockHandCount))
+			if (!mTileMap.CanPlaceBlockHand(mBlockHand, mBlockHandSize))
 			{
 				mState.gameMode = Mode::GameOver;
 			}
 		}
-		else if (mBlockHandCount == 0) // Reset block hand when counter hits zero
+		else if (mBlockHandSize == 0) // Reset block hand when counter hits zero
 		{
 			MakeNewBlockHand();
-			mBlockHandCount = 3;
+			mBlockHandSize = 3;
 		}
 	}
 }
@@ -266,7 +266,7 @@ void Game::UpdateScore(int tilesCleared)
 		mScore += mcScorePerTile * mActiveBlock->GetSignature().size();
 		mMovesSinceLastScore++;
 
-		if (mBlockHandCount == 1 && mMovesSinceLastScore < 3) mMovesSinceLastScore = 0; // Reset score streak if you don't score at least once per hand
+		if (mBlockHandSize == 1 && mMovesSinceLastScore < 3) mMovesSinceLastScore = 0; // Reset score streak if you don't score at least once per hand
 		if (mMovesSinceLastScore >= mcMovesBeforePenalty)
 		{
 			mScoreMultiplier = 1.f;
@@ -293,7 +293,7 @@ void Game::MakeNewBlockHand()
 	{
 		mBlockHand[i].SetBlockCenterPosition(Config::Get().block.handPositions[i]);
 	}
-	mBlockHandCount = Config::Block::cHandSize;
+	mBlockHandSize = Config::Block::cHandSize;
 }
 
 void Game::SetActiveBlock(Block* block)
@@ -315,8 +315,8 @@ void Game::HideActiveBlock()
 	Block* oldActiveBlock = mActiveBlock;
 	mActiveBlock->Hide();
 	mActiveBlock = nullptr;
-	std::swap(*oldActiveBlock, mBlockHand[mBlockHandCount - 1]); // Move placed block to end of hand and decrement hand count
-	mBlockHandCount--;
+	std::swap(*oldActiveBlock, mBlockHand[mBlockHandSize - 1]); // Move placed block to end of hand and decrement hand count
+	mBlockHandSize--;
 }
 
 // ------------------- Draw Methods -------------------
@@ -367,16 +367,14 @@ void Game::RenderGame()
 
 void Game::DrawBlocks()
 {
-    for (auto& block : mBlockHand)
+    for (int i = 0; i < mBlockHandSize; i++)
 	{
-		if (&block != mActiveBlock)
-		{
-			block.Draw(mWindow);
-		}
+		if (&mBlockHand[i] != mActiveBlock) 
+			mBlockHand[i].Draw(mWindow); // Draw blocks in hand
 	}
 	if (mActiveBlock)
 	{
-		mActiveBlock->Draw(mWindow); // Draw active block on top of other blocks
+		mActiveBlock->Draw(mWindow); // Draw active block
 	}
 }
 
@@ -384,7 +382,7 @@ void Game::RestartGame()
 {
 	mTileMap.Clear();
 	MakeNewBlockHand();
-	mBlockHandCount = 3;
+	mBlockHandSize = 3;
 
 	mScore = 0;
 }

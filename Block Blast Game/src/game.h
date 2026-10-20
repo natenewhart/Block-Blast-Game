@@ -103,7 +103,7 @@ private:
 	// Block Management Variables
     Block* mActiveBlock;  // Pointer to block currently being moved by mouse, nullptr if no block is being moved
 	Block::tHand mBlockHand; // Block queue which stores 3 blocks to be placed at each turn
-	int mBlockHandCount; // Number of blocks in hand (number of unplaced blocks)
+	int mBlockHandSize; // Number of blocks in hand (number of unplaced blocks)
 
 	// Display Variables
 	sf::Font mFont;
