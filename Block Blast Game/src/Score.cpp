@@ -20,8 +20,8 @@ void Score::UpdateOnBlockPlaced(int tilesPlaced, int tilesCleared, int handSize)
 
 	// Increment score
 	mScore += scScorePerPlacedTile * tilesPlaced; // Increase score by tiles placed
-	float defaultScore = (tilesCleared * tilesCleared) / Config::Get().tileMap.width * scScorePerClearedTile; // tiles cleared squared / tiles per row * score per tile
-	mScore += defaultScore * mScoreMultiplier;
+	float scoreIncrease = (tilesCleared * tilesCleared) / Config::Get().tileMap.width * scScorePerClearedTile; // tiles cleared squared / tiles per row * score per tile
+	mScore += scoreIncrease * mScoreMultiplier;
 
 	// Update multiplier after score is incremented
 	if (tilesCleared > 0) // Has scored
