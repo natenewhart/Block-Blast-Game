@@ -13,7 +13,7 @@ namespace Blocks
 
 	// Constants
 
-	constexpr uint32_t cNumberOfShapes = 16;
+	constexpr uint32_t cNumberOfShapes = 15;
 
 	// Shape Tables
 	extern const tSignature cSignatures  [cNumberOfShapes]; // Table mapping block shapes to block signatures

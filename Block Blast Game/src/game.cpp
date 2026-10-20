@@ -210,15 +210,15 @@ void Game::Update()
 
 void Game::UpdateBlockPlacement()
 {
-	if (!mActiveBlock)
+	if (!mActiveBlock) // If there is no active block
 	{
 		if (mState.mouseLeftButtonPressed) // Check mouse button press
 		{
-			for (auto& block : mBlockHand)
+			for (int i = 0; i < mBlockHandSize; i++)
 			{
-				if (block.IsTouching(mState.mousePosition)) // Check if mouse is touching block
+				if (mBlockHand[i].IsTouching(mState.mousePosition)) // Check if mouse is touching block
 				{
-					SetActiveBlock(&block); // Set active block to block being touched by mouse and set isActiveBlock to true
+					SetActiveBlock(&mBlockHand[i]);
 					return;
 				}
 			}
@@ -226,6 +226,7 @@ void Game::UpdateBlockPlacement()
 		return;
 	}
 
+	// If there is active block
 	mActiveBlock->SetBlockCenterPosition(mState.mousePosition); // Update active block position with mouse
 	bool isPlaceable = mTileMap.SubmitBlock(*mActiveBlock);
 
@@ -242,19 +243,17 @@ void Game::UpdateBlockPlacement()
 		int tilesCleared = mTileMap.PlaceBlock();
 		UpdateScore(tilesCleared);
 		HideActiveBlock();
+		// TODO: remove this for final version
 		std::println("Score Multiplier {}, Moves Since Last Score {}, Score Streak {}", mScoreMultiplier, mMovesSinceLastScore, mScoreStreak);
 		
 		if (mBlockHandSize == 1 || mBlockHandSize == 2) // Check for game over
 		{
-			if (!mTileMap.CanPlaceBlockHand(mBlockHand, mBlockHandSize))
-			{
+			if (!mTileMap.CanPlaceBlockHand(mBlockHand, mBlockHandSize)) // Check if either block is placeable
 				mState.gameMode = Mode::GameOver;
-			}
 		}
 		else if (mBlockHandSize == 0) // Reset block hand when counter hits zero
 		{
 			MakeNewBlockHand();
-			mBlockHandSize = 3;
 		}
 	}
 }
@@ -313,7 +312,6 @@ void Game::ResetActiveBlock()
 void Game::HideActiveBlock()
 {
 	Block* oldActiveBlock = mActiveBlock;
-	mActiveBlock->Hide();
 	mActiveBlock = nullptr;
 	std::swap(*oldActiveBlock, mBlockHand[mBlockHandSize - 1]); // Move placed block to end of hand and decrement hand count
 	mBlockHandSize--;

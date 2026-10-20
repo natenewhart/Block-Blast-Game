@@ -2,8 +2,6 @@
 
 const Blocks::tSignature Blocks::cSignatures[cNumberOfShapes] =
 {
-	{}, // Empty
-
 	{ //OneByOne
 		{0, 0}
 	},
@@ -70,8 +68,6 @@ const Blocks::tSignature Blocks::cSignatures[cNumberOfShapes] =
 
 const int Blocks::cOrientations[cNumberOfShapes] =
 {
-	0, // Empty
-
 	1, // OneByOne
 	2, // TwoByOne
 	2, // ThreeByOne
@@ -91,8 +87,6 @@ const int Blocks::cOrientations[cNumberOfShapes] =
 
 const float Blocks::cWeights[cNumberOfShapes] =
 {
-	0.0f, // Empty  
-
 	0.1f, // OneByOne
 	0.2f, // TwoByOne
 	0.4f, // ThreeByOne

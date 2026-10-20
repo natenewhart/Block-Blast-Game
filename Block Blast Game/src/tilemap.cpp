@@ -272,7 +272,7 @@ Block::View TileMap::GetRandomBlockView()
 	Block::Shape shape = (Block::Shape)(Blocks::cNumberOfShapes - 1); // Default to last block
 
 	float weightSum = 0.f;
-	for (int i = 1; i < Blocks::cNumberOfShapes - 1; i++)
+	for (int i = 0; i < Blocks::cNumberOfShapes - 1; i++)
 	{
 		weightSum += Blocks::cWeights[i];
 		if (randShapeFloat < weightSum)

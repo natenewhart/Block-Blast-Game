@@ -5,7 +5,7 @@
 #include <iostream>
 
 Block::Block()
-	: mShape       (Shape::Empty)
+	: mShape       (Shape::OneByOne)
     , mPosition    (0.f, 0.f)
     , mOrientation (0)
     , mColor       (sf::Color::White)
@@ -135,8 +135,6 @@ void Block::SetTileScale(sf::Vector2f tileSize)
 
 bool Block::IsTouching(sf::Vector2f position) const // Checks if any position vector is within bounds of block tiles
 {
-	if (mShape == Shape::Empty) return false; // TODO: delte if not needed
-
 	sf::Vector2f localPos = ConvertToBlockLocalPosition(position); // Convert position to block local position by applying inverse transform
 	
 	for (sf::Vector2f localTilePos : GetSignature())
@@ -146,13 +144,7 @@ bool Block::IsTouching(sf::Vector2f position) const // Checks if any position ve
 	return false;
 }
 
-void Block::Hide()
-{
-	mShape = Empty;
-}
-
 void Block::Draw(sf::RenderWindow& window)
 {
-	if (mShape == Shape::Empty) return; // Don't draw if block shape is empty
 	window.draw(mMesh, mTransform);
 }
