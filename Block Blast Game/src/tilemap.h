@@ -44,8 +44,7 @@ public:
 	void Draw(sf::RenderWindow& window); // Draws grid lines and tiles
 
 	bool CanPlaceBlockHand(const Block::tHand& blockHand, int size); // Given a block hand check the entire grid to see if the blocks are placeable
-											// Used to check game over condition
-
+											                         // Used to check game over condition
 	Block::tHand CreateBestBlockHand(); // Create block hand of three blocks based on current tilemap state using block spawning algorithm, finds the hand with the highest summed weight
 
 private:
@@ -75,8 +74,8 @@ private:
 	Block::tViewHand CreateRandomBlockHand();
 
 	Block::View GetRandomBlockView(); // Lightweight function that just does the random finding of block
-	bool TryPlaceBlockView(const Grid& grid, const Block::View& blockView, sf::Vector2i& outOriginTile); // Find position for current block view and set block position. If not placeable return false
-	std::vector<int> GetOpenTileIndices(const Grid& grid) const; // Get indices of open tiles in tilemap
+	bool TryPlaceBlockView(const Grid& grid, const Block::View& blockView, sf::Vector2i& outOriginTile); // Try and place block view 
+	std::vector<int> GetOpenTileIndices(const Grid& grid) const; // Get indices of open tiles in on Grid
 
 	// CreateBlockHand helpers
 	float WeighBlockViewHand(const Block::tViewHand& blockHand);

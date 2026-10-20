@@ -269,16 +269,17 @@ Block::tHand TileMap::CreateBestBlockHand()
 Block::View TileMap::GetRandomBlockView()
 {
 	float randShapeFloat = mRNG.Float(0, mcBlockWeightsSum);
-	Block::Shape shape;
+	Block::Shape shape = (Block::Shape)(Blocks::cNumberOfShapes - 1); // Default to last block
 
-	int i = 0;
 	float weightSum = 0.f;
-	for (int i = 1; i < Blocks::cNumberOfShapes; i++)
+	for (int i = 1; i < Blocks::cNumberOfShapes - 1; i++)
 	{
 		weightSum += Blocks::cWeights[i];
-		shape = (Block::Shape)i;
-
-		if (randShapeFloat <= weightSum) break; 
+		if (randShapeFloat < weightSum)
+		{
+			shape = (Block::Shape)i;
+			break;
+		}
 	}
 	int orientation = mRNG.Int(0, Blocks::cOrientations[shape] - 1); // Get random block orientation
 	return { {0,0}, shape, orientation }; // Return with position at origin

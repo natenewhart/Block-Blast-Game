@@ -323,6 +323,7 @@ void Game::HideActiveBlock()
 
 void Game::Render()
 {
+	//TODO: fix all these commented out UI stuff
     mWindow.clear(Colors::cBackground);
 
 	switch (mState.gameMode)
@@ -368,7 +369,7 @@ void Game::DrawBlocks()
 {
     for (auto& block : mBlockHand)
 	{
-		if (&block != mActiveBlock) // Preserve draw order: active block is drawn on top of other blocks
+		if (&block != mActiveBlock)
 		{
 			block.Draw(mWindow);
 		}
