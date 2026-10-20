@@ -8,6 +8,7 @@
 #include "Button.h"
 #include "Crosshair.h"
 #include "UI.h"
+#include "Score.h"
 
 #pragma once
 
@@ -51,7 +52,6 @@ private:
 	// ------------------- Update Functions -----------------
 	void Update(); // All non-render & non-event updates
 	void UpdateBlockPlacement();
-	void UpdateScore(int tilesCleared); // Update score based on number of tiles cleared in a single block placement)
 
 	// ------------------- Render Functions -----------------
 	void Render();
@@ -88,17 +88,7 @@ private:
 	// Game Variables
     float mDeltaTime; // Last frame delta time value
 	TileMap mTileMap;
-
-	// Game Score Variables
-	float mScore;           // Current game score
-	float mScoreMultiplier; // Current score multiplier based on number of lines cleared in a single block placement
-	int   mMovesSinceLastScore;
-	int   mScoreStreak; // Number of consecutive block placements that cleared at least one line
-	const float mcScoreMultiplierIncrement = 1.f;  // 
-	const float mcScorePerTile			   = 10.f; // Score per tile placed on tilemap
-	const float mcScorePerRow              = 100.f;
-	const float mcScoreMultiplierMax       = 11.f; // Maximum score multiplier
-	const int   mcMovesBeforePenalty       = 3;    // Number of moves before score multiplier penalty is applied
+	Score mScore;     // Score management object
 
 	// Block Management Variables
     Block* mActiveBlock;  // Pointer to block currently being moved by mouse, nullptr if no block is being moved

@@ -160,6 +160,7 @@
     <Font Include="res\couri.ttf" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Score.cpp" />
     <ClCompile Include="src\Button.cpp" />
     <ClCompile Include="src\Grid.cpp" />
     <ClCompile Include="src\BlockData.cpp" />
@@ -172,6 +173,7 @@
     <ClCompile Include="src\UI.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Score.h" />
     <ClInclude Include="src\UI.h" />
     <ClInclude Include="src\Crosshair.h" />
     <ClInclude Include="src\Colors.h" />

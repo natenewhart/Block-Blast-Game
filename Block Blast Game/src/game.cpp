@@ -13,10 +13,7 @@ Game::Game()
 	, mTileMap(Config::Get().tileMap.position, mRNG)
 	, mActiveBlock(nullptr)
 	, mBlockHandSize(Config::Get().block.cHandSize)
-	, mScore(0.f)
 	, mFont(LoadFont("res/ARCADE_N.TTF"))
-	, mScoreMultiplier(1.f)
-	, mScoreStreak(0)
 	, mMainMenuUI(mFont, mRNG)
 	, mPauseMenuUI(mFont)
 	, mGameOverUI(mFont)
@@ -158,7 +155,7 @@ void Game::Update()
 		if (mState.isEscapeKeyPressed)
 			mState.gameMode = Mode::Pause;
 
-		mScoreText.setString(std::to_string(static_cast<int>(mScore))); // Score
+		mScoreText.setString(std::to_string(static_cast<int>(mScore.GetScore()))); // Score
 		mScoreText.setPosition(Config::Get().scorePosition - sf::Vector2f(mScoreText.getGlobalBounds().width / 2, mScoreText.getGlobalBounds().height / 2));
 
 		mHudUI.pause.Update(mState.mousePosition, mState.mouseLeftButtonPressed);
@@ -241,10 +238,11 @@ void Game::UpdateBlockPlacement()
 	else if (mState.mouseLeftButtonReleased)
 	{
 		int tilesCleared = mTileMap.PlaceBlock();
-		UpdateScore(tilesCleared);
+		int activeBlockSize = mActiveBlock->GetSignature().size();
 		HideActiveBlock();
+		mScore.UpdateOnBlockPlaced(activeBlockSize, tilesCleared, mBlockHandSize);
 		// TODO: remove this for final version
-		std::println("Score Multiplier {}, Moves Since Last Score {}, Score Streak {}", mScoreMultiplier, mMovesSinceLastScore, mScoreStreak);
+		//std::println("Score Multiplier {}, Moves Since Last Score {}, Score Streak {}", mScoreMultiplier, mMovesSinceLastScore, mScoreStreak);
 		
 		if (mBlockHandSize == 1 || mBlockHandSize == 2) // Check for game over
 		{
@@ -256,31 +254,6 @@ void Game::UpdateBlockPlacement()
 			MakeNewBlockHand();
 		}
 	}
-}
-
-void Game::UpdateScore(int tilesCleared)
-{
-	if (tilesCleared == 0)
-	{
-		mScore += mcScorePerTile * mActiveBlock->GetSignature().size();
-		mMovesSinceLastScore++;
-
-		if (mBlockHandSize == 1 && mMovesSinceLastScore < 3) mMovesSinceLastScore = 0; // Reset score streak if you don't score at least once per hand
-		if (mMovesSinceLastScore >= mcMovesBeforePenalty)
-		{
-			mScoreMultiplier = 1.f;
-		}
-		mScoreStreak = 0;
-		return;
-	}
-	int rowsCleared = ((float)tilesCleared / (float)Config::Get().tileMap.width + 0.5f); // Round up to nearest rows cleared
-	mScore += (rowsCleared * rowsCleared) * mcScorePerRow * mScoreMultiplier; // # of rows squared * points per row
-                                                                         // Clearing rows at once has quadratic impact on score
-	if (mScoreMultiplier < mcScoreMultiplierMax)
-		mScoreMultiplier += mcScoreMultiplierIncrement + mScoreStreak;
-
-	mMovesSinceLastScore = 0;
-	mScoreStreak++;
 }
 
 // ------------------- Update Helper Functions -------------------
@@ -380,7 +353,5 @@ void Game::RestartGame()
 {
 	mTileMap.Clear();
 	MakeNewBlockHand();
-	mBlockHandSize = 3;
-
-	mScore = 0;
+	mScore.Reset();
 }

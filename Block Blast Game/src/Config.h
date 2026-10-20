@@ -44,7 +44,7 @@ public:
 	struct Block
 	{
 		static constexpr uint32_t cHandSize = 3;
-		std::array<sf::Vector2f, cHandSize> handPositions;
+		std::array<sf::Vector2f, cHandSize> handPositions; // Initial hand positions
 	};
 
 	sf::Vector2f scorePosition; // Position of score text in pixels
