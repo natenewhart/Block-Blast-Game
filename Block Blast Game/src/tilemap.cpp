@@ -287,7 +287,10 @@ Block::View TileMap::GetRandomBlockView()
 
 bool TileMap::TryPlaceBlockView(const Grid& grid, const Block::View& blockView, sf::Vector2i& outOriginTile)
 {
-	std::vector<int> tilesIndices = GetOpenTileIndices(grid);
+	std::vector<int> tilesIndices;
+	tilesIndices.reserve(grid.GetSize());
+	for (int i = 0; i < grid.GetSize(); i++)
+		tilesIndices.emplace_back(i);
 	shuffleVector(mRNG, tilesIndices);
 
 	auto tilePositions = SignatureToRotatedTilePositions(blockView);
@@ -301,18 +304,6 @@ bool TileMap::TryPlaceBlockView(const Grid& grid, const Block::View& blockView, 
 		}
 	}
 	return false;
-}
-
-std::vector<int> TileMap::GetOpenTileIndices(const Grid& grid) const
-{
-	std::vector<int> openTiles;
-	openTiles.reserve(grid.GetSize());
-	for (int i = 0; i < grid.GetSize(); i++)
-	{
-		if (!grid.IsOccupied(grid.ToTilePos(i)))
-			openTiles.emplace_back(i); // Append index of open tile to list
-	}
-	return openTiles;
 }
 
 float TileMap::WeighBlockViewHand(const Block::tViewHand& blockHand)

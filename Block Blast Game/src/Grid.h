@@ -10,7 +10,7 @@ class Grid
 public:
     Grid(bool isFull = false);
 
-	int GetSize() const { return mTiles.size(); }
+	int GetSize() const { return mTiles.size(); } // (width x height) number of tiles
 
 	sf::Color GetTileColor(int col, int row) const;
 	sf::Color GetTileColor(sf::Vector2i position) const;
@@ -31,7 +31,7 @@ public:
     void Clear(); // Reset grid to empty
 
 private:
-	int Index(int col, int row) const;
+	int Index(int col, int row) const; // Return index of tiles array given collumn and row
 
 	std::vector<bool> mTiles;
 	std::vector<sf::Color> mTileColors;

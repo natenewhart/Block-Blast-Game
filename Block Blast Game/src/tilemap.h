@@ -75,7 +75,6 @@ private:
 
 	Block::View GetRandomBlockView(); // Lightweight function that just does the random finding of block
 	bool TryPlaceBlockView(const Grid& grid, const Block::View& blockView, sf::Vector2i& outOriginTile); // Try and place block view 
-	std::vector<int> GetOpenTileIndices(const Grid& grid) const; // Get indices of open tiles in on Grid
 
 	// CreateBlockHand helpers
 	float WeighBlockViewHand(const Block::tViewHand& blockHand);
