@@ -17,7 +17,7 @@ public:
 private:
 	static constexpr float scScoreMultiplierIncrement = 1.f; // How much multiplier increases when you score
 	static constexpr float scScorePerPlacedTile       = 10.f;
-	static constexpr float scScorePerRow              = 100.f;
+	static constexpr float scScorePerClearedTile      = 100.f / 8.f;
 	static constexpr float scScoreMultiplierMax       = 11.f;
 
 	float mScore;                // Current game score
