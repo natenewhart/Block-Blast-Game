@@ -45,7 +45,7 @@ private:
 	sf::Vector2f InitTileMapPosition() const;
 
 	// ------------------- Event Handling -----------------
-	void HandleEvents(); // Retreive event queue and handle all events
+	void HandleEvents(); // Retrieve event queue and handle all events
 	void HandleBlockEvents();
 	void ResetGameState(); // Reset values for game state every frame
 	
