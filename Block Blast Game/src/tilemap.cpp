@@ -139,7 +139,7 @@ bool TileMap::SetClosestOpenBlockPositions(const Block& block)
 	sf::Vector2i closestTilePos;
 
 	sf::Vector2i originTilePos = GetTilePosition(block.GetOriginTileCenterPosition()); // Top left corner of tile that block's origin tile's center is within
-	std::vector<sf::Vector2i> blockTilePositions = GetBlockTilePositions(block.GetView());
+	std::vector<sf::Vector2i> blockTilePositions = block.GetBlockTilePositions();
 
 	for (int i = 0; i < mcSearchAreaWidth * mcSearchAreaWidth; i++)
 	{
@@ -165,36 +165,10 @@ bool TileMap::SetClosestOpenBlockPositions(const Block& block)
 	}
 	if (minDistance < std::numeric_limits<float>::max())
 	{
-		mSubmitBuffer.tilePositions = TranslateBlockTilePositions(mSubmitBuffer.tilePositions, closestTilePos);
+		mSubmitBuffer.tilePositions = Block::TranslateBlockTilePositions(mSubmitBuffer.tilePositions, closestTilePos);
 		return true;
 	}
 	return false;
-}
-
-std::vector<sf::Vector2i> TileMap::GetBlockTilePositions(const Block::View& block) const
-{
-	const auto& signature = Blocks::cSignatures[block.shape];
-	std::vector<sf::Vector2i> output;
-	output.reserve(signature.size());
-
-	for (sf::Vector2f localTilePos : signature)
-	{
-		sf::Vector2i currGridPos = sf::Vector2i(Block::RotateSignaturePosition(localTilePos, block.orientation));
-
-		output.emplace_back(currGridPos.x, currGridPos.y);
-	}
-	return output;
-}
-
-std::vector<sf::Vector2i> TileMap::TranslateBlockTilePositions(const std::vector<sf::Vector2i>& blockTilePositions, sf::Vector2i tileOrigin) const
-{
-	std::vector<sf::Vector2i> translation;
-	translation.reserve(blockTilePositions.size());
-	for (int i = 0; i < blockTilePositions.size(); i++)
-	{
-		translation.emplace_back(tileOrigin + blockTilePositions[i]);
-	}
-	return translation;
 }
 
 bool TileMap::IsBlockPlaceable(const Grid& grid, const std::vector<sf::Vector2i>& blockTilePositions, sf::Vector2i tileOrigin) const
@@ -232,7 +206,7 @@ Block::tViewHand TileMap::CreateRandomBlockHand()
 		if (!TryPlaceBlockView(currGrid, nextBlock, originTilePos)) // If block cannot be placed skip this iteration
 			continue;
 
-		mSubmitBuffer.tilePositions = TranslateBlockTilePositions(GetBlockTilePositions(nextBlock), originTilePos); // Store block tile positions in tilemap coordinates
+		mSubmitBuffer.tilePositions = Block::TranslateBlockTilePositions(Block::GetBlockTilePositions(nextBlock), originTilePos); // Store block tile positions in tilemap coordinates
 		blockHand[blockCount++] = nextBlock; // Append next block
 
 		if (blockCount < Config::Block::cHandSize)  // Submit block to boolean tilemap
@@ -294,7 +268,7 @@ bool TileMap::TryPlaceBlockView(const Grid& grid, const Block::View& blockView, 
 
 	shuffleVector(mRNG, tilesIndices); // Shuffle vector to not bias upper half of grid
 
-	auto tilePositions = GetBlockTilePositions(blockView);
+	auto tilePositions = Block::GetBlockTilePositions(blockView);
 	for (int i = 0; i < tilesIndices.size(); i++)
 	{
 		sf::Vector2i originTile = grid.ToTilePos(tilesIndices[i]);

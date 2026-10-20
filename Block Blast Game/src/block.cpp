@@ -95,6 +95,37 @@ int Block::GetOrientation() const
 	return mOrientation;
 }
 
+std::vector<sf::Vector2i> Block::GetBlockTilePositions(const Block::View& blockView)
+{
+	const auto& signature = Blocks::cSignatures[blockView.shape];
+	std::vector<sf::Vector2i> output;
+	output.reserve(signature.size());
+
+	for (sf::Vector2f localTilePos : signature)
+	{
+		sf::Vector2i currGridPos = sf::Vector2i(Block::RotateSignaturePosition(localTilePos, blockView.orientation));
+
+		output.emplace_back(currGridPos.x, currGridPos.y);
+	}
+	return output;
+}
+
+std::vector<sf::Vector2i> Block::GetBlockTilePositions() const
+{
+	return GetBlockTilePositions(GetView());
+}
+
+std::vector<sf::Vector2i> Block::TranslateBlockTilePositions(const std::vector<sf::Vector2i>& blockTilePositions, sf::Vector2i tileOrigin)
+{
+	std::vector<sf::Vector2i> translation;
+	translation.reserve(blockTilePositions.size());
+	for (int i = 0; i < blockTilePositions.size(); i++)
+	{
+		translation.emplace_back(tileOrigin + blockTilePositions[i]);
+	}
+	return translation;
+}
+
 sf::Vector2f Block::RotateSignaturePosition(sf::Vector2f signaturePos) const
 {
 	return RotateSignaturePosition(signaturePos, mOrientation);

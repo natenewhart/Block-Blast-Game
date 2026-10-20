@@ -47,6 +47,12 @@ public:
 	sf::Vector2f GetBlockCenterPosition() const; // Calculate center position of block by averaging the tile positions in pixel reference frame
 	int GetOrientation() const;       // Return block orientation which is 0, 1, 2, or 3 for 0, 90, 180, or 270 degree rotation
 
+	// Block tile positions members
+	static std::vector<sf::Vector2i> GetBlockTilePositions(const Block::View& blockView); // Static get block tile positions about origin for block views
+	std::vector<sf::Vector2i> GetBlockTilePositions() const;                              // Public member version to be used on block object
+	static std::vector<sf::Vector2i> TranslateBlockTilePositions(const std::vector<sf::Vector2i>& blockTilePositions, sf::Vector2i tileOrigin);
+
+	// TODO: make singular rotate function
 	sf::Vector2f RotateSignaturePosition(sf::Vector2f signaturePos) const; // Rotate block signature coordiant given block current orientation
 	static sf::Vector2f RotateSignaturePosition(sf::Vector2f signaturePos, int orientation); // Rotate block signature coordiant given block current orientation
 

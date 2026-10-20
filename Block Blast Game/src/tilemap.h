@@ -62,11 +62,8 @@ private:
 	sf::Vector2f TilePosToPixelPos(sf::Vector2i tilePos) const;
 
 	// Block Placement Members
-	// TODO: move GetBlockTilePositions & TranslateBlockTilePositions into block class, definitely not supposed to be tilemap functions
-	std::vector<sf::Vector2i> GetBlockTilePositions(const Block::View& block) const; // Get block tile positions about origin
-	std::vector<sf::Vector2i> TranslateBlockTilePositions(const std::vector<sf::Vector2i>& blockTilePositions, sf::Vector2i tileOrigin) const;
 	bool SetClosestOpenBlockPositions(const Block& block); // Find closest tileMap grid positions for block on grid. Store indices in mBlockPlacementBuffer and return true if block is placeable, and false otherwise
-	void PlaceBlockOnGrid(Grid& grid);        // Places block on tilemap at given grid position by setting tiles at block tile positions to occupied and block color. Returns true if block was placed successfully, false if any tile positions of block were occupied on tilemap
+	void PlaceBlockOnGrid(Grid& grid);                     // Places block on tilemap at given grid position by setting tiles at block tile positions to occupied and block color. Returns true if block was placed successfully, false if any tile positions of block were occupied on tilemap
 
 	void CheckFullLines(Grid& grid);
 	int  ClearFullLines(Grid& grid); // Clears tiles on grid and returns number of tiles cleared
