@@ -41,13 +41,12 @@ public:
 		int height; // Width in tiles
 	};
 
-	struct Block
+	struct Hand
 	{
-		static constexpr uint32_t cHandSize = 3;
-		std::array<sf::Vector2f, cHandSize> handPositions; // Initial hand positions
+		static constexpr uint32_t cSize = 3;
+		std::array<sf::Vector2f, cSize> initPositions; // Initial hand positions
 	};
 
-	sf::Vector2f scorePosition; // Position of score text in pixels
 // ---------------------------- Singleton Implementation -------------------------------
 private:
 	Config();
@@ -58,6 +57,7 @@ public:
 	Screen screen;
 	TileMap tileMap;
 	Tile tile;
-	Block block;
+	Hand block;
+	sf::Vector2f scorePosition;
 };
 
