@@ -3,7 +3,7 @@
 
 /* Game settings singleton class to hold all global variables
 * 
-* Each struct in Config Class contains relavant data pertaining to its parent
+* Each struct in Config Class contains relevant data pertaining to its parent
 * Sub-structs are used to maintain naming conventions and organize code base
 * 
 * EXAMPLE: Config::Get().screen.width
