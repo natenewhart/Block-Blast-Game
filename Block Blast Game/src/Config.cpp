@@ -1,38 +1,88 @@
 #include "Config.h"
 
-Config::Config()
-    : screen {1500, 1100} // 15 : 11 natural ratio
+// ------------------------- Constant Ratios For Visual Spacing -------------------------
+// Only accessible in this file
+
+namespace
 {
-	// Tile map
-	tileMap.width  = 8;
-	tileMap.height = 8;
+	constexpr float cScreenWidth  = 1500;
+	constexpr float cScreenHeight = 1100;
 
-	// Tiles
-	tile.size.y = screen.height / (tileMap.height + 3.f);
-	tile.size.x = tile.size.y;
+	constexpr int cTileMapWidth  = 8;
+	constexpr int cTileMapHeight = 8;
 
-	tile.handSize.x = screen.height / 17.f;
-	tile.handSize.y = tile.handSize.x;
+	constexpr float cTileMapWidthRatio         = 2.f / 3.f;  // How much of screen tile map greater area takes up
+	constexpr float cTileMapXPositionRatio     = 1.f / 3.f;  // Where along screen width is tilemap displayed
+	constexpr float cTileMapVerticalGapRatio   = 8.f / 10.f; // What fraction of tilemap greater vertical area is filled by tilemap
+	constexpr float cTileMapHorizontalGapRatio = 9.f / 10.f; // What fraction of tilemap greater horizontal area is filled by tilemap
 
-	// Tile Map
-	tileMap.size = { tileMap.width  * tile.size.x, tileMap.height * tile.size.y };
-	tileMap.position.x = (1.f / 3.f) * screen.width - tileMap.size.x / 2;
+	constexpr float cHandXPositionRatio        = 5.f / 6.f;  // How far across screen hand is displayed across screen width
+	constexpr float cHandVerticalGapRatio      = 9.f / 10.f; // What fraction of vertical screen space is actually taken up by block hand
+	constexpr float cBlockMaxTiles             = 5.f;        // The largest a tile can be width or height (5x1 or 1x5 is largest tile)
+}
+
+// ------------------------- Config Constructor -------------------------
+
+Config::Config()
+{
+	InitScreen();
+	InitTileMap();
+	InitTile();
+	InitHand();
+
+	scorePosition = { tileMap.position.x + tileMap.size.x / 2, (1 - cTileMapVerticalGapRatio) * screen.height / 4.f };
+}
+
+// ------------------------- Initializer Helpers -------------------------
+
+void Config::InitScreen()
+{
+	screen.width  = cScreenWidth;
+	screen.height = cScreenHeight;
+}
+
+void Config::InitTileMap()
+{
+	tileMap.width  = cTileMapWidth;
+	tileMap.height = cTileMapHeight;
+
+	if (tileMap.height >= tileMap.width) // When tilemap is taller than it is wide
+	{
+		tileMap.size.y = cTileMapVerticalGapRatio * screen.height;
+		tileMap.size.x = (float)tileMap.width / tileMap.height * tileMap.size.y; // Using aspect ratio of tilemap find width x of tilemap in pixels
+	}
+	else
+	{
+		tileMap.size.x = cTileMapWidthRatio * cTileMapHorizontalGapRatio * screen.width;
+		tileMap.size.y = (float)tileMap.height / tileMap.width * tileMap.size.x; // Using aspect ratio of tilemap find width x of tilemap in pixels
+	}
+
+	tileMap.position.x = cTileMapXPositionRatio * screen.width - tileMap.size.x / 2;
 	tileMap.position.y = screen.height / 2 - tileMap.size.y / 2;
+}
 
-	scorePosition = { tileMap.position.x + tileMap.size.x / 2, tileMap.position.y / 2 };
+void Config::InitTile()
+{
+	tile.size.x = tileMap.size.x / tileMap.width;
+	tile.size.y = tileMap.size.y / tileMap.height;
 
-	// Block hand init positions
+	tile.handSize.x = cHandVerticalGapRatio * (1.f / Hand::cSize) * (1.f / cBlockMaxTiles) * screen.height; // % screen * 1 of 3 blocks * 1/5 tiles per block
+	tile.handSize.y = cHandVerticalGapRatio * (1.f / Hand::cSize) * (1.f / cBlockMaxTiles) * screen.height;
+}
+
+void Config::InitHand()
+{
 	for (int i = -1; i < (int)Hand::cSize - 1; i++)
 	{
 		sf::Vector2f handPos;
-		handPos.x = (5.f / 6.f) * screen.width;
+		handPos.x = cHandXPositionRatio * screen.width;
 
 		float yOrigin = screen.height / 2;
-		float yGap = (5.f * tile.handSize.y); // Gap between each block in hand 
-		float yOffset = (0.25f * tile.handSize.y);
+		float yGap = (cBlockMaxTiles * tile.handSize.y); // Gap between each block in hand 
+		float yOffset = (1 - cHandVerticalGapRatio) * (1.f / 4.f) * screen.height; // How much each block is offset every block is evenly placed between screen bound and eachother 
 		handPos.y = yOrigin + (i * yGap) + (i * yOffset); // Offset gap between each block in hand
 
-		block.initPositions[i + 1] = handPos;
+		hand.initPositions[i + 1] = handPos;
 	}
 }
 

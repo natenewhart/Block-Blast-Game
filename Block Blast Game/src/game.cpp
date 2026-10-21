@@ -12,7 +12,7 @@ Game::Game()
 	, mDeltaTime(1.f / 60.f)
 	, mTileMap(Config::Get().tileMap.position, mRNG)
 	, mActiveBlock(nullptr)
-	, mBlockHandSize(Config::Get().block.cHandSize)
+	, mBlockHandSize(Config::Get().hand.cSize)
 	, mFont(LoadFont("res/ARCADE_N.TTF"))
 	, mMainMenuUI(mFont, mRNG)
 	, mPauseMenuUI(mFont)
@@ -99,10 +99,21 @@ void Game::HandleEvents()
 			{
 				mState.gameMode = Mode::GameOver;
 			}
-			if (mEvent.key.code == sf::Keyboard::N)
+			// TODO: remove debug helpers
+			if (mEvent.key.code == sf::Keyboard::R)
 				MakeNewBlockHand();
-			//if (mEvent.key.code == sf::Keyboard::Num5)
-			//	mBlockHand[1] = Block(Block::Shape::FiveByOne, sf::Vector2f(0.f, 0.f), 0, sf::Color::White); mBlockHand[2] = Block(Block::Shape::OneByOne, sf::Vector2f(300.f, 0.f), 0, sf::Color::White);
+			if (mEvent.key.code == sf::Keyboard::Num4)
+			{
+				mBlockHand[0] = Block(Block::Shape::FiveByOne, Config::Get().hand.initPositions[0], 0, sf::Color::White);
+				mBlockHand[1] = Block(Block::Shape::FiveByOne, Config::Get().hand.initPositions[1], 0, sf::Color::White);
+				mBlockHand[2] = Block(Block::Shape::FiveByOne, Config::Get().hand.initPositions[2], 0, sf::Color::White);
+			}
+			if (mEvent.key.code == sf::Keyboard::Num5)
+			{
+				mBlockHand[0] = Block(Block::Shape::FiveByOne, Config::Get().hand.initPositions[0], 1, sf::Color::White);
+				mBlockHand[1] = Block(Block::Shape::FiveByOne, Config::Get().hand.initPositions[1], 1, sf::Color::White);
+				mBlockHand[2] = Block(Block::Shape::FiveByOne, Config::Get().hand.initPositions[2], 1, sf::Color::White);
+			}
 		}
 		HandleBlockEvents();
 	}
@@ -261,11 +272,11 @@ void Game::UpdateBlockPlacement()
 void Game::MakeNewBlockHand()
 {
 	mBlockHand = mTileMap.CreateBestBlockHand();
-	for (int i = 0; i < Config::Block::cHandSize; i++)
+	for (int i = 0; i < Config::Hand::cSize; i++)
 	{
-		mBlockHand[i].SetBlockCenterPosition(Config::Get().block.handPositions[i]);
+		mBlockHand[i].SetBlockCenterPosition(Config::Get().hand.initPositions[i]);
 	}
-	mBlockHandSize = Config::Block::cHandSize;
+	mBlockHandSize = Config::Hand::cSize;
 }
 
 void Game::SetActiveBlock(Block* block)

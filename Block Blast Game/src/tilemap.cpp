@@ -197,7 +197,7 @@ Block::tViewHand TileMap::CreateRandomBlockHand()
 	Block::tViewHand blockHand;
 
 	int tries = 0;
-	for (int blockCount = 0; blockCount < Config::Block::cHandSize;)
+	for (int blockCount = 0; blockCount < Config::Hand::cSize;)
 	{
 		tries++; assert(tries < 100); // TODO: no more asssert here, figure out solution
 		Block::View nextBlock = GetRandomBlockView();
@@ -209,7 +209,7 @@ Block::tViewHand TileMap::CreateRandomBlockHand()
 		mSubmitBuffer.tilePositions = Block::TranslateBlockTilePositions(Block::GetBlockTilePositions(nextBlock), originTilePos); // Store block tile positions in tilemap coordinates
 		blockHand[blockCount++] = nextBlock; // Append next block
 
-		if (blockCount < Config::Block::cHandSize)  // Submit block to boolean tilemap
+		if (blockCount < Config::Hand::cSize)  // Submit block to boolean tilemap
 		{
 			PlaceBlockOnGrid(currGrid);
 			CheckFullLines  (currGrid);
@@ -284,7 +284,7 @@ bool TileMap::TryPlaceBlockView(const Grid& grid, const Block::View& blockView, 
 float TileMap::WeighBlockViewHand(const Block::tViewHand& blockHand)
 {
 	float weight = 0.f;
-	for (int i = 0; i < Config::Block::cHandSize; i++)
+	for (int i = 0; i < Config::Hand::cSize; i++)
 	{
 		weight += Blocks::cWeights[blockHand[i].shape];
 	}
@@ -295,7 +295,7 @@ Block::tHand TileMap::ConvertToBlockHand(const Block::tViewHand& other)
 {
 	Block::tHand result;
 	mRNG.SetRangeInt(0, std::size(Colors::cBlocks) - 1);
-	for (int i = 0; i < Config::Block::cHandSize; i++)
+	for (int i = 0; i < Config::Hand::cSize; i++)
 	{
 		sf::Color color = Colors::cBlocks[mRNG.Int()];
 		result[i] = Block(other[i].shape, other[i].position, other[i].orientation, color);

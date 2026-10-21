@@ -32,8 +32,8 @@ public:
 		int          orientation;
 	};
 
-	using tHand     = std::array<Block, Config::Block::cHandSize>; // Block hand storage type
-	using tViewHand = std::array<View,  Config::Block::cHandSize>; // Block hand made up of Block::Views
+	using tHand     = std::array<Block, Config::Hand::cSize>; // Block hand storage type
+	using tViewHand = std::array<View,  Config::Hand::cSize>; // Block hand made up of Block::Views
 
 public:
 	Block();

@@ -29,7 +29,7 @@ public:
 
 	struct Tile
 	{
-		sf::Vector2f size; // Width, Height of each tile in pixels
+		sf::Vector2f size;     // Width, Height of each tile in pixels
 		sf::Vector2f handSize; // Width, Height of tiles while in hand
 	};
 
@@ -51,13 +51,18 @@ public:
 private:
 	Config();
 
+	void InitScreen();
+	void InitTileMap();
+	void InitTile();
+	void InitHand();
+
 public:
 	static const Config& Get();
 
-	Screen screen;
-	TileMap tileMap;
-	Tile tile;
-	Hand block;
+	Screen       screen;
+	Tile         tile;
+	TileMap      tileMap;
+	Hand         hand;
 	sf::Vector2f scorePosition;
 };
 
