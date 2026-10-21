@@ -16,7 +16,7 @@ float Score::GetScore() const
 
 void Score::UpdateOnBlockPlaced(int tilesPlaced, int tilesCleared, int handSize)
 {
-	if (handSize == 2) mHasScoredCurrentHand = false; // Every new hand, rest has scored bool
+	if (handSize == Config::Hand::cSize - 1) mHasScoredCurrentHand = false; // Every new hand, rest has scored bool
 
 	// Increment score
 	mScore += scScorePerPlacedTile * tilesPlaced; // Increase score by tiles placed
