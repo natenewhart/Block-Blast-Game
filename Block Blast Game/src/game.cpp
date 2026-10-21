@@ -255,11 +255,9 @@ void Game::UpdateBlockPlacement()
 		// TODO: remove this for final version
 		//std::println("Score Multiplier {}, Moves Since Last Score {}, Score Streak {}", mScoreMultiplier, mMovesSinceLastScore, mScoreStreak);
 		
-		if (mBlockHandSize == 1 || mBlockHandSize == 2) // Check for game over
-		{
-			if (!mTileMap.CanPlaceBlockHand(mBlockHand, mBlockHandSize)) // Check if either block is placeable
-				mState.gameMode = Mode::GameOver;
-		}
+		if (mBlockHandSize > 0 && !mTileMap.CanPlaceBlockHand(mBlockHand, mBlockHandSize)) // Check for game over after first block is placed
+			mState.gameMode = Mode::GameOver;
+
 		else if (mBlockHandSize == 0) // Reset block hand when counter hits zero
 		{
 			MakeNewBlockHand();

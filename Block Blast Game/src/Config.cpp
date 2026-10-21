@@ -72,17 +72,13 @@ void Config::InitTile()
 
 void Config::InitHand()
 {
-	for (int i = -1; i < (int)Hand::cSize - 1; i++)
+	const float blockHeight = cBlockMaxTiles * tile.handSize.y; // Height of block in hand
+	const float yGap = (1.f - cHandVerticalGapRatio) * screen.height / (Hand::cSize + 1); // Gap between blocks in hand
+
+	for (uint32_t i = 0; i < Hand::cSize; i++)
 	{
-		sf::Vector2f handPos;
-		handPos.x = cHandXPositionRatio * screen.width;
-
-		float yOrigin = screen.height / 2;
-		float yGap = (cBlockMaxTiles * tile.handSize.y); // Gap between each block in hand 
-		float yOffset = (1 - cHandVerticalGapRatio) * (1.f / 4.f) * screen.height; // How much each block is offset every block is evenly placed between screen bound and eachother 
-		handPos.y = yOrigin + (i * yGap) + (i * yOffset); // Offset gap between each block in hand
-
-		hand.initPositions[i + 1] = handPos;
+		hand.initPositions[i].x = cHandXPositionRatio * screen.width;
+		hand.initPositions[i].y = (i + 1) * (yGap + blockHeight) - blockHeight / 2.f;
 	}
 }
 
