@@ -294,7 +294,7 @@ void Game::HideActiveBlock()
 void Game::Render()
 {
 	//TODO: fix all these commented out UI stuff
-    mWindow.clear(Colors::cBackground);
+    mWindow.clear(Colors::Background);
 
 	switch (mState.gameMode)
 	{

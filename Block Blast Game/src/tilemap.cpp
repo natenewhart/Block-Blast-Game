@@ -22,7 +22,7 @@ TileMap::TileMap(sf::Vector2f position, CRandom& rng)
 {
 	for (auto& vertex : mGridVertices)
 	{
-		vertex.color = Colors::cGridLines;
+		vertex.color = Colors::GridLines;
 		vertex.position = mPosition;
 	}
 	mGridVertices[1].position.y += Config::Get().tile.size.y * mHeight;
@@ -32,7 +32,7 @@ TileMap::TileMap(sf::Vector2f position, CRandom& rng)
 
 	mBoardRect.setSize(Config::Get().tileMap.size);
 	mBoardRect.setPosition(mPosition);
-	mBoardRect.setFillColor(Colors::cBoardPanel); // Use whatever name you gave it in Colors.h
+	mBoardRect.setFillColor(Colors::BoardPanel); // Use whatever name you gave it in Colors.h
 }
 
 // ------------------- Init Functions -------------------
