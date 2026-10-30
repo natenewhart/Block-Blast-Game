@@ -25,14 +25,6 @@ Game::Game()
 	mWindow.setMouseCursorVisible(false); // Remove moues cursor
 	mWindow.setKeyRepeatEnabled(false);
 
-	mScoreText.setFont(mFont);
-	mScoreText.setCharacterSize(50);
-	mScoreText.setFillColor(sf::Color::White);
-	mScoreText.setOutlineColor(sf::Color(200, 100, 150));
-	mScoreText.setOutlineThickness(2.f);
-	mScoreText.setString("");
-	mScoreText.setPosition(Config::Get().scorePosition - sf::Vector2f(mScoreText.getGlobalBounds().width / 2, mScoreText.getGlobalBounds().height / 2));
-
 	MakeNewBlockHand();
 
 	// Start game at main menu
@@ -166,9 +158,7 @@ void Game::Update()
 		if (mState.isEscapeKeyPressed)
 			mState.gameMode = Mode::Pause;
 
-		mScoreText.setString(std::to_string(static_cast<int>(mScore.GetScore()))); // Score
-		mScoreText.setPosition(Config::Get().scorePosition - sf::Vector2f(mScoreText.getGlobalBounds().width / 2, mScoreText.getGlobalBounds().height / 2));
-
+		mHudUI.UpdateScore(mScore.GetScore());
 		mHudUI.pause.Update(mState.mousePosition, mState.mouseLeftButtonPressed);
 		if (mHudUI.pause.IsClicked())
 			mState.gameMode = Mode::Pause;
@@ -341,7 +331,7 @@ void Game::Render()
 void Game::RenderGame()
 {
 	mTileMap.Draw(mWindow);
-	mWindow.draw(mScoreText); // Draw Score onto screen
+	mHudUI.Draw(mWindow);
 	DrawBlocks();
 }
 

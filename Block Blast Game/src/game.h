@@ -97,7 +97,6 @@ private:
 
 	// Display Variables
 	sf::Font mFont;
-    sf::Text mScoreText;
 
 	Crosshair mCrosshair;
 

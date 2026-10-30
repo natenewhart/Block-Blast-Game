@@ -64,18 +64,21 @@ namespace UI
 
 		void Draw(sf::RenderWindow& window);
 
-		sf::Text title;
 		Button restart;
 		Button exit;
+	private:
+		sf::Text title;
 	};
 
 	struct Hud
 	{
 		Hud(const sf::Font& font);
 
+		void UpdateScore(float score); // Update score text on screen and center text object
 		void Draw(sf::RenderWindow& window);
 
-		Button pause;
-
+		Button pause; // TODO: remove unused pause button
+	private:
+		sf::Text scoreText;
 	};
 }

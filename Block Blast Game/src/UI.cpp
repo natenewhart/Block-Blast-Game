@@ -152,10 +152,25 @@ namespace UI
 	{
 		pause.UpdateText();
 		pause.SetFontSize(25);
+
+		scoreText.setFont(font);
+		scoreText.setCharacterSize(50);
+		scoreText.setFillColor(sf::Color::White);
+		scoreText.setOutlineColor(sf::Color(200, 100, 150));
+		scoreText.setOutlineThickness(2.f);
+		scoreText.setString("0");
+		scoreText.setPosition(Config::Get().scorePosition - sf::Vector2f(scoreText.getGlobalBounds().width / 2, scoreText.getGlobalBounds().height / 2));
+	}
+
+	void Hud::UpdateScore(float score)
+	{
+		scoreText.setString(std::to_string(static_cast<int>(score)));
+		scoreText.setPosition(Config::Get().scorePosition - sf::Vector2f(scoreText.getGlobalBounds().width / 2, scoreText.getGlobalBounds().height / 2));
 	}
 
 	void Hud::Draw(sf::RenderWindow& window)
 	{
 		pause.Draw(window);
+		window.draw(scoreText);
 	}
 }
