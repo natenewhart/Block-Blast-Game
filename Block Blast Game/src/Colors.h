@@ -12,6 +12,7 @@ namespace Colors
 	inline const sf::Color cBackground(32, 33, 35); // Window background color
 	inline const sf::Color cBoardPanel(42, 44, 48); // TileMap background color
 	inline const sf::Color cGridLines (58+20, 60+20, 66+20);
+	inline const sf::Color cScoreOutline(200, 100, 150);
 
 	// Block palette
 	inline const std::array<sf::Color, 8> cBlocks =
@@ -27,14 +28,14 @@ namespace Colors
 	};
 
 	// Named access, these are references into cBlocks (no duplicated values)
-	inline const sf::Color& CoralRed = cBlocks[0];
-	inline const sf::Color& Orange = cBlocks[1];
+	inline const sf::Color& CoralRed    = cBlocks[0];
+	inline const sf::Color& Orange      = cBlocks[1];
 	inline const sf::Color& AmberYellow = cBlocks[2];
-	inline const sf::Color& LimeGreen = cBlocks[3];
-	inline const sf::Color& Teal = cBlocks[4];
-	inline const sf::Color& SkyBlue = cBlocks[5];
-	inline const sf::Color& Violet = cBlocks[6];
-	inline const sf::Color& Pink = cBlocks[7];
+	inline const sf::Color& LimeGreen   = cBlocks[3];
+	inline const sf::Color& Teal        = cBlocks[4];
+	inline const sf::Color& SkyBlue     = cBlocks[5];
+	inline const sf::Color& Violet      = cBlocks[6];
+	inline const sf::Color& Pink        = cBlocks[7];
 
 	constexpr int cBlockPreviewAlpha = 130; // Alpha value for block preview when hovering over tilemap
 }

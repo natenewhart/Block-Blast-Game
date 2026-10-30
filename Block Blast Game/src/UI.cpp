@@ -156,7 +156,7 @@ namespace UI
 		scoreText.setFont(font);
 		scoreText.setCharacterSize(50);
 		scoreText.setFillColor(sf::Color::White);
-		scoreText.setOutlineColor(sf::Color(200, 100, 150));
+		scoreText.setOutlineColor(Colors::cScoreOutline);
 		scoreText.setOutlineThickness(2.f);
 		scoreText.setString("0");
 		scoreText.setPosition(Config::Get().scorePosition - sf::Vector2f(scoreText.getGlobalBounds().width / 2, scoreText.getGlobalBounds().height / 2));
