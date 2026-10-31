@@ -13,6 +13,8 @@ namespace Colors
 	inline const sf::Color Background  (32, 33, 35); // Window background color
 	inline const sf::Color BoardPanel  (42, 44, 48); // TileMap background color
 	inline const sf::Color GridLines   (78, 80, 86);
+
+	inline const sf::Color ScoreFill   (255, 255, 255);
 	inline const sf::Color ScoreOutline(200, 100, 150);
 
 	// Block Colors

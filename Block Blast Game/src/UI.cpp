@@ -4,6 +4,39 @@
 
 namespace UI
 {
+	static sf::Color sinusoidalColor(float time, float frequency)
+	{
+		float fx = 1.0;
+		float fy = 1.41421356237; // sqrt(2)
+		float fz = 1.73205080757; // sqrt(3)
+
+		float r = (std::sin(frequency * fx * time + 1) + 1) / 2;
+		float g = (std::sin(frequency * fy * time + 6) + 1) / 2;
+		float b = (std::sin(frequency * fz * time + 3) + 1) / 2;
+
+		float magnitude = std::sqrtf(r * r + g * g + b * b) / 255.f;
+		return sf::Color(r / magnitude, g / magnitude, b / magnitude);
+	}
+
+	static sf::Color linearColorOscillation(float time, float scale) // Scale is how many units of time does it take to go from 0 -> 255
+	{
+		int colorRange = 255 * 2;
+		float input = time * (colorRange / 2.f) / (scale / 6);
+		int value = (int)input % colorRange;
+		int brightness = std::min(255, value);
+		int darkness = std::max(0, value - 255);
+
+		float offset = 255;
+		int i1 = (int)(input / colorRange) % 3;
+		int i2 = (i1 + 1) % 3;
+
+		sf::Uint8 rgb[3] = { 0,0,0 };
+		rgb[i1] = 255 - darkness;
+		rgb[i2] = brightness;
+
+		return sf::Color(rgb[0], rgb[1], rgb[2]);
+	}
+
 	// ------------------- Overlay -------------------
 
 	Overlay::Overlay(sf::Uint8 alpha)
@@ -47,19 +80,10 @@ namespace UI
 
 	void MainMenu::Update(float dt)
 	{
-		float fx = 1.0;
-		float fy = 1.41421356237;   // sqrt(2)
-		float fz = 1.73205080757;   // sqrt(3)
-		float speed = 0.5;
-
+		float verticalAmplitude = 15;
 		animationTime += (double)dt;
-		title.setPosition(titlePos.x, titlePos.y + 15.f * std::sin(animationTime));
-		title.setOutlineColor(sf::Color(
-			255.f * (std::sin(speed * fx * animationTime + 1) + 1) / 2,
-			255.f * (std::sin(speed * fy * animationTime + 6) + 1) / 2,
-			255.f * (std::sin(speed * fz * animationTime + 3) + 1) / 2
-		));
-
+		title.setPosition(titlePos.x, titlePos.y + verticalAmplitude * std::sin(animationTime));
+		title.setOutlineColor(sinusoidalColor(animationTime, 0.5f));
 
 		for (int i = 0; i < scNumBlocks; i++)
 		{
@@ -155,7 +179,7 @@ namespace UI
 
 		scoreText.setFont(font);
 		scoreText.setCharacterSize(50);
-		scoreText.setFillColor(sf::Color::White);
+		scoreText.setFillColor(Colors::ScoreFill);
 		scoreText.setOutlineColor(Colors::ScoreOutline);
 		scoreText.setOutlineThickness(2.f);
 		scoreText.setString("0");
@@ -164,6 +188,8 @@ namespace UI
 
 	void Hud::UpdateScore(float score)
 	{
+		float scoreColorCycle = 50000; // Number of points before color cycle returns
+		scoreText.setOutlineColor(linearColorOscillation(score, 25000));
 		scoreText.setString(std::to_string(static_cast<int>(score)));
 		scoreText.setPosition(Config::Get().scorePosition - sf::Vector2f(scoreText.getGlobalBounds().width / 2, scoreText.getGlobalBounds().height / 2));
 	}
