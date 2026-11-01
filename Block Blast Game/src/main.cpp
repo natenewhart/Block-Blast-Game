@@ -5,7 +5,7 @@
 /* My naming conventions:
 * Classes: PascalCase
 *	Member Functions: PascalCase
-* 
+*
 * Functions: camelCase
 * Variables: camelCase ()
 * 

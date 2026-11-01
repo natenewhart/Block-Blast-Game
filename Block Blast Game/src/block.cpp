@@ -57,10 +57,12 @@ void Block::PopulateVertexArray()
 	mMesh.setPrimitiveType(sf::Quads);
 	static const sf::Vector2f scQuadCorners[4] = { {0,0}, {1,0}, {1,1}, {0,1} };
 
-	for (sf::Vector2f tileLocalPos : GetSignature()) // Each position in the signature creates a quad of 4 vertices in vertex array for drawing the block
+	for (sf::Vector2f localTilePos : GetSignature()) // Each position in the signature creates a quad of 4 vertices in vertex array for drawing the block
 	{
 		for (auto origin : scQuadCorners)
-			mMesh.append(sf::Vertex(tileLocalPos + origin, mColor));
+		{
+			mMesh.append(sf::Vertex(localTilePos + origin, mColor));
+		}
 	}
 }
 
