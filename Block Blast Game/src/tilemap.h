@@ -69,13 +69,13 @@ private:
 	int  ClearFullLines(Grid& grid); // Clears tiles on grid and returns number of tiles cleared
 
 	// Block Inventory Spawner Private Members, three step process each function having their own helpers
-	Block::tViewHand CreateRandomBlockHand();
+	int CreateRandomBlockHand(Block::tViewHand& blockHand); // Create random block hand of three blocks and return the number of tiles cleared by the hand
 
 	Block::View GetRandomBlockView(); // Lightweight function that just does the random finding of block
 	bool TryPlaceBlockView(const Grid& grid, const Block::View& blockView, sf::Vector2i& outOriginTile); // Try and place block view 
 
 	// CreateBlockHand helpers
-	float WeighBlockViewHand(const Block::tViewHand& blockHand);
+	float WeighBlockViewHand(const Block::tViewHand& blockHand, int tilesCleared) const;
 	Block::tHand ConvertToBlockHand(const Block::tViewHand& other);
 
 	// Boolean Helpers 

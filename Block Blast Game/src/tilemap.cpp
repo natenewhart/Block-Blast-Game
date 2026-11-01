@@ -191,33 +191,29 @@ void TileMap::PlaceBlockOnGrid(Grid& grid)
 
 // ------------------- Block Inventory Spawning Functions ---------------------
 
-Block::tViewHand TileMap::CreateRandomBlockHand()
+int TileMap::CreateRandomBlockHand(Block::tViewHand& blockHand)
 {
 	Grid currGrid = mGrid; // Create copy of current grid to simulate block placements on for hand creation
-	Block::tViewHand blockHand;
+	int tilesCleared = 0;
 
-	int tries = 0;
 	for (int blockCount = 0; blockCount < Config::Hand::cSize;)
 	{
-		tries++; assert(tries < 100); // TODO: no more asssert here, figure out solution
 		Block::View nextBlock = GetRandomBlockView();
 		sf::Vector2i originTilePos; // If block can be placed, this will be set to the tile position of the open block position in the grid
 
 		if (!TryPlaceBlockView(currGrid, nextBlock, originTilePos)) // If block cannot be placed skip this iteration
 			continue;
 
+		// Submit block to block cache
 		mSubmitBuffer.tilePositions = Block::TranslateBlockTilePositions(Block::GetBlockTilePositions(nextBlock), originTilePos); // Store block tile positions in tilemap coordinates
 		blockHand[blockCount++] = nextBlock; // Append next block
 
-		if (blockCount < Config::Hand::cSize)  // Submit block to boolean tilemap
-		{
-			PlaceBlockOnGrid(currGrid);
-			CheckFullLines  (currGrid);
-			ClearFullLines  (currGrid);
-		}
+		PlaceBlockOnGrid(currGrid);
+		CheckFullLines  (currGrid);
+		//tilesCleared += ClearFullLines(currGrid);
 	}
 	ClearSubmittedBlockCache();
-	return blockHand;
+	return tilesCleared;
 }
 
 Block::tHand TileMap::CreateBestBlockHand()
@@ -228,8 +224,9 @@ Block::tHand TileMap::CreateBestBlockHand()
 
 	for (int numHands = 0; numHands < maxHands; numHands++)
 	{
-		Block::tViewHand currHand = CreateRandomBlockHand();
-		float currWeight = WeighBlockViewHand(currHand);
+		Block::tViewHand currHand;
+		int tilesCleared = CreateRandomBlockHand(currHand);
+		float currWeight = WeighBlockViewHand(currHand, tilesCleared);
 
 		if (currWeight > maxHandWeight)
 		{
@@ -282,14 +279,24 @@ bool TileMap::TryPlaceBlockView(const Grid& grid, const Block::View& blockView, 
 	return false;
 }
 
-float TileMap::WeighBlockViewHand(const Block::tViewHand& blockHand)
+float TileMap::WeighBlockViewHand(const Block::tViewHand& blockHand, int tilesCleared) const
 {
-	float weight = 0.f;
+	float signatureSumWeight = 0.f;
+	int tilesPlaced = 0;
 	for (int i = 0; i < Config::Hand::cSize; i++)
 	{
-		weight += Blocks::cWeights[blockHand[i].shape];
+		signatureSumWeight += Blocks::cWeights[blockHand[i].shape];        // Weight of block signature
+		tilesPlaced     += Blocks::cSignatures[blockHand[i].shape].size(); // Number of tiles in block signature
 	}
-	return weight;
+
+	// Scale all weights to [0,1]
+	float signatureWeight    = signatureSumWeight / mcBlockWeightsSum;
+	float tilesClearedWeight = (float)tilesCleared / (mWidth * mHeight);
+	float tilesPlacedWeight  = (float)tilesPlaced  / (3 * Blocks::cSignatures[Block::Shape::ThreeByThree].size());
+
+	return signatureWeight   * Blocks::cBlockSignatureWeight
+		+ tilesClearedWeight * Blocks::cBlockClearedWeight
+	    + tilesPlacedWeight  * Blocks::cBlockPlacedWeight; // Weight of block types + weight of tiles cleared
 }
 
 Block::tHand TileMap::ConvertToBlockHand(const Block::tViewHand& other)

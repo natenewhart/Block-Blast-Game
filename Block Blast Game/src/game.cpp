@@ -106,6 +106,12 @@ void Game::HandleEvents()
 				mBlockHand[1] = Block(Block::Shape::FiveByOne, Config::Get().hand.initPositions[1], 1, sf::Color::White);
 				mBlockHand[2] = Block(Block::Shape::FiveByOne, Config::Get().hand.initPositions[2], 1, sf::Color::White);
 			}
+			if (mEvent.key.code == sf::Keyboard::Num6)
+			{
+				mBlockHand[0] = Block(Block::Shape::OneByOne, Config::Get().hand.initPositions[0], 1, sf::Color::White);
+				mBlockHand[1] = Block(Block::Shape::TwoByOne, Config::Get().hand.initPositions[1], 1, sf::Color::White);
+				mBlockHand[2] = Block(Block::Shape::TwoDiagonal, Config::Get().hand.initPositions[2], 1, sf::Color::White);
+			}
 		}
 		HandleBlockEvents();
 	}

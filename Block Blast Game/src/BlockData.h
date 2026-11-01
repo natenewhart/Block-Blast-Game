@@ -12,8 +12,12 @@ namespace Blocks
 	using tSignature = std::vector<sf::Vector2f>;
 
 	// Constants
-
 	constexpr uint32_t cNumberOfShapes = 15;
+
+	// Block hand weight scaling constants
+	constexpr float cBlockSignatureWeight = 1.f;
+	constexpr float cBlockClearedWeight   = 12.f;
+	constexpr float cBlockPlacedWeight    = 4.f;
 
 	// Shape Tables
 	extern const tSignature cSignatures  [cNumberOfShapes]; // Table mapping block shapes to block signatures
