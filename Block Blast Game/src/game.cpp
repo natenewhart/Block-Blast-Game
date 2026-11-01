@@ -12,7 +12,7 @@ Game::Game()
 	, mDeltaTime(1.f / 60.f)
 	, mTileMap(Config::Get().tileMap.position, mRNG)
 	, mActiveBlock(nullptr)
-	, mBlockHandSize(Config::Get().hand.cSize)
+	, mBlockHandSize(0)
 	, mFont(LoadFont("res/ARCADE_N.TTF"))
 	, mMainMenuUI(mFont, mRNG)
 	, mPauseMenuUI(mFont)
@@ -25,9 +25,7 @@ Game::Game()
 	mWindow.setMouseCursorVisible(false); // Remove moues cursor
 	mWindow.setKeyRepeatEnabled(false);
 
-	MakeNewBlockHand();
-
-	// Start game at main menu
+	RestartGame();
 	mState.gameMode = Mode::MainMenu;
 }
 
