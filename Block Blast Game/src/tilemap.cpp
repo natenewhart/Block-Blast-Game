@@ -213,6 +213,7 @@ Block::tViewHand TileMap::CreateRandomBlockHand()
 		{
 			PlaceBlockOnGrid(currGrid);
 			CheckFullLines  (currGrid);
+			ClearFullLines  (currGrid);
 		}
 	}
 	ClearSubmittedBlockCache();

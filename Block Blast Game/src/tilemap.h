@@ -63,7 +63,7 @@ private:
 
 	// Block Placement Members
 	bool SetClosestOpenBlockPositions(const Block& block); // Find closest tileMap grid positions for block on grid. Store indices in mBlockPlacementBuffer and return true if block is placeable, and false otherwise
-	void PlaceBlockOnGrid(Grid& grid);                     // Places block on tilemap at given grid position by setting tiles at block tile positions to occupied and block color. Returns true if block was placed successfully, false if any tile positions of block were occupied on tilemap
+	void PlaceBlockOnGrid(Grid& grid);                     // Places block on tilemap at given grid position by setting tiles at block tile positions to occupied and block color.
 
 	void CheckFullLines(Grid& grid);
 	int  ClearFullLines(Grid& grid); // Clears tiles on grid and returns number of tiles cleared
