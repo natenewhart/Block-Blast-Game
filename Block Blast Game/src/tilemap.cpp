@@ -210,7 +210,7 @@ int TileMap::CreateRandomBlockHand(Block::tViewHand& blockHand)
 
 		PlaceBlockOnGrid(currGrid);
 		CheckFullLines  (currGrid);
-		//tilesCleared += ClearFullLines(currGrid);
+		tilesCleared += ClearFullLines(currGrid);
 	}
 	ClearSubmittedBlockCache();
 	return tilesCleared;
@@ -218,11 +218,12 @@ int TileMap::CreateRandomBlockHand(Block::tViewHand& blockHand)
 
 Block::tHand TileMap::CreateBestBlockHand()
 {
-	int maxHands = 20; // Number of random hands to generate and weigh, the best one will be returned
+	int maxHands = 1000; // Number of random hands to generate and weigh, the best one will be returned
 	float maxHandWeight = -1.f;
 	Block::tViewHand bestHand;
 
-	for (int numHands = 0; numHands < maxHands; numHands++)
+	int bestNum = 0;
+	for (int i = 0; i < maxHands; i++)
 	{
 		Block::tViewHand currHand;
 		int tilesCleared = CreateRandomBlockHand(currHand);
@@ -285,8 +286,8 @@ float TileMap::WeighBlockViewHand(const Block::tViewHand& blockHand, int tilesCl
 	int tilesPlaced = 0;
 	for (int i = 0; i < Config::Hand::cSize; i++)
 	{
-		signatureSumWeight += Blocks::cWeights[blockHand[i].shape];        // Weight of block signature
-		tilesPlaced     += Blocks::cSignatures[blockHand[i].shape].size(); // Number of tiles in block signature
+		signatureSumWeight += Blocks::cWeights[blockHand[i].shape];           // Weight of block signature
+		tilesPlaced        += Blocks::cSignatures[blockHand[i].shape].size(); // Number of tiles in block signature
 	}
 
 	// Scale all weights to [0,1]
