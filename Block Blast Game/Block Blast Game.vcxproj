@@ -186,7 +186,16 @@
     <ClInclude Include="src\Library.h" />
     <ClInclude Include="src\TileMap.h" />
   </ItemGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Label="ExtensionTargets">
-  </ImportGroup>
+	<Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+	<ImportGroup Label="ExtensionTargets">
+	</ImportGroup>
+
+	<Target Name="CopyResources" AfterTargets="Build">
+		<RemoveDir Directories="$(OutDir)res" />
+		<ItemGroup>
+			<ResFiles Include="$(ProjectDir)res\**\*.*" />
+		</ItemGroup>
+		<Copy SourceFiles="@(ResFiles)"
+			  DestinationFiles="@(ResFiles->'$(OutDir)res\%(RecursiveDir)%(Filename)%(Extension)')" />
+	</Target>
 </Project>
