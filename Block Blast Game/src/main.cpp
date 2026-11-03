@@ -1,4 +1,4 @@
-// main.cpp | Testing SFML
+// main.cpp
 
 #include "Game.h"
 
